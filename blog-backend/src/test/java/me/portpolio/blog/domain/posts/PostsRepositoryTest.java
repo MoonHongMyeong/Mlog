@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.ComparableSubject.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -37,8 +38,28 @@ public class PostsRepositoryTest {
         List<Posts> postsList = postsRepository.findAll();
 
         Posts posts = postsList.get(0);
-        assertThat(posts.getTitle(), is(equalTo(title)));
-        assertThat(posts.getContent(), is(equalTo(content)));
+        assertEquals(posts.getTitle(), title);
+        assertEquals(posts.getContent(), content);
+    }
+
+    @Test
+    public void BaseTimeEntity_등록(){
+        LocalDateTime now = LocalDateTime.of(2020,1,4,0,0,0);
+        postsRepository.save(Posts.builder()
+                .title("title")
+                .content("content")
+                .author("author")
+                .build());
+
+        List<Posts> postsList = postsRepository.findAll();
+
+        Posts posts = postsList.get(0);
+
+        System.out.println(">>>>>>>> createDate="+posts.getCreatedDate()+", modifiedDate="+posts.getModifiedDate());
+
+        //isAtLeast == isAfter, isAtMost == isBefore
+        assertThat(posts.getCreatedDate()).isAtLeast(now);
+        assertThat(posts.getModifiedDate()).isAtLeast(now);
 
     }
 
