@@ -52,9 +52,7 @@ public class PostsApiControllerTest {
                 .build();
 
         String url = "http://localhost:"+port+"/api/posts";
-
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url,requestDto,Long.class);
-
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
@@ -81,18 +79,32 @@ public class PostsApiControllerTest {
                 .build();
 
         String url = "http://localhost:"+port+"/api/posts/"+updateId;
-
         HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
-
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
-        List<Posts> all = postsRepository.findAll();
 
+        List<Posts> all = postsRepository.findAll();
         assertEquals(all.get(0).getTitle(), exceptedTitle);
         assertEquals(all.get(0).getContent(), exceptedContent);
+    }
 
+    
+    //@AfterEach 주석 처리해야 제대로 확인가능
+    @Test
+    public void Posts_삭제된다() throws Exception{
+        Posts savedPosts = postsRepository.save(Posts.builder()
+                .title("title")
+                .content("content")
+                .author("author")
+                .build());
+
+        Long id = savedPosts.getId();
+        String url = "http://localhost:"+port+"/api/posts/"+id;
+        HttpEntity<Posts> requestEntity = new HttpEntity<>(savedPosts);
+        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Long.class);
+        assertThat(responseEntity.getStatusCode().is2xxSuccessful());
     }
 
 }

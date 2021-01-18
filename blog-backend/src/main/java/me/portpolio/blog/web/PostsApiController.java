@@ -32,5 +32,12 @@ public class PostsApiController {
         return postsService.updatePost(postId, requestDto);
     }
 
+    //포스트 삭제
+    @DeleteMapping("/posts/{postId}")
+    public Long deletePost(@PathVariable Long postId){
+        postsService.deletePost(postId);
+        return postId;
+    }
+
 
 }

@@ -38,4 +38,10 @@ public class PostsService {
 
         return postId;
     }
+
+    public void deletePost(Long postId){
+        Posts posts = postsRepository.findById(postId).orElseThrow(
+                ()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));
+        postsRepository.delete(posts);
+    }
 }

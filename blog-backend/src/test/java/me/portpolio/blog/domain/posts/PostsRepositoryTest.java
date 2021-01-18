@@ -62,6 +62,4 @@ public class PostsRepositoryTest {
         assertThat(posts.getModifiedDate()).isAtLeast(now);
 
     }
-
-
 }
