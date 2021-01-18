@@ -24,7 +24,7 @@ public class PostsRepositoryTest {
     }
 
     @Test
-    public void 게시글_저장_불러오기(){
+    public void 포스트_저장_불러오기(){
         String title = "Test title";
         String content = "Test content";
 
@@ -41,4 +41,6 @@ public class PostsRepositoryTest {
         assertThat(posts.getContent(), is(equalTo(content)));
 
     }
+
+
 }
