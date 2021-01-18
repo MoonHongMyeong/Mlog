@@ -11,7 +11,6 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static com.google.common.truth.ComparableSubject.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
