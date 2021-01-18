@@ -9,12 +9,17 @@ import me.portpolio.blog.web.dto.PostsUpdateRequestDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class PostsService {
 
     private final PostsRepository postsRepository;
+
+    public List<Posts> getPostList() {
+        return postsRepository.findAll();
+    }
 
     //포스트 등록
     @Transactional
@@ -44,4 +49,6 @@ public class PostsService {
                 ()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));
         postsRepository.delete(posts);
     }
+
+
 }

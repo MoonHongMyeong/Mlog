@@ -24,7 +24,7 @@ public class PostsRepositoryTest {
     }
 
     @Test
-    public void 포스트_저장_불러오기(){
+    public void 포스트_저장_조회(){
         String title = "Test title";
         String content = "Test content";
 
@@ -60,5 +60,20 @@ public class PostsRepositoryTest {
         assertThat(posts.getCreatedDate()).isAtLeast(now);
         assertThat(posts.getModifiedDate()).isAtLeast(now);
 
+    }
+
+    @Test
+    public void 포스트_목록_조회(){
+        for(int i=1; i<=10 ; i++){
+            postsRepository.save(Posts.builder().title("title"+i).content("content"+i).author("author"+i).build());
+        }
+
+        List<Posts> postsList = postsRepository.findAll();
+
+        for(int i=0; i<10; i++){
+            assertEquals(postsList.get(i).getTitle(), "title"+(i+1));
+            assertEquals(postsList.get(i).getContent(), "content"+(i+1));
+            assertEquals(postsList.get(i).getAuthor(), "author"+(i+1));
+        }
     }
 }

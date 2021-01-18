@@ -40,7 +40,7 @@ public class PostsApiControllerTest {
     }
 
     @Test
-    public void Posts_등록된다() throws Exception{
+    public void Posts_등록() throws Exception{
         String title = "title";
         String content = "content";
         String author = "author";
@@ -62,7 +62,7 @@ public class PostsApiControllerTest {
     }
 
     @Test
-    public void Posts_수정된다() throws Exception{
+    public void Posts_수정() throws Exception{
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
@@ -93,7 +93,7 @@ public class PostsApiControllerTest {
     
     //@AfterEach 주석 처리해야 제대로 확인가능
     @Test
-    public void Posts_삭제된다() throws Exception{
+    public void Posts_삭제() throws Exception{
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
