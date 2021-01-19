@@ -1,4 +1,4 @@
-package me.portpolio.blog.web.dto;
+package me.portpolio.blog.web.dto.posts;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

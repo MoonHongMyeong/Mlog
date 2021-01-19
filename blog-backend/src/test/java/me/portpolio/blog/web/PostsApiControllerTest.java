@@ -2,8 +2,8 @@ package me.portpolio.blog.web;
 
 import me.portpolio.blog.domain.posts.Posts;
 import me.portpolio.blog.domain.posts.PostsRepository;
-import me.portpolio.blog.web.dto.PostsSaveRequestDto;
-import me.portpolio.blog.web.dto.PostsUpdateRequestDto;
+import me.portpolio.blog.web.dto.posts.PostsSaveRequestDto;
+import me.portpolio.blog.web.dto.posts.PostsUpdateRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

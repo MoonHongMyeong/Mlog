@@ -3,9 +3,9 @@ package me.portpolio.blog.service;
 import lombok.RequiredArgsConstructor;
 import me.portpolio.blog.domain.posts.Posts;
 import me.portpolio.blog.domain.posts.PostsRepository;
-import me.portpolio.blog.web.dto.PostsResponseDto;
-import me.portpolio.blog.web.dto.PostsSaveRequestDto;
-import me.portpolio.blog.web.dto.PostsUpdateRequestDto;
+import me.portpolio.blog.web.dto.posts.PostsResponseDto;
+import me.portpolio.blog.web.dto.posts.PostsSaveRequestDto;
+import me.portpolio.blog.web.dto.posts.PostsUpdateRequestDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

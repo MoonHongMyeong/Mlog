@@ -35,8 +35,8 @@ public class PostsRepositoryTest {
                 .build());
 
         List<Posts> postsList = postsRepository.findAll();
-
         Posts posts = postsList.get(0);
+
         assertEquals(posts.getTitle(), title);
         assertEquals(posts.getContent(), content);
     }
