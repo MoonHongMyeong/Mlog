@@ -65,7 +65,11 @@ public class PostsRepositoryTest {
     @Test
     public void 포스트_목록_조회(){
         for(int i=1; i<=10 ; i++){
-            postsRepository.save(Posts.builder().title("title"+i).content("content"+i).author("author"+i).build());
+            postsRepository.save(Posts.builder()
+                    .title("title"+i)
+                    .content("content"+i)
+                    .author("author"+i)
+                    .build());
         }
 
         List<Posts> postsList = postsRepository.findAll();

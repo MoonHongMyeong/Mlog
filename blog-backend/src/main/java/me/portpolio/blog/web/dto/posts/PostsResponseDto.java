@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.portpolio.blog.domain.posts.Posts;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class PostsResponseDto {

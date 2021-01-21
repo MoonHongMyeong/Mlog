@@ -59,6 +59,7 @@ public class PostsApiControllerTest {
         List<Posts> all = postsRepository.findAll();
         assertEquals(all.get(0).getTitle(), title);
         assertEquals(all.get(0).getContent(), content);
+        assertEquals(all.get(0).getAuthor(), author);
     }
 
     @Test
@@ -72,12 +73,10 @@ public class PostsApiControllerTest {
         Long updateId = savedPosts.getId();
         String exceptedTitle = "update title";
         String exceptedContent = "update content";
-
         PostsUpdateRequestDto requestDto = PostsUpdateRequestDto.builder()
                 .title(exceptedTitle)
                 .content(exceptedContent)
                 .build();
-
         String url = "http://localhost:"+port+"/api/posts/"+updateId;
         HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 
@@ -106,5 +105,6 @@ public class PostsApiControllerTest {
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Long.class);
         assertThat(responseEntity.getStatusCode().is2xxSuccessful());
     }
+
 
 }

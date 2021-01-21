@@ -54,6 +54,33 @@ public class CommentsRepositoryTest {
         assertEquals(comments.getAuthor(), author);
         assertThat(comments.getCreatedDate()).isAtLeast(now);
         assertThat(comments.getModifiedDate()).isAtLeast(now);
+        System.out.println(comments);
+    }
+
+    @Test
+    public void 댓글_목록_조회(){
+        Posts post = postsRepository.save(Posts.builder()
+                .title("test title")
+                .content("test content")
+                .author("test author")
+                .build());
+
+        for(int i=1; i<=10; i++) {
+            commentsRepository.save(Comments.builder()
+                    .posts(post)
+                    .body("test body"+i)
+                    .author("test comment author"+i)
+                    .build());
+        }
+
+        List<Comments> commentsList = commentsRepository.findAll();
+
+        for(int i=0; i<10; i++){
+            assertEquals(commentsList.get(i).getBody(), "test body"+(i+1));
+            assertEquals(commentsList.get(i).getAuthor(), "test comment author"+(i+1));
+            System.out.println(commentsList.get(i));
+        }
+
     }
 
 

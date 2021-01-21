@@ -38,12 +38,13 @@ public class PostsService {
     //포스트 수정
     @Transactional
     public Long updatePost(Long postId, PostsUpdateRequestDto requestDto){
-        Posts posts = postsRepository.findById(postId).orElseThrow(()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));
+        Posts posts = postsRepository.findById(postId).orElseThrow(
+                ()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));
         posts.update(requestDto.getTitle(), requestDto.getContent());
 
         return postId;
     }
-
+    //포스트 삭제
     public void deletePost(Long postId){
         Posts posts = postsRepository.findById(postId).orElseThrow(
                 ()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));

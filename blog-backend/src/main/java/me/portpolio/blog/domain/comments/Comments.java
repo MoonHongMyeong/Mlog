@@ -1,5 +1,6 @@
 package me.portpolio.blog.domain.comments;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,8 @@ public class Comments extends BaseTimeEntity {
     @Column(name = "comments_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "posts_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
     private Posts posts;
 
     @Column(nullable = false)
@@ -27,13 +28,13 @@ public class Comments extends BaseTimeEntity {
     @Column(nullable = false)
     private String author;
 
-    @Column(name = "parent_id")
+    @Column(name = "parent_id", columnDefinition = "bigint default 0")
     private Long parentId;
 
     @Column(name = "comments_class", columnDefinition = "bigint default 0")
     private Long coClass;
 
-    @Column(name = "comments_order")
+    @Column(name = "comments_order", columnDefinition = "bigint default 1")
     private Long coOrder;
 
     @Builder
@@ -43,9 +44,10 @@ public class Comments extends BaseTimeEntity {
         this.author = author;
     }
 
-    public void update(String body, String author){
+
+
+    public void update(String body){
         this.body=body;
-        this.author=author;
     }
 
 }
