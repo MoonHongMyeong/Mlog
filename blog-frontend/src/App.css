@@ -1,38 +1,52 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+footer {
+  padding: 1.4vh 1.4vh;
+  background-color: #353b48;
+  color: #e5e6ea;
+  font-family: "Frank Ruhl Libre", serif;
   display: flex;
   flex-direction: column;
+  justify-items: center;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+footer a {
+  text-decoration: none;
+  color: #cccdc1;
+  font-size: 1.2rem;
+}
+
+.NavBtn {
+  font-family: "Hachi Maru Pop", cursive;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: #303952;
   color: white;
+  text-align: center;
+  font-size: 2rem;
+  width: 60px;
+  height: 60px;
+  border: none;
+  z-index: 1;
+  border-radius: 2px;
 }
 
-.App-link {
-  color: #61dafb;
+.NavContainer {
+  position: absolute;
+  z-index: 0;
+  width: 120%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.navigation {
+  position: fixed;
+  padding-top: 150px;
+  padding-left: 30px;
+  background-color: #222f3e;
+  width: 250px;
+  height: 100vh;
+}
+
+.showNav {
+  transform: translateY(97%);
+  transition: transform 0.3s ease-in-out;
 }

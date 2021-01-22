@@ -16,6 +16,7 @@ import java.util.List;
 public class PostsApiController {
 
     private final PostsService postsService;
+
     //포스트 리스트 조회
     @GetMapping("/posts")
     public List<Posts> getPostList()throws Exception{
