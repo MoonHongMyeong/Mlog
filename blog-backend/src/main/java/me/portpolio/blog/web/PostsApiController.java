@@ -31,17 +31,27 @@ public class PostsApiController {
     public Long addPost(@RequestParam("image") MultipartFile image,
                         @RequestParam("title")String title,
                         @RequestParam("author") String author,
-                        @RequestParam("content") String content) throws Exception{
-        //파일 저장
-        String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
-        String filePath = baseDir+"\\"+image.getOriginalFilename();
-        image.transferTo(new File(filePath));
+                        @RequestParam("content") String content) throws Exception {
 
         PostsSaveRequestDto requestDto = new PostsSaveRequestDto();
-        requestDto.setTitle(title);
-        requestDto.setAuthor(author);
-        requestDto.setContent(content);
-        requestDto.setImageUrl("./images/"+image.getOriginalFilename());
+
+        //파일 저장
+        if(image.isEmpty()){
+            requestDto.setTitle(title);
+            requestDto.setAuthor(author);
+            requestDto.setContent(content);
+            requestDto.setImageUrl("./images/default.jpg");
+        }else {
+            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
+            String filePath = baseDir + "\\" + image.getOriginalFilename();
+            image.transferTo(new File(filePath));
+            requestDto.setTitle(title);
+            requestDto.setAuthor(author);
+            requestDto.setContent(content);
+            requestDto.setImageUrl("./images/"+image.getOriginalFilename());
+        }
+
+
 
         return postsService.addPost(requestDto);
 

@@ -140,7 +140,7 @@ export default function PostList() {
 
     getPosts();
 
-  }, [posts])
+  }, [])
 
   return (
     <PostListContainer>
