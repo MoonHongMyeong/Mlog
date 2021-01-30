@@ -3,7 +3,6 @@ package me.portpolio.blog.web;
 import lombok.RequiredArgsConstructor;
 import me.portpolio.blog.domain.comments.Comments;
 import me.portpolio.blog.service.CommentsService;
-import me.portpolio.blog.web.dto.comments.CommentsResponseDto;
 import me.portpolio.blog.web.dto.comments.CommentsSaveRequestDto;
 import me.portpolio.blog.web.dto.comments.CommentsUpdateRequestDto;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +12,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin(origins = "http://localhost:8000, http://localhost:3000")
 @RequestMapping("/api/posts")
 public class CommentsApiController {
 

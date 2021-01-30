@@ -5,7 +5,6 @@ import me.portpolio.blog.domain.comments.Comments;
 import me.portpolio.blog.domain.comments.CommentsRepository;
 import me.portpolio.blog.domain.posts.Posts;
 import me.portpolio.blog.domain.posts.PostsRepository;
-import me.portpolio.blog.web.dto.comments.CommentsResponseDto;
 import me.portpolio.blog.web.dto.comments.CommentsSaveRequestDto;
 import me.portpolio.blog.web.dto.comments.CommentsUpdateRequestDto;
 import org.springframework.stereotype.Service;

@@ -1,5 +1,6 @@
 package me.portpolio.blog.web;
 
+.
 import lombok.RequiredArgsConstructor;
 import me.portpolio.blog.domain.posts.Posts;
 import me.portpolio.blog.service.PostsService;
@@ -7,10 +8,13 @@ import me.portpolio.blog.web.dto.posts.PostsResponseDto;
 import me.portpolio.blog.web.dto.posts.PostsSaveRequestDto;
 import me.portpolio.blog.web.dto.posts.PostsUpdateRequestDto;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:8000, http://localhost:3000")
 @RequestMapping("/api")
 @RestController
 public class PostsApiController {
@@ -25,8 +29,23 @@ public class PostsApiController {
 
     //포스트 등록
     @PostMapping("/posts")
-    public Long addPost(@RequestBody PostsSaveRequestDto requestDto) throws Exception{
-        return postsService.addPost(requestDto);
+    public String addPost(@RequestParam("image") MultipartFile image,
+                        @RequestParam("title")String title,
+                        @RequestParam("author") String author,
+                        @RequestParam("content") String content) throws Exception{
+
+        String baseDir = "D:\\GitHub\\Blog-portfolio\\frontend\\public\\images";
+        String filePath = baseDir+"\\"+image.getOriginalFilename();
+        image.transferTo(new File(filePath));
+
+        PostsSaveRequestDto requestDto = new PostsSaveRequestDto();
+        requestDto.setTitle(title);
+        requestDto.setAuthor(author);
+        requestDto.setContent(content);
+        requestDto.setImageUrl("./images/"+image.getOriginalFilename());
+
+        postsService.addPost(requestDto);
+        return "redirect:/api/posts";
     }
 
     //포스트 조회

@@ -30,15 +30,19 @@ public class Posts extends BaseTimeEntity {
     @Column(nullable = false)
     private String author;
 
+    @Column(columnDefinition = "varchar(255) default './images/default.jpg'")
+    private String imageUrl;
+
     @JsonIgnore
     @OneToMany(mappedBy = "posts", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Comments> commentsList = new ArrayList<>();
 
     @Builder
-    public Posts(String title, String content, String author){
+    public Posts(String title, String content, String author, String imageUrl){
         this.title=title;
         this.content=content;
         this.author=author;
+        this.imageUrl=imageUrl;
     }
 
     public void update(String title, String content){

@@ -16,12 +16,6 @@ public class CommentsSaveRequestDto {
 
     public void setPosts(Posts postItem){
         this.posts=postItem;
-        Comments comments = Comments.builder()
-                .posts(posts)
-                .body(body)
-                .author(author)
-                .build();
-        posts.getCommentsList().add(comments);
     }
 
     @Builder

@@ -14,8 +14,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -106,5 +110,21 @@ public class PostsApiControllerTest {
         assertThat(responseEntity.getStatusCode().is2xxSuccessful());
     }
 
+    //파일 업로드 추가
+    @Test
+    public void Posts_등록_파일추가() throws Exception{
+        MockMultipartHttpServletRequest multipartHttpServletRequest = new MockMultipartHttpServletRequest();
+        multipartHttpServletRequest.setMethod("POST");
+        multipartHttpServletRequest.setContentType("multipart/form-data");
+        multipartHttpServletRequest.setRequestURI("/api/posts");
 
+        multipartHttpServletRequest.addParameter("title","test title");
+        multipartHttpServletRequest.addParameter("author","test author");
+        multipartHttpServletRequest.addParameter("content","test content");
+        FileInputStream fileInputStream = new FileInputStream(new File("/src/test/resource/test.png"));
+        MockMultipartFile multipartFile = new MockMultipartFile("image","test.png","png",fileInputStream);
+        multipartHttpServletRequest.addFile(multipartFile);
+
+
+    }
 }
