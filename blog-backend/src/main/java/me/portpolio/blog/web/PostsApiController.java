@@ -1,6 +1,5 @@
 package me.portpolio.blog.web;
 
-.
 import lombok.RequiredArgsConstructor;
 import me.portpolio.blog.domain.posts.Posts;
 import me.portpolio.blog.service.PostsService;
@@ -29,12 +28,12 @@ public class PostsApiController {
 
     //포스트 등록
     @PostMapping("/posts")
-    public String addPost(@RequestParam("image") MultipartFile image,
+    public Long addPost(@RequestParam("image") MultipartFile image,
                         @RequestParam("title")String title,
                         @RequestParam("author") String author,
                         @RequestParam("content") String content) throws Exception{
-
-        String baseDir = "D:\\GitHub\\Blog-portfolio\\frontend\\public\\images";
+        //파일 저장
+        String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
         String filePath = baseDir+"\\"+image.getOriginalFilename();
         image.transferTo(new File(filePath));
 
@@ -44,8 +43,8 @@ public class PostsApiController {
         requestDto.setContent(content);
         requestDto.setImageUrl("./images/"+image.getOriginalFilename());
 
-        postsService.addPost(requestDto);
-        return "redirect:/api/posts";
+        return postsService.addPost(requestDto);
+
     }
 
     //포스트 조회

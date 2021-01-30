@@ -64,6 +64,7 @@ public class PostsApiControllerTest {
         assertEquals(all.get(0).getTitle(), title);
         assertEquals(all.get(0).getContent(), content);
         assertEquals(all.get(0).getAuthor(), author);
+        assertEquals(all.get(0).getImageUrl(), "./images/default.jpg");
     }
 
     @Test
