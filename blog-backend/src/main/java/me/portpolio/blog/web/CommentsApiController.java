@@ -3,11 +3,16 @@ package me.portpolio.blog.web;
 import lombok.RequiredArgsConstructor;
 import me.portpolio.blog.domain.comments.Comments;
 import me.portpolio.blog.service.CommentsService;
+import me.portpolio.blog.web.dto.comments.CommentsResponseDto;
 import me.portpolio.blog.web.dto.comments.CommentsSaveRequestDto;
 import me.portpolio.blog.web.dto.comments.CommentsUpdateRequestDto;
+import me.portpolio.blog.web.dto.comments.RepliesSaveRequestDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 
 @RequiredArgsConstructor
@@ -26,8 +31,15 @@ public class CommentsApiController {
 
     //댓글 등록
     @PostMapping("/{postsId}/comments")
-    public Long addComment(@PathVariable Long postsId, @RequestBody CommentsSaveRequestDto requestDto) throws Exception{
-        return commentsService.addComment(postsId, requestDto);
+    public ResponseEntity<CommentsResponseDto> addComment(@PathVariable Long postsId, @RequestBody CommentsSaveRequestDto requestDto) throws Exception{
+        CommentsResponseDto responseDto = commentsService.addComment(postsId ,requestDto);
+        return new ResponseEntity<CommentsResponseDto>(responseDto, HttpStatus.OK);
+    }
+    //대댓글 등록
+    @PostMapping("/{postId}/comments/{parentsId}")
+    public ResponseEntity<CommentsResponseDto> addReply(@PathVariable Long postId, @PathVariable Long parentsId, @RequestBody RepliesSaveRequestDto requestDto){
+        CommentsResponseDto responseDto = commentsService.addReply(postId, parentsId, requestDto);
+        return new ResponseEntity<CommentsResponseDto>(responseDto, HttpStatus.OK);
     }
 
     //댓글 수정

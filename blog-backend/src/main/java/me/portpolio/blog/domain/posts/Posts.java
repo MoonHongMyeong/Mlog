@@ -8,7 +8,6 @@ import me.portpolio.blog.domain.BaseTimeEntity;
 import me.portpolio.blog.domain.comments.Comments;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -35,7 +34,7 @@ public class Posts extends BaseTimeEntity {
 
     @JsonIgnore
     @OneToMany(mappedBy = "posts", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Comments> commentsList = new ArrayList<>();
+    private List<Comments> commentsList;
 
     @Builder
     public Posts(String title, String content, String author, String imageUrl){

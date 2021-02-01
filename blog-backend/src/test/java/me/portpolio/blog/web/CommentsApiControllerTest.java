@@ -6,6 +6,7 @@ import me.portpolio.blog.domain.posts.Posts;
 import me.portpolio.blog.domain.posts.PostsRepository;
 import me.portpolio.blog.web.dto.comments.CommentsSaveRequestDto;
 import me.portpolio.blog.web.dto.comments.CommentsUpdateRequestDto;
+import me.portpolio.blog.web.dto.comments.RepliesSaveRequestDto;
 import me.portpolio.blog.web.dto.posts.PostsSaveRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,14 +53,14 @@ public class CommentsApiControllerTest {
         String content = "content";
         String author = "author";
 
-        PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+        Posts posts = postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
                 .author(author)
-                .build();
+                .build());
 
         String url = "http://localhost:" + port + "/api/posts";
-        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
+        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, posts, Long.class);
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
     }
 
@@ -120,6 +121,33 @@ public class CommentsApiControllerTest {
         HttpEntity<Comments> requestEntity = new HttpEntity<>(savedComments);
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Long.class);
         assertThat(responseEntity.getStatusCode().is2xxSuccessful());
+    }
+
+    @Test
+    public void Replies_등록(){
+        Posts post = postsRepository.findById(1L).get();
+
+        Comments parents = commentsRepository.save(Comments.builder()
+                .author("parents author")
+                .body("parents body")
+                .posts(post)
+                .build());
+
+        RepliesSaveRequestDto children = RepliesSaveRequestDto.builder()
+                .author("children author")
+                .body("children body")
+                .posts(post)
+                .parents(parents)
+                .build();
+
+        Long parent_id = parents.getId();
+        System.out.println("=================================================");
+        System.out.println(parent_id);
+        String url ="http://localhost:"+port+"api/posts/"+post.getId()+"/comments/"+parent_id;
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, children, String.class);
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+
     }
 
 }

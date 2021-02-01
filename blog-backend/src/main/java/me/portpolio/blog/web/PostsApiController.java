@@ -8,6 +8,7 @@ import me.portpolio.blog.web.dto.posts.PostsSaveRequestDto;
 import me.portpolio.blog.web.dto.posts.PostsUpdateRequestDto;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
 import java.util.List;
@@ -25,10 +26,11 @@ public class PostsApiController {
     public List<Posts> getPostList()throws Exception{
         return postsService.getPostList();
     }
-
+    
     //포스트 등록
     @PostMapping("/posts")
-    public Long addPost(@RequestParam("image") MultipartFile image,
+    public Long addPost(MultipartHttpServletRequest request,
+                        @RequestParam("image") MultipartFile image,
                         @RequestParam("title")String title,
                         @RequestParam("author") String author,
                         @RequestParam("content") String content) throws Exception {

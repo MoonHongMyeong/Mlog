@@ -11,7 +11,7 @@ function PostCard(post) {
           <div className="picture"></div>
           <div className="user">
             <span className="name">{post.author}</span>
-            <span className="date"> {post.modifiedDate.substring(0, 10)}</span>
+            <span className="date"> {post.modifiedDate}</span>
           </div>
         </div>
       </div>

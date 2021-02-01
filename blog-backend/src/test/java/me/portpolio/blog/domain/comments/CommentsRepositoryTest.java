@@ -2,6 +2,7 @@ package me.portpolio.blog.domain.comments;
 
 import me.portpolio.blog.domain.posts.Posts;
 import me.portpolio.blog.domain.posts.PostsRepository;
+import me.portpolio.blog.web.dto.comments.CommentsResponseDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,6 @@ public class CommentsRepositoryTest {
         assertEquals(comments.getAuthor(), author);
         assertThat(comments.getCreatedDate()).isAtLeast(now);
         assertThat(comments.getModifiedDate()).isAtLeast(now);
-        System.out.println(comments);
     }
 
     @Test
@@ -83,5 +83,47 @@ public class CommentsRepositoryTest {
 
     }
 
+    @Test
+    public void 대댓글_저장_조회(){
+        String body = "test comments body";
+        String author = "test comments author";
+        LocalDateTime now = LocalDateTime.now();
+
+        Posts post = postsRepository.save(Posts.builder()
+                .title("test title")
+                .content("test content")
+                .author("test author")
+                .build());
+
+        Comments comments = commentsRepository.save(Comments.builder()
+                .posts(post)
+                .body(body)
+                .author(author)
+                .build());
+
+        commentsRepository.save(Comments.builder()
+                .posts(post)
+                .parents(comments)
+                .author("test replies author")
+                .body("test replies body")
+                .build());
+
+        List<Comments> commentsList = commentsRepository.findAll();
+        Comments parents = commentsList.get(0);
+        assertEquals(parents.getPosts().getId(), post.getId());
+        assertEquals(parents.getBody(), body);
+        assertEquals(parents.getAuthor(), author);
+        assertThat(parents.getCreatedDate()).isAtLeast(now);
+        assertThat(parents.getModifiedDate()).isAtLeast(now);
+
+        List<CommentsResponseDto> children = commentsRepository.findByParents(comments);
+        assertEquals(children.get(0).getPosts().getId(), parents.getPosts().getId());
+        assertEquals(children.get(0).getBody(), "test replies body");
+        assertEquals(children.get(0).getAuthor(), "test replies author");
+        assertEquals(children.get(0).getParents().getId(), parents.getId());
+        assertThat(children.get(0).getModifiedDate()).isAtLeast(now);
+
+
+    }
 
 }

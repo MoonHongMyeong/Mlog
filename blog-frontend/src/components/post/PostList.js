@@ -128,26 +128,21 @@ export default function PostList() {
   const url = "/api/posts";
   const [posts, setPosts] = useState([]);
   useEffect(() => {
-    const getPosts = () => {
-      axios.get(url)
-        .then(post => {
-          setPosts(post.data);
-        })
-        .catch(Error => {
-          console.log(Error);
-        });
-    }
-
-    getPosts();
-
+    axios.get(url)
+      .then(post => {
+        setPosts(post.data);
+      })
+      .catch(Error => {
+        console.log(Error);
+      });
   }, [])
 
   return (
     <PostListContainer>
       {posts ?
-        posts.map((post, index) => {
+        posts.map((post) => {
           return (
-            <PostCard {...post} key={index}></PostCard>
+            <PostCard {...post} key={post.id}></PostCard>
           )
         })
         : <div className="loading"><i className="fas fa-spinner"></i></div>

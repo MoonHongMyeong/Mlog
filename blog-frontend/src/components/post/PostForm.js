@@ -2,7 +2,7 @@ import axios from 'axios';
 import React from 'react';
 import styled from 'styled-components';
 
-const Container = styled.div`
+const PostFormContainer = styled.div`
   width : 60vw;
   height : 82.7vh;
   margin : 0 auto;
@@ -86,10 +86,8 @@ const Container = styled.div`
     color: #f5f6fa;
   }
   @media screen and (max-width: 1024px) {
-    {
-      width: 70vw;
-    }
-  
+    width: 70vw;
+    
     .input_name {
       width: 18vw;
       text-align: center;
@@ -101,12 +99,10 @@ const Container = styled.div`
       width: 56vw;
       padding: 8px 8px;
     }
-  
     .input input {
       width: 40vw;
       height: 1.5rem;
     }
-  
     .input textarea {
       margin-top : 10px;
       resize: none;
@@ -211,25 +207,46 @@ class PostForm extends React.Component {
 
   render() {
     return (
-      <Container>
-        <form method="post" encType="multipart/form-data" onSubmit={this.handleFormSubmit}>
+      <PostFormContainer>
+        <form method="post"
+          encType="multipart/form-data"
+          onSubmit={this.handleFormSubmit}>
           <table>
             <tbody>
               <tr>
                 <td className="input_name">제목</td>
-                <td className="input"><input type="text" name="title" value={this.state.title} onChange={this.handleValueChange} /></td>
+                <td className="input">
+                  <input
+                    type="text" name="title"
+                    value={this.state.title}
+                    onChange={this.handleValueChange} /></td>
               </tr>
               <tr>
                 <td className="input_name">작성자</td>
-                <td className="input"><input type="text" name="author" value={this.state.author} onChange={this.handleValueChange} /></td>
+                <td className="input">
+                  <input
+                    type="text"
+                    name="author"
+                    value={this.state.author}
+                    onChange={this.handleValueChange} /></td>
               </tr>
               <tr>
                 <td className="input_name">썸네일</td>
-                <td className="input"><input type="file" name="image" image={this.state.file} value={this.state.fileName} onChange={this.handleFileChange} /></td>
+                <td className="input">
+                  <input
+                    type="file"
+                    name="image"
+                    image={this.state.file}
+                    value={this.state.fileName}
+                    onChange={this.handleFileChange} /></td>
               </tr>
               <tr>
                 <td className="input_name content">내용</td>
-                <td className="input content"><textarea name="content" value={this.state.content} onChange={this.handleValueChange}></textarea></td>
+                <td className="input content">
+                  <textarea
+                    name="content"
+                    value={this.state.content}
+                    onChange={this.handleValueChange}></textarea></td>
               </tr>
             </tbody>
           </table>
@@ -241,7 +258,7 @@ class PostForm extends React.Component {
             </div>
           </div>
         </form>
-      </Container>
+      </PostFormContainer>
     )
   }
 }
