@@ -37,7 +37,6 @@ export default function SingleComment(props) {
       author: ReplyAuthor,
       body: ReplyBody,
     }
-    console.log(commentInfo);
     axios.post(url, commentInfo)
       .then(response => {
         props.reRenderComments(response.data);
@@ -52,16 +51,18 @@ export default function SingleComment(props) {
   const editCommentFormSubmit = (e) => {
     e.preventDefault();
     const url = `/api/posts/${props.postId}/comments/${props.comment.id}`;
-    axios.put(url, editCommentBody).then(response => console.log(response)).catch(error => console.log(error));
+    axios.put(url, editCommentBody)
+      .then(response => console.log(response))
+      .catch(error => console.log(error));
   }
 
   return (
     <>
-      <CommentCards>
+      <CommentCardContainer>
         {onModifyCmt ?
           <div className="modifyMode">
             <form onSubmit={editCommentFormSubmit}>
-              <textarea name="body" onChange={handleCommentBodyChange}>{props.comment.body}</textarea>
+              <textarea name="body" value={editCommentBody} onChange={handleCommentBodyChange}></textarea>
               <div>
                 <button type="submit">수정완료</button>
                 <button onClick={setModifyMode}>수정취소</button>
@@ -86,7 +87,7 @@ export default function SingleComment(props) {
             <div className="body ">{props.comment.body}</div>
           </div>
         }
-      </CommentCards>
+      </CommentCardContainer>
       {OpenReply &&
         <ReplyFormContainer>
           <form onSubmit={replyFormSubmit}>
@@ -113,7 +114,6 @@ export default function SingleComment(props) {
                 <tr>
                   <td>
                     <button type="submit">댓글등록</button>
-                    <button onClick={setAddReplyForm}>등록취소</button>
                   </td>
                 </tr>
               </tbody>
@@ -127,7 +127,7 @@ export default function SingleComment(props) {
   )
 }
 
-const CommentCards = styled.div`
+const CommentCardContainer = styled.div`
   margin: 0 auto;
   width: 45vw;
   color : #222f3e;
@@ -176,7 +176,6 @@ const CommentCards = styled.div`
     padding: 10px 10px;
     border-radius: 5px;
     box-shadow: 2px 4px 3px #7f8fa6;
-    margin-top: 10px;
     margin-bottom : 1rem;
   }
   .user {
@@ -252,6 +251,14 @@ const CommentCards = styled.div`
     .cmtlist_btns button{
       width : 3rem;
       font-size : 0.8rem;
+    }
+  }
+
+  @media screen and (max-width : 500px){
+    .cmtlist_btns button{
+      width : 1.5rem;
+      font-size : 0.6rem;
+      margin-left : 0;
     }
   }
 `;

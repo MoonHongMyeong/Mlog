@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components';
 import axios from 'axios';
 import SingleComment from './SingleComment';
+import ReplyComment from './ReplyComment';
 
 export default function Comment(props) {
 
@@ -18,7 +19,7 @@ export default function Comment(props) {
 
   const commentFormSubmit = (e) => {
     e.preventDefault();
-    const url = `/api/posts/${props.post}/comments`
+    const url = `/api/posts/${props.postId}/comments`
     const commentInfo = {
       author: commentAuthor,
       body: commentBody
@@ -66,7 +67,11 @@ export default function Comment(props) {
       {/* comment List */}
       {props.commentsList && props.commentsList.map((comment, index) => {
         if (!comment.parents) {
-          return <SingleComment reRenderComments={props.reRenderComments} comment={comment} key={index} postId={props.post} />
+          return (
+            <>
+              <SingleComment reRenderComments={props.reRenderComments} comment={comment} key={comment.id} postId={props.postId} />
+              <ReplyComment reRenderComments={props.reRenderComments} parentCommentId={comment.id} key={index} commentsList={props.commentsList} postId={props.postId} />
+            </>)
         }
 
       })}

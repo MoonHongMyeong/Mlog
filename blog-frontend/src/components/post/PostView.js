@@ -42,9 +42,7 @@ function PostView(props) {
       .catch(error => console.log(error));
 
     axios.get(cUrl)
-      .then(comment => {
-        setComments(comment.data);
-      })
+      .then(comment => { setComments(comment.data) })
       .catch(error => console.log(error));
 
   }, [pUrl, cUrl, props])
@@ -78,7 +76,7 @@ function PostView(props) {
         <button >수정하기</button>
         <button >삭제하기</button>
       </PostContentContainer>
-      <Comment reRenderComments={reRenderComments} commentsList={comments} post={props.match.params.postId} />
+      <Comment reRenderComments={reRenderComments} commentsList={comments} postId={props.match.params.postId} />
     </>
   )
 }

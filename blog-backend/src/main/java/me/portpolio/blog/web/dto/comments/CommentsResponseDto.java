@@ -1,6 +1,5 @@
 package me.portpolio.blog.web.dto.comments;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

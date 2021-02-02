@@ -79,6 +79,7 @@ const PostFormContainer = styled.div`
   .submit_btn {
     background-color: #8c7ae6;
     color: #f5f6fa;
+    cursor: pointer;
   }
   .cancel_btn {
     text-decoration : none;
@@ -169,7 +170,7 @@ class PostForm extends React.Component {
     const url = '/api/posts';
     const formData = new FormData();
     formData.append('title', this.state.title);
-    formData.append('author', this.state.author);//회원기능 만들면 회원 받는 로직
+    formData.append('author', this.state.author);//회원기능 만들면 회원 받는 로직 v2에서 만들거임 1은 배포용이라서 개인정보보호 신경쓰기 싫음
     formData.append('image', this.state.file);
     formData.append('content', this.state.content);
     const config = {
@@ -183,9 +184,10 @@ class PostForm extends React.Component {
   handleFormSubmit = (e) => {
     e.preventDefault();
     this.addPost()
-      .then(() => {
+      .then((response) => {
         alert('게시글 등록이 완료되었습니다.');
-        window.location.href = "/";
+        console.log(response.data);
+        window.location.href = `/api/posts/${response.data}`;
       })
       .catch(Error => console.log(Error));
   }
