@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import me.portpolio.blog.domain.posts.Posts;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -14,6 +13,7 @@ public class PostsResponseDto {
     private String title;
     private String content;
     private String author;
+    private String imageUrl;
     private LocalDateTime modifiedDate;
 
     public PostsResponseDto(Posts entity){
@@ -21,6 +21,7 @@ public class PostsResponseDto {
         this.title=entity.getTitle();
         this.content=entity.getContent();
         this.author=entity.getAuthor();
+        this.imageUrl=entity.getImageUrl();
         this.modifiedDate=entity.getModifiedDate();
     }
 }

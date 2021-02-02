@@ -43,7 +43,7 @@ export default function SingleComment(props) {
         alert("대댓글 등록 성공!")
         setReplyAuthor("");
         setReplyBody("");
-        console.log("singleComment : ", response);
+        setAddReplyForm();
       })
       .catch(error => console.log(error));
   }

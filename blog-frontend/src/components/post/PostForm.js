@@ -169,15 +169,16 @@ class PostForm extends React.Component {
   addPost = () => {
     const url = '/api/posts';
     const formData = new FormData();
-    formData.append('title', this.state.title);
-    formData.append('author', this.state.author);//회원기능 만들면 회원 받는 로직 v2에서 만들거임 1은 배포용이라서 개인정보보호 신경쓰기 싫음
-    formData.append('image', this.state.file);
-    formData.append('content', this.state.content);
     const config = {
       headers: {
         'Content-type': 'multipart/form-data'
       }
     }
+    formData.append('title', this.state.title);
+    formData.append('author', this.state.author);//회원기능 만들면 회원 받는 로직 v2에서 만들거임 1은 배포용이라서 개인정보보호 신경쓰기 싫음
+    formData.append('image', this.state.file);
+    formData.append('content', this.state.content);
+
     return axios.post(url, formData, config);
   }
 
@@ -204,8 +205,6 @@ class PostForm extends React.Component {
     nextState[e.target.name] = e.target.value;
     this.setState(nextState);
   }
-
-
 
   render() {
     return (

@@ -42,7 +42,7 @@ public class PostsApiController {
             requestDto.setTitle(title);
             requestDto.setAuthor(author);
             requestDto.setContent(content);
-            requestDto.setImageUrl("./images/default.jpg");
+            requestDto.setImageUrl("/images/default.jpg");
         }else {
             String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
             String filePath = baseDir + "\\" + image.getOriginalFilename();
@@ -50,13 +50,9 @@ public class PostsApiController {
             requestDto.setTitle(title);
             requestDto.setAuthor(author);
             requestDto.setContent(content);
-            requestDto.setImageUrl("./images/"+image.getOriginalFilename());
+            requestDto.setImageUrl("/images/"+image.getOriginalFilename());
         }
-
-
-
         return postsService.addPost(requestDto);
-
     }
 
     //포스트 조회

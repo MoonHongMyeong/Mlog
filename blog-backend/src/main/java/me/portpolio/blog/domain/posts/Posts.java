@@ -29,7 +29,7 @@ public class Posts extends BaseTimeEntity {
     @Column(nullable = false)
     private String author;
 
-    @Column(columnDefinition = "varchar(255) default './images/default.jpg'")
+    @Column(columnDefinition = "varchar(255) default '/images/default.jpg'")
     private String imageUrl;
 
     @JsonIgnore
