@@ -9,6 +9,8 @@ export default function SingleComment(props) {
   const [ReplyAuthor, setReplyAuthor] = useState("");
   const [ReplyBody, setReplyBody] = useState("");
   const [editCommentBody, setEditCommentBody] = useState(props.comment.body);
+  const [valReplyAuthor, setvalReplyAuthor] = useState(false);
+  const [valReplyBody, setvalReplyBody] = useState(false);
 
   const setAddReplyForm = () => {
     setOpenReply(!OpenReply);
@@ -24,36 +26,61 @@ export default function SingleComment(props) {
 
   const handleReplyAuthorChange = (e) => {
     setReplyAuthor(e.currentTarget.value);
+    setvalReplyAuthor(true);
   }
 
   const handleReplyBodyChange = (e) => {
     setReplyBody(e.currentTarget.value);
+    setvalReplyBody(true);
   }
+
+  const url = `/api/posts/${props.postId}/comments/${props.comment.id}`;
 
   const replyFormSubmit = (e) => {
     e.preventDefault();
-    const url = `/api/posts/${props.postId}/comments/${props.comment.id}`;
-    const commentInfo = {
-      author: ReplyAuthor,
-      body: ReplyBody,
+
+    if (valReplyAuthor && valReplyBody && ReplyAuthor !== '' && ReplyBody !== '') {
+      const commentInfo = {
+        author: ReplyAuthor,
+        body: ReplyBody,
+      }
+      axios.post(url, commentInfo)
+        .then(response => {
+          props.reRenderCommentsAdd(response.data);
+          alert("대댓글 등록 성공!")
+          setReplyAuthor("");
+          setReplyBody("");
+          setAddReplyForm();
+        })
+        .catch(error => console.log(error));
+    } else {
+      alert("댓글을 입력해주세요")
     }
-    axios.post(url, commentInfo)
-      .then(response => {
-        props.reRenderComments(response.data);
-        alert("대댓글 등록 성공!")
-        setReplyAuthor("");
-        setReplyBody("");
-        setAddReplyForm();
-      })
-      .catch(error => console.log(error));
   }
 
   const editCommentFormSubmit = (e) => {
     e.preventDefault();
-    const url = `/api/posts/${props.postId}/comments/${props.comment.id}`;
-    axios.put(url, editCommentBody)
-      .then(response => console.log(response))
+
+    const exceptedComment = {
+      body: editCommentBody
+    }
+    axios.put(url, exceptedComment)
+      .then(response => {
+        props.reRenderCommentUpdate();
+        setModifyMode();
+      })
       .catch(error => console.log(error));
+  }
+
+  const deleteComment = (e) => {
+    e.preventDefault();
+    if (window.confirm("댓글을 정말로 삭제하시겠습니까?")) {
+      axios.delete(url).then(response => {
+        props.reRenderCommentUpdate();
+        alert("댓글을 삭제했습니다.");
+      }).catch(error => console.log(error));
+    }
+
   }
 
   return (
@@ -79,7 +106,7 @@ export default function SingleComment(props) {
               </div>
               <div className="cmtlist_btns">
                 <button onClick={setModifyMode}>수정</button>
-                <button>삭제</button>
+                <button onClick={deleteComment}>삭제</button>
                 <button onClick={setAddReplyForm}>Reply to</button>
               </div>
             </div>
@@ -99,6 +126,7 @@ export default function SingleComment(props) {
                       type="text"
                       value={ReplyAuthor}
                       onChange={handleReplyAuthorChange}
+                      placeholder={!valReplyAuthor && "작성자를 입력해주세요"}
                       name="author" /></td>
                 </tr>
                 <tr>
@@ -108,7 +136,7 @@ export default function SingleComment(props) {
                       id="comment"
                       value={ReplyBody}
                       onChange={handleReplyBodyChange}
-                      placeholder="댓글을 작성해주세요" />
+                      placeholder={!valReplyBody && "댓글을 작성해주세요"} />
                   </td>
                 </tr>
                 <tr>

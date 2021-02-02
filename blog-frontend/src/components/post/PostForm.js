@@ -161,7 +161,12 @@ class PostForm extends React.Component {
       content: '',
       file: null,
       fileName: '',
-      text: ''
+      validation: {
+        title: false,
+        author: false,
+        content: false,
+      },
+      valFile: false
     };
   }
 
@@ -184,26 +189,59 @@ class PostForm extends React.Component {
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    this.addPost()
-      .then((response) => {
-        alert('게시글 등록이 완료되었습니다.');
-        console.log(response.data);
-        window.location.href = `/api/posts/${response.data}`;
-      })
-      .catch(Error => console.log(Error));
+    this.validationFile();
+
+    if (this.state.validation.title && this.state.validation.author && this.state.validation.content && this.state.valFile) {
+      this.addPost()
+        .then((response) => {
+          alert('게시글 등록이 완료되었습니다.');
+          console.log(response.data);
+          window.location.href = `/api/posts/${response.data}`;
+        })
+        .catch(Error => console.log(Error));
+    } else {
+      alert("입력하지 않은 곳이 있습니다. 다시 입력해주세요")
+    }
+
   }
+
 
   handleFileChange = (e) => {
     this.setState({
       file: e.target.files[0],
-      fileName: e.target.value
+      fileName: e.target.value,
+      varFile: true
     })
   }
 
   handleValueChange = (e) => {
-    let nextState = {};
-    nextState[e.target.name] = e.target.value;
-    this.setState(nextState);
+    const { name, value } = e.target;
+    let validation = this.state.validation;
+    switch (name) {
+      case 'title':
+        validation.title = value.length < 2 ? false : true;
+        break;
+      case 'author':
+        validation.author = value.length < 2 ? false : true;
+        break;
+      case 'content':
+        validation.content = value.length < 2 ? false : true;
+        break;
+      default:
+        break;
+    }
+
+    this.setState({ validation, [name]: value }, () => {
+      console.log(validation);
+    })
+  }
+
+  validationFile = () => {
+    if (this.state.file === null) {
+      this.setState({ valFile: false });
+    } else {
+      this.setState({ valFile: true });
+    }
   }
 
   render() {
@@ -220,6 +258,7 @@ class PostForm extends React.Component {
                   <input
                     type="text" name="title"
                     value={this.state.title}
+                    placeholder={!this.state.validation.title && "제목을 입력해주세요"}
                     onChange={this.handleValueChange} /></td>
               </tr>
               <tr>
@@ -229,6 +268,7 @@ class PostForm extends React.Component {
                     type="text"
                     name="author"
                     value={this.state.author}
+                    placeholder={!this.state.validation.author && "작성자를 입력해주세요"}
                     onChange={this.handleValueChange} /></td>
               </tr>
               <tr>
@@ -239,6 +279,7 @@ class PostForm extends React.Component {
                     name="image"
                     image={this.state.file}
                     value={this.state.fileName}
+                    placeholder={!this.state.varFile && "그림파일을 넣어주세요"}
                     onChange={this.handleFileChange} /></td>
               </tr>
               <tr>
@@ -247,6 +288,7 @@ class PostForm extends React.Component {
                   <textarea
                     name="content"
                     value={this.state.content}
+                    placeholder={!this.state.validation.content && "내용을 입력해주세요"}
                     onChange={this.handleValueChange}></textarea></td>
               </tr>
             </tbody>

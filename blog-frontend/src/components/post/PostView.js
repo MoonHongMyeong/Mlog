@@ -51,12 +51,35 @@ function PostView(props) {
 
   }, [pUrl, cUrl, props])
 
-  const reRenderComments = (newComment) => {
+  const reRenderCommentsAdd = (newComment) => {
     setComments(comments.concat(newComment));
   }
 
+  const reRenderCommentUpdate = () => {
+    //1-1 수정된 댓글의 위치 찾기
+    //comments state에서 현재 자신의 위치를 찾고 수정된 데이터를 반환받아서
+    //1-2 splice(현재 자신의 위치, 1, 반환받은 데이터) 하면 될 것 같은데
+
+    //2-1 axios로 새로 통신해서 가져온 데이터 setComment
+    axios.get(cUrl)
+      .then(comment => { setComments(comment.data) })
+      .catch(error => console.log(error));
+
+  }
+
+  // const reRenderCommentsDelete = () => {
+  //1-1수정된 댓글의 위치 찾기
+  //1-2 splice(현재 자신의 위치, 1)이용
+
+  //2-1 axios로 새로 통신해서 가져온 데이터 setComment
+  //이방법은 데이터가 많아지면 불러와야하는 데이터들이 많아져서 문제 생기긴할건데
+  //이렇게 하면 업데이트랑 같은 로직이라서 한개만 써도 된다
+  // }
+
   const [Title, setTitle] = useState(post.title);
   const [Content, setContent] = useState(post.content);
+  const [validateTitle, setvalidateTitle] = useState(true);
+  const [validateContent, setvalidateContent] = useState(true);
 
   const updatePost = () => {
     const exceptedPost = {
@@ -67,14 +90,29 @@ function PostView(props) {
     return axios.put(pUrl, exceptedPost);
   }
 
+  const validation = () => {
+    if (Title === '' || Title === ' ') {
+      setvalidateTitle(false);
+    } else {
+      setvalidateTitle(true);
+    } if (Content === '' || Content === ' ') {
+      setvalidateContent(false);
+    } else {
+      setvalidateContent(true);
+    }
+  }
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    updatePost()
-      .then((response) => {
-        alert('게시글 수정이 완료되었습니다.');
-        window.location.href = `/api/posts/${response.data}`;
-      })
-      .catch(Error => console.log(Error));
+    validation();
+    if (validateTitle && validateContent) {
+      updatePost()
+        .then((response) => {
+          alert('게시글 수정이 완료되었습니다.');
+          window.location.href = `/api/posts/${response.data}`;
+        })
+        .catch(Error => console.log(Error))
+    };
   }
 
 
@@ -90,7 +128,6 @@ function PostView(props) {
     if (window.confirm("정말로 삭제하시겠습니까?")) {
       axios.delete(pUrl).then(response => {
         alert("삭제가 완료되었습니다.");
-        console.log(response);
         window.location.href = `/`
       })
         .catch(error => console.log(error))
@@ -113,7 +150,7 @@ function PostView(props) {
                     <input
                       type="text" name="title"
                       value={Title}
-                      onChange={handleTitleChange} /></td>
+                      onChange={handleTitleChange} />{!validateTitle && <span style={{ "color": "red" }}>제목을 입력해주세요</span>}</td>
                 </tr>
                 <tr>
                   <td className="input_name content">내용</td>
@@ -121,7 +158,7 @@ function PostView(props) {
                     <textarea
                       name="content"
                       value={Content}
-                      onChange={handleContentChange}></textarea></td>
+                      onChange={handleContentChange}></textarea>{!validateContent && <span style={{ "color": "red" }}>내용을 입력해주세요</span>}</td>
                 </tr>
               </tbody>
             </table>
@@ -162,7 +199,11 @@ function PostView(props) {
         </>
       }
 
-      <Comment reRenderComments={reRenderComments} commentsList={comments} postId={props.match.params.postId} />
+      <Comment
+        reRenderCommentsAdd={reRenderCommentsAdd}
+        reRenderCommentUpdate={reRenderCommentUpdate}
+        commentsList={comments}
+        postId={props.match.params.postId} />
     </>
   )
 }

@@ -8,27 +8,36 @@ export default function Comment(props) {
 
   const [commentAuthor, setCommentAuthor] = useState("");
   const [commentBody, setCommentBody] = useState("");
+  const [valAuthor, setvalAuthor] = useState(false);
+  const [valBody, setvalBody] = useState(false);
 
   const handleAuthorChange = (e) => {
     setCommentAuthor(e.currentTarget.value);
+    setvalAuthor(true);
   }
 
   const handleBodyChange = (e) => {
     setCommentBody(e.currentTarget.value);
+    setvalBody(true);
   }
 
   const commentFormSubmit = (e) => {
     e.preventDefault();
-    const url = `/api/posts/${props.postId}/comments`
-    const commentInfo = {
-      author: commentAuthor,
-      body: commentBody
+    if (valAuthor && valBody) {
+      const url = `/api/posts/${props.postId}/comments`
+      const commentInfo = {
+        author: commentAuthor,
+        body: commentBody
+      }
+      axios.post(url, commentInfo)
+        .then(response => props.reRenderCommentsAdd(response.data))
+        .then(alert("댓글 등록이 성공했습니다.")).then(setCommentAuthor(""), setCommentBody(""), setvalAuthor(false), setvalBody(false))
+        .catch(error => console.log(error))
+    } else {
+      alert("댓글을 입력해주세요")
     }
-    axios.post(url, commentInfo)
-      .then(response => props.reRenderComments(response.data))
-      .then(alert("댓글 등록이 성공했습니다.")).then(setCommentAuthor(""), setCommentBody(""))
-      .catch(error => console.log(error))
   }
+
 
   return (
     <div>
@@ -43,6 +52,7 @@ export default function Comment(props) {
                     type="text"
                     value={commentAuthor}
                     onChange={handleAuthorChange}
+                    placeholder={!valAuthor && "작성자를 입력해주세요."}
                     name="author" /></td>
               </tr>
               <tr>
@@ -52,7 +62,8 @@ export default function Comment(props) {
                     id="comment"
                     value={commentBody}
                     onChange={handleBodyChange}
-                    placeholder="댓글을 작성해주세요"></textarea>
+                    placeholder={!valBody && "댓글내용을 입력해주세요."}
+                  ></textarea>
                 </td>
               </tr>
               <tr>
@@ -65,14 +76,23 @@ export default function Comment(props) {
         </form>
       </CommentFormContainer>
       {/* comment List */}
-      {props.commentsList && props.commentsList.map((comment, index) => {
+      {props.commentsList && props.commentsList.map((comment) => {
         if (!comment.parents) {
           return (
             <>
-              <SingleComment reRenderComments={props.reRenderComments} comment={comment} key={comment.id} postId={props.postId} />
-              <ReplyComment reRenderComments={props.reRenderComments} parentCommentId={comment.id} key={index} commentsList={props.commentsList} postId={props.postId} />
+              <SingleComment
+                reRenderCommentsAdd={props.reRenderCommentsAdd}
+                reRenderCommentUpdate={props.reRenderCommentUpdate}
+                comment={comment}
+                postId={props.postId} />
+
+              <ReplyComment
+                reRenderCommentsAdd={props.reRenderCommentsAdd}
+                reRenderCommentUpdate={props.reRenderCommentUpdate}
+                parentCommentId={comment.id}
+                commentsList={props.commentsList} postId={props.postId} />
             </>)
-        }
+        } return <div></div>
 
       })}
 

@@ -28,8 +28,7 @@ function App() {
           </div>
         </form>
         <ul>
-          <li className="navLink"><Link to="/">최신 포스트</Link></li>
-          <li className="navLink"><Link to="/">인기 포스트</Link></li>
+          <li className="navLink"><Link to="/">포스트 리스트</Link></li>
           <li className="navLink"><Link to="/api/posts/form">글쓰기</Link></li>
         </ul>
       </nav>

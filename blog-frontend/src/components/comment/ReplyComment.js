@@ -13,8 +13,19 @@ export default function ReplyComment(props) {
           if (comment.parents && comment.parents.id === props.parentCommentId) {
             return (
               <>
-                <SingleComment reRenderComments={props.reRenderComments} comment={comment} key={index} postId={props.postId} />
-                <ReplyComment reRenderComments={props.reRenderComments} parentCommentId={comment.id} commentsList={props.commentsList} postId={props.postId} />
+                <SingleComment
+                  reRenderCommentsAdd={props.reRenderCommentsAdd}
+                  reRenderCommentUpdate={props.reRenderCommentUpdate}
+                  comment={comment}
+                  key={index}
+                  postId={props.postId} />
+
+                <ReplyComment
+                  reRenderCommentsAdd={props.reRenderCommentsAdd}
+                  reRenderCommentUpdate={props.reRenderCommentUpdate}
+                  parentCommentId={comment.id}
+                  commentsList={props.commentsList}
+                  postId={props.postId} />
               </>
             )
           }
