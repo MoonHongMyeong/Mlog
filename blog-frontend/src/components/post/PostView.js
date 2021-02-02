@@ -85,6 +85,19 @@ function PostView(props) {
     setContent(e.currentTarget.value);
   }
 
+  const deletePost = (e) => {
+    e.preventDefault();
+    if (window.confirm("정말로 삭제하시겠습니까?")) {
+      axios.delete(pUrl).then(response => {
+        alert("삭제가 완료되었습니다.");
+        console.log(response);
+        window.location.href = `/`
+      })
+        .catch(error => console.log(error))
+    }
+
+  }
+
   return (
     <>
       {modifyMode ?
@@ -116,7 +129,7 @@ function PostView(props) {
             <div className="btn">
               <div className="btnContainer">
                 <button type="submit" className="submit_btn">수정완료</button>
-                <button onClick={toggleModify} className="cancel_btn">수정취소</button>
+                <button onClick={() => { window.location.href = `${props.match.params.postId}`; }} className="cancel_btn">수정취소</button>
               </div>
             </div>
           </form>
@@ -144,7 +157,7 @@ function PostView(props) {
               {post.content}
             </div>
             <button onClick={toggleModify}>수정하기</button>
-            <button >삭제하기</button>
+            <button onClick={deletePost}>삭제하기</button>
           </PostContentContainer>
         </>
       }
