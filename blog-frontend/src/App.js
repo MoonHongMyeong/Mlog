@@ -3,9 +3,11 @@ import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 import PostList from './components/post/PostList';
 import PostForm from './components/post/PostForm';
 import PostView from './components/post/PostView';
+import axios from 'axios';
 
 function App() {
   const [isMenuOpened, setMenuOpen] = useState(true);
+  const [Search, setSearch] = useState();
   const navRef = useRef();
   const toggleMenu = () => {
     if (isMenuOpened) {
@@ -18,13 +20,17 @@ function App() {
     setMenuOpen(!isMenuOpened);
   }
 
+  const searchValueChange = (e) => {
+    setSearch(e.currentTarget.value);
+  }
+
   return (
     <Router>
       <button className="NavBtn" onClick={toggleMenu}>b</button>
       <nav className="navigation" ref={navRef}>
         <form>
           <div>
-            <input type="text" placeholder="Search" /><button type="submit" className="search"><i className="fas fa-search"></i></button>
+            <input type="text" placeholder="Search" onChange={searchValueChange} name="search" style={{ "color": "#CCCDC1" }} /><Link to="/"><i className="fas fa-search"></i></Link>
           </div>
         </form>
         <ul>
@@ -35,6 +41,7 @@ function App() {
       <Switch>
         <Route exact path="/" component={PostList} />
         <Route exact path="/api/posts" component={PostList} />
+        <Route exact path="/api/posts?search=:search" component={PostList} />
         <Route exact path="/api/posts/form" component={PostForm} />
         <Route exact path="/api/posts/:postId" component={PostView} />
       </Switch>

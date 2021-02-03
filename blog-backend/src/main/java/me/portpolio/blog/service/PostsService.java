@@ -3,6 +3,7 @@ package me.portpolio.blog.service;
 import lombok.RequiredArgsConstructor;
 import me.portpolio.blog.domain.posts.Posts;
 import me.portpolio.blog.domain.posts.PostsRepository;
+import me.portpolio.blog.domain.posts.PostsRepositorySupport;
 import me.portpolio.blog.web.dto.posts.PostsResponseDto;
 import me.portpolio.blog.web.dto.posts.PostsSaveRequestDto;
 import me.portpolio.blog.web.dto.posts.PostsUpdateRequestDto;
@@ -16,9 +17,14 @@ import java.util.List;
 public class PostsService {
 
     private final PostsRepository postsRepository;
+    private final PostsRepositorySupport postsRepositorySupport;
 
-    public List<Posts> getPostList() {
-        return postsRepository.findAll();
+    //포스트 리스트 조회 제목 검색기능 추가
+    public List<Posts> getPostList(String search) {
+        if(search == null){
+            return postsRepository.findAll();
+        }
+        return postsRepositorySupport.findByTitle(search);
     }
 
     //포스트 등록

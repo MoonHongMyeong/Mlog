@@ -18,6 +18,12 @@ public class PostsRepositoryTest {
     @Autowired
     PostsRepository postsRepository;
 
+    @Autowired
+    PostsRepositorySupport postsRepositorySupport;
+
+    @Autowired
+    PostsQueryRepository postsQueryRepository;
+
     @AfterEach
     public void cleanup(){
         postsRepository.deleteAll();
@@ -79,5 +85,59 @@ public class PostsRepositoryTest {
             assertEquals(postsList.get(i).getContent(), "content"+(i+1));
             assertEquals(postsList.get(i).getAuthor(), "author"+(i+1));
         }
+    }
+
+    @Test
+    public void querydsl_기본_기능_확인(){
+        String title = "테스트 제목";
+        String content = "테스트 내용";
+        String author = "테스트 작성자";
+
+        postsRepository.save(Posts.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .build());
+
+        List<Posts> result = postsRepositorySupport.findByTitle(title);
+
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0).getTitle(),title);
+    }
+
+    @Test
+    public void querydsl_custom_설정_기능_확인(){
+        String title = "테스트 제목";
+        String content = "테스트 내용";
+        String author = "테스트 작성자";
+
+        postsRepository.save(Posts.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .build());
+
+        List<Posts> result = postsRepository.findByTitle(title);
+
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0).getTitle(),title);
+    }
+
+    @Test
+    public void querydsl_queryRepository_기능_확인(){
+        String title = "테스트 제목";
+        String content = "테스트 내용";
+        String author = "테스트 작성자";
+
+        postsRepository.save(Posts.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .build());
+
+        List<Posts> result = postsQueryRepository.findByTitle(title);
+
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0).getTitle(),title);
     }
 }

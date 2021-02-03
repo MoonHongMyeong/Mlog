@@ -23,8 +23,8 @@ public class PostsApiController {
 
     //포스트 리스트 조회
     @GetMapping("/posts")
-    public List<Posts> getPostList()throws Exception{
-        return postsService.getPostList();
+    public List<Posts> getPostList(@RequestParam("search") String search)throws Exception{
+        return postsService.getPostList(search);
     }
     
     //포스트 등록

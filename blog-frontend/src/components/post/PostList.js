@@ -172,7 +172,6 @@ export default function PostList() {
           <PostListContainer>
             <PostCard posts={currentPosts(posts)}></PostCard>
           </PostListContainer >
-
           <Pagination postsPerPage={postsPerPage} totalPosts={posts.length} paginate={setCurrentPage} />
         </>
       }
