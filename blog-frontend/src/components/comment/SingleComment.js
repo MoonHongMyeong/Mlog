@@ -89,7 +89,7 @@ export default function SingleComment(props) {
         {onModifyCmt ?
           <div className="modifyMode">
             <form onSubmit={editCommentFormSubmit}>
-              <textarea name="body" value={editCommentBody} onChange={handleCommentBodyChange}></textarea>
+              <textarea name="body" value={editCommentBody} defaultValue={props.comment.body} onChange={handleCommentBodyChange}></textarea>
               <div>
                 <button type="submit">수정완료</button>
                 <button onClick={setModifyMode}>수정취소</button>

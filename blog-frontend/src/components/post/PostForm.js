@@ -189,8 +189,6 @@ class PostForm extends React.Component {
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    this.validationFile();
-
     if (this.state.validation.title && this.state.validation.author && this.state.validation.content && this.state.valFile) {
       this.addPost()
         .then((response) => {
@@ -199,8 +197,10 @@ class PostForm extends React.Component {
           window.location.href = `/api/posts/${response.data}`;
         })
         .catch(Error => console.log(Error));
+    } else if (!this.state.title || !this.state.validation.author || !this.state.validation.content) {
+      alert("입력하지 않은 곳이 있습니다. \n다시 입력해주세요.");
     } else {
-      alert("입력하지 않은 곳이 있습니다. 다시 입력해주세요")
+      alert("파일을 넣어주세요.");
     }
 
   }
@@ -210,8 +210,8 @@ class PostForm extends React.Component {
     this.setState({
       file: e.target.files[0],
       fileName: e.target.value,
-      varFile: true
-    })
+    });
+    this.setState({ valFile: true });
   }
 
   handleValueChange = (e) => {
@@ -231,18 +231,9 @@ class PostForm extends React.Component {
         break;
     }
 
-    this.setState({ validation, [name]: value }, () => {
-      console.log(validation);
-    })
+    this.setState({ validation, [name]: value });
   }
 
-  validationFile = () => {
-    if (this.state.file === null) {
-      this.setState({ valFile: false });
-    } else {
-      this.setState({ valFile: true });
-    }
-  }
 
   render() {
     return (
@@ -258,7 +249,7 @@ class PostForm extends React.Component {
                   <input
                     type="text" name="title"
                     value={this.state.title}
-                    placeholder={!this.state.validation.title && "제목을 입력해주세요"}
+                    placeholder={this.state.validation.title ? "" : '제목을 입력해주세요'}
                     onChange={this.handleValueChange} /></td>
               </tr>
               <tr>
@@ -268,7 +259,7 @@ class PostForm extends React.Component {
                     type="text"
                     name="author"
                     value={this.state.author}
-                    placeholder={!this.state.validation.author && "작성자를 입력해주세요"}
+                    placeholder={this.state.validation.author ? "" : '작성자를 입력해주세요'}
                     onChange={this.handleValueChange} /></td>
               </tr>
               <tr>
@@ -279,7 +270,8 @@ class PostForm extends React.Component {
                     name="image"
                     image={this.state.file}
                     value={this.state.fileName}
-                    placeholder={!this.state.varFile && "그림파일을 넣어주세요"}
+                    placeholder={this.state.varFile ? "" : '그림파일을 넣어주세요'}
+                    accept="image/*"
                     onChange={this.handleFileChange} /></td>
               </tr>
               <tr>
@@ -288,7 +280,7 @@ class PostForm extends React.Component {
                   <textarea
                     name="content"
                     value={this.state.content}
-                    placeholder={!this.state.validation.content && "내용을 입력해주세요"}
+                    placeholder={this.state.validation.content ? "" : '내용을 입력해주세요'}
                     onChange={this.handleValueChange}></textarea></td>
               </tr>
             </tbody>

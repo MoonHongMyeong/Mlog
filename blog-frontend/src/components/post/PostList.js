@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
 import axios from 'axios';
 import PostCard from './PostCard';
+import Pagination from './Pagination'
 
 const PostListContainer = styled.div`
   margin: 0 auto;
@@ -17,6 +18,9 @@ const PostListContainer = styled.div`
     width: 18vw;
     margin-top : 1rem;
     margin-bottom : 1rem;
+    border-left : 1px solid #353b48;
+    border-bottom : 1px solid #353b48;
+    box-shadow : 5px 5px 3px #353b48;
   }
   
   .postImg {
@@ -34,6 +38,12 @@ const PostListContainer = styled.div`
     flex-direction: column;
     padding: 10px;
   }
+
+  .postTitle a {
+    text-decoration : none;
+    color : black;
+  }
+
   .profile {
     display: flex;
     align-items: center;
@@ -127,26 +137,45 @@ const PostListContainer = styled.div`
 export default function PostList() {
   const url = "/api/posts";
   const [posts, setPosts] = useState([]);
+  const [Loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostsPerPage] = useState(12);
+
   useEffect(() => {
+    setLoading(true);
     axios.get(url)
       .then(post => {
         setPosts(post.data);
+        setLoading(false);
       })
       .catch(Error => {
         console.log(Error);
       });
   }, [])
 
+  //pagination
+  const indexOfLast = currentPage * postsPerPage;
+  const indexOfFirst = indexOfLast - postsPerPage;
+
+  const currentPosts = (tmp) => {
+    let currentPosts = 0;
+    currentPosts = tmp.slice(indexOfFirst, indexOfLast);
+    return currentPosts;
+  }
+
   return (
-    <PostListContainer>
-      {posts ?
-        posts.map((post) => {
-          return (
-            <PostCard {...post} key={post.id}></PostCard>
-          )
-        })
-        : <div className="loading"><i className="fas fa-spinner"></i></div>
+    <>
+      {Loading ?
+        <div className="loading"><i className="fas fa-spinner"></i></div>
+        :
+        <>
+          <PostListContainer>
+            <PostCard posts={currentPosts(posts)}></PostCard>
+          </PostListContainer >
+
+          <Pagination postsPerPage={postsPerPage} totalPosts={posts.length} paginate={setCurrentPage} />
+        </>
       }
-    </PostListContainer >
+    </>
   );
 }

@@ -10,6 +10,7 @@ nav {
   margin: 0;
   padding: 0;
   font-family: "Noto Sans KR", sans-serif;
+  background-color: white;
 }
 
 * {
@@ -69,6 +70,7 @@ footer a {
 .navigation form div {
   width: 200px;
   border-bottom: 1px solid var(--text-white-color);
+  background-color: var(--main-bg-color);
 }
 .navigation form input {
   height: 20px;
