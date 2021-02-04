@@ -7,7 +7,6 @@ import lombok.Setter;
 import me.portpolio.blog.domain.posts.Posts;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class PostsSaveRequestDto {
     private String title;

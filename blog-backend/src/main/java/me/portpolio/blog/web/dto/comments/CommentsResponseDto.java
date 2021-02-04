@@ -2,14 +2,12 @@ package me.portpolio.blog.web.dto.comments;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import me.portpolio.blog.domain.comments.Comments;
 import me.portpolio.blog.domain.posts.Posts;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class CommentsResponseDto {
     private Posts posts;

@@ -2,8 +2,10 @@ package me.portpolio.blog.service;
 
 import lombok.RequiredArgsConstructor;
 import me.portpolio.blog.domain.posts.Posts;
+import me.portpolio.blog.domain.posts.PostsQueryRepository;
 import me.portpolio.blog.domain.posts.PostsRepository;
 import me.portpolio.blog.domain.posts.PostsRepositorySupport;
+import me.portpolio.blog.web.dto.posts.PostsListResponseDto;
 import me.portpolio.blog.web.dto.posts.PostsResponseDto;
 import me.portpolio.blog.web.dto.posts.PostsSaveRequestDto;
 import me.portpolio.blog.web.dto.posts.PostsUpdateRequestDto;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -19,12 +22,20 @@ public class PostsService {
     private final PostsRepository postsRepository;
     private final PostsRepositorySupport postsRepositorySupport;
 
-    //포스트 리스트 조회 제목 검색기능 추가
-    public List<Posts> getPostList(String search) {
-        if(search == null){
-            return postsRepository.findAll();
-        }
-        return postsRepositorySupport.findByTitle(search);
+    //포스트 리스트 조회
+    public List<PostsListResponseDto> getPostList() {
+        return postsRepositorySupport.findAllDesc()
+                .stream()
+                .map(posts -> new PostsListResponseDto(posts))
+                .collect(Collectors.toList());
+    }
+
+    //포스트 검색 리스트 조회
+    public List<PostsListResponseDto> getListSearchTitle(String title) {
+        return postsRepositorySupport.findByTitle(title)
+                .stream()
+                .map(posts -> new PostsListResponseDto(posts))
+                .collect(Collectors.toList());
     }
 
     //포스트 등록

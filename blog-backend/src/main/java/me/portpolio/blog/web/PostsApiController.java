@@ -3,6 +3,7 @@ package me.portpolio.blog.web;
 import lombok.RequiredArgsConstructor;
 import me.portpolio.blog.domain.posts.Posts;
 import me.portpolio.blog.service.PostsService;
+import me.portpolio.blog.web.dto.posts.PostsListResponseDto;
 import me.portpolio.blog.web.dto.posts.PostsResponseDto;
 import me.portpolio.blog.web.dto.posts.PostsSaveRequestDto;
 import me.portpolio.blog.web.dto.posts.PostsUpdateRequestDto;
@@ -23,36 +24,52 @@ public class PostsApiController {
 
     //포스트 리스트 조회
     @GetMapping("/posts")
-    public List<Posts> getPostList(@RequestParam("search") String search)throws Exception{
-        return postsService.getPostList(search);
+    public List<PostsListResponseDto> getPostList() throws Exception{
+        return postsService.getPostList();
+    }
+
+    //포스트 검색 리스트 조회
+    @GetMapping("/posts/search")
+    public List<PostsListResponseDto> getListSearchTitle(@RequestParam("search") String title) throws Exception{
+        return postsService.getListSearchTitle(title);
     }
     
     //포스트 등록
     @PostMapping("/posts")
     public Long addPost(MultipartHttpServletRequest request,
-                        @RequestParam("image") MultipartFile image,
+                        @RequestParam(value = "image", required = false) MultipartFile image,
                         @RequestParam("title")String title,
                         @RequestParam("author") String author,
                         @RequestParam("content") String content) throws Exception {
 
-        PostsSaveRequestDto requestDto = new PostsSaveRequestDto();
-
         //파일 저장
         if(image.isEmpty()){
-            requestDto.setTitle(title);
-            requestDto.setAuthor(author);
-            requestDto.setContent(content);
-            requestDto.setImageUrl("/images/default.jpg");
+            PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+                    .title(title)
+                    .author(author)
+                    .content(content)
+                    .imageUrl("/images/default.png")
+                    .build();
+
+            return postsService.addPost(requestDto);
+
         }else {
             String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
             String filePath = baseDir + "\\" + image.getOriginalFilename();
             image.transferTo(new File(filePath));
-            requestDto.setTitle(title);
-            requestDto.setAuthor(author);
-            requestDto.setContent(content);
-            requestDto.setImageUrl("/images/"+image.getOriginalFilename());
+            String fileName = image.getOriginalFilename();
+
+            PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+                    .title(title)
+                    .author(author)
+                    .content(content)
+                    .imageUrl("/images/"+fileName)
+                    .build();
+
+            return postsService.addPost(requestDto);
         }
-        return postsService.addPost(requestDto);
+
+
     }
 
     //포스트 조회
@@ -69,9 +86,9 @@ public class PostsApiController {
 
     //포스트 삭제
     @DeleteMapping("/posts/{postId}")
-    public Long deletePost(@PathVariable Long postId) throws Exception{
+    public String deletePost(@PathVariable Long postId) throws Exception{
         postsService.deletePost(postId);
-        return postId;
+        return postId+"번 포스트 삭제 완료";
     }
 
 

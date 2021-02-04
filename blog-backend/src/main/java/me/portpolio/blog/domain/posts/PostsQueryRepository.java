@@ -17,4 +17,10 @@ public class PostsQueryRepository {
                 .where(posts.title.eq(title))
                 .fetch();
     }
+
+    public List<Posts> findAllDesc(){
+        return queryFactory.selectFrom(posts)
+                .orderBy(posts.id.desc())
+                .fetch();
+    }
 }

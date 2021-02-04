@@ -14,10 +14,6 @@ public class CommentsSaveRequestDto {
     private String body;
     private String author;
 
-    public void setPosts(Posts postItem){
-        this.posts=postItem;
-    }
-
     @Builder
     public CommentsSaveRequestDto(Posts posts, String body, String author) {
         this.posts = posts;

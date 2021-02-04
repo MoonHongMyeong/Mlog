@@ -3,6 +3,7 @@ package me.portpolio.blog.service;
 import lombok.RequiredArgsConstructor;
 import me.portpolio.blog.domain.comments.Comments;
 import me.portpolio.blog.domain.comments.CommentsRepository;
+import me.portpolio.blog.domain.comments.CommentsRepositorySupport;
 import me.portpolio.blog.domain.posts.Posts;
 import me.portpolio.blog.domain.posts.PostsRepository;
 import me.portpolio.blog.web.dto.comments.CommentsResponseDto;
@@ -13,18 +14,24 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class CommentsService {
     private final PostsRepository postsRepository;
     private final CommentsRepository commentsRepository;
+    private final CommentsRepositorySupport commentsRepositorySupport;
 
     //댓글 리스트 조회
-    public List<Comments> getCommentList(Long postsId) {
-        Posts post = postsRepository.findById(postsId).get();
-        return post.getCommentsList();
+    public List<CommentsResponseDto> getCommentList(Long postsId) {
+        Posts postItem = postsRepository.findById(postsId).get();
+
+        return commentsRepositorySupport.findByPosts(postItem)
+                .stream()
+                .map(comments -> new CommentsResponseDto(comments))
+                .collect(Collectors.toList());
+
     }
 
     //댓글 등록
@@ -32,37 +39,38 @@ public class CommentsService {
     public CommentsResponseDto addComment(Long postId, CommentsSaveRequestDto requestDto) {
 
         Posts postItem = postsRepository.findById(postId).get();
-        requestDto.setPosts(postItem);
+
+        CommentsSaveRequestDto saveRequestDto
+                = CommentsSaveRequestDto.builder()
+                .posts(postItem)
+                .author(requestDto.getAuthor())
+                .body(requestDto.getBody())
+                .build();
 
         Comments comments = commentsRepository.save(requestDto.toEntity());
 
-        CommentsResponseDto responseDto = new CommentsResponseDto();
-        responseDto.setPosts(comments.getPosts());
-        responseDto.setId(comments.getId());
-        responseDto.setBody(comments.getBody());
-        responseDto.setAuthor(comments.getAuthor());
-        responseDto.setParents(comments.getParents());
-        responseDto.setModifiedDate(comments.getModifiedDate());
+        CommentsResponseDto responseDto = new CommentsResponseDto(comments);
+
         return responseDto;
     }
 
     //대댓글 등록
     public CommentsResponseDto addReply(Long postId, Long parentsId, RepliesSaveRequestDto requestDto) {
+
         Posts postItem = postsRepository.findById(postId).get();
+
         Comments parentsItem = commentsRepository.findById(parentsId).get();
 
-        requestDto.setPosts(postItem);
-        requestDto.setComments(parentsItem);
+        RepliesSaveRequestDto repliesDto = RepliesSaveRequestDto.builder()
+                .posts(postItem)
+                .parents(parentsItem)
+                .author(requestDto.getAuthor())
+                .body(requestDto.getBody())
+                .build();
 
-        Comments reply = commentsRepository.save(requestDto.toEntity());
+        Comments reply = commentsRepository.save(repliesDto.toEntity());
 
-        CommentsResponseDto responseDto = new CommentsResponseDto();
-        responseDto.setId(reply.getId());
-        responseDto.setPosts(reply.getPosts());
-        responseDto.setParents(reply.getParents());
-        responseDto.setAuthor(reply.getAuthor());
-        responseDto.setBody(reply.getBody());
-        responseDto.setModifiedDate(reply.getModifiedDate());
+        CommentsResponseDto responseDto = new CommentsResponseDto(reply);
 
         return responseDto;
     }

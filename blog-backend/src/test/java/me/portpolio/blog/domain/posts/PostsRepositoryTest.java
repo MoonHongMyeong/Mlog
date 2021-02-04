@@ -29,6 +29,7 @@ public class PostsRepositoryTest {
         postsRepository.deleteAll();
     }
 
+    //passed
     @Test
     public void 포스트_저장_조회(){
         String title = "Test title";
@@ -47,6 +48,8 @@ public class PostsRepositoryTest {
         assertEquals(posts.getContent(), content);
     }
 
+
+    //passed
     @Test
     public void BaseTimeEntity_등록(){
         LocalDateTime now = LocalDateTime.of(2020,1,4,0,0,0);
@@ -68,6 +71,7 @@ public class PostsRepositoryTest {
 
     }
 
+    //passed
     @Test
     public void 포스트_목록_조회(){
         for(int i=1; i<=10 ; i++){
@@ -87,8 +91,9 @@ public class PostsRepositoryTest {
         }
     }
 
+    //passed
     @Test
-    public void querydsl_기본_기능_확인(){
+    public void 검색_조회_기능(){
         String title = "테스트 제목";
         String content = "테스트 내용";
         String author = "테스트 작성자";
@@ -99,12 +104,15 @@ public class PostsRepositoryTest {
                 .author(author)
                 .build());
 
-        List<Posts> result = postsRepositorySupport.findByTitle(title);
+        List<Posts> result = postsRepositorySupport.findByTitle("테스트");
 
         assertEquals(result.size(), 1);
         assertEquals(result.get(0).getTitle(),title);
+        assertEquals(result.get(0).getContent(), content);
+        assertEquals(result.get(0).getAuthor(),author);
     }
 
+    //passed
     @Test
     public void querydsl_custom_설정_기능_확인(){
         String title = "테스트 제목";
@@ -123,6 +131,7 @@ public class PostsRepositoryTest {
         assertEquals(result.get(0).getTitle(),title);
     }
 
+    //passed
     @Test
     public void querydsl_queryRepository_기능_확인(){
         String title = "테스트 제목";
@@ -140,4 +149,42 @@ public class PostsRepositoryTest {
         assertEquals(result.size(), 1);
         assertEquals(result.get(0).getTitle(),title);
     }
+
+    @Test
+    public void Posts_검색_기능(){
+        String title = "test title";
+        String content = "test content";
+        String author = "test author";
+        String dummny = "dummy title";
+
+        //검색 받을 2개의 데이터와 2개의 더미를 insert
+        postsRepository.save(Posts.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .build());
+        postsRepository.save(Posts.builder()
+                .title(dummny)
+                .content(content)
+                .author(author)
+                .build());
+        postsRepository.save(Posts.builder()
+                .title(dummny)
+                .content(content)
+                .author(author)
+                .build());
+        postsRepository.save(Posts.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .build());
+
+        List<Posts> postsList = postsRepositorySupport.findByTitle("test");
+
+        Posts posts1 = postsList.get(0);
+        Posts posts2 = postsList.get(1);
+
+        assertEquals(postsList.size(), 2);
+    }
+
 }

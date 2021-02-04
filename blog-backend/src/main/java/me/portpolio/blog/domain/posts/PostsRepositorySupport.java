@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 import static me.portpolio.blog.domain.posts.QPosts.posts;
 
 @Repository
@@ -17,9 +18,17 @@ public class PostsRepositorySupport extends QuerydslRepositorySupport {
         this.queryFactory = queryFactory;
     }
 
+    public List<Posts> findAllDesc(){
+        return queryFactory.selectFrom(posts)
+                .orderBy(posts.id.desc())
+                .fetch();
+    }
+
     public List<Posts> findByTitle(String title){
         return queryFactory.selectFrom(posts)
-                .where(posts.title.eq((title)))
+                .where(posts.title.contains((title)))
                 .fetch();
+
+
     }
 }

@@ -14,14 +14,6 @@ public class RepliesSaveRequestDto {
     private String author;
     private String body;
 
-    public void setPosts(Posts postItem){
-        this.posts=postItem;
-    }
-
-    public void setComments(Comments parentsItem){
-        this.parents = parentsItem;
-    }
-
     @Builder
     public RepliesSaveRequestDto(Posts posts, Comments parents, String author, String body){
         this.posts=posts;

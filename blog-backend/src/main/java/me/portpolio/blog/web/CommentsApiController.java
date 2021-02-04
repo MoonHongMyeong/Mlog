@@ -24,7 +24,7 @@ public class CommentsApiController {
 
     //댓글 리스트 조회
     @GetMapping("/{postsId}/comments")
-    public List<Comments> getCommentList(@PathVariable Long postsId) throws Exception{
+    public List<CommentsResponseDto> getCommentList(@PathVariable Long postsId) throws Exception{
         return commentsService.getCommentList(postsId);
     }
 
