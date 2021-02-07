@@ -33,10 +33,15 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'mysql:mysql-connector-java'
+
 	annotationProcessor 'org.projectlombok:lombok'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	//unit test 를 위한 google truth 추가
 	testImplementation 'com.google.truth:truth:1.1'
 
+	//querydsl 추가
 	implementation ("com.querydsl:querydsl-jpa:${queryDslVersion}")
 	annotationProcessor ("com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 	testImplementation ("com.querydsl:querydsl-jpa:${queryDslVersion}")

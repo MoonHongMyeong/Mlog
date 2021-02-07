@@ -47,7 +47,7 @@ public class CommentsService {
                 .body(requestDto.getBody())
                 .build();
 
-        Comments comments = commentsRepository.save(requestDto.toEntity());
+        Comments comments = commentsRepository.save(saveRequestDto.toEntity());
 
         CommentsResponseDto responseDto = new CommentsResponseDto(comments);
 

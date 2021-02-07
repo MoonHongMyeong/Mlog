@@ -123,7 +123,7 @@ public class PostsApiControllerTest {
     }
 
     
-    //@AfterEach 주석 처리해야 제대로 확인가능
+    //@AfterEach 주석 처리해야 테스트 패스함
     @Test
     public void Posts_삭제() throws Exception{
         Posts savedPosts = postsRepository.save(Posts.builder()

@@ -23,7 +23,7 @@ public class TestDataInput {
 
     @Test
     public void 테스트_데이터_등록(){
-        for (int i=1; i<=100; i++) {
+        for (int i=1; i<=108; i++) {
             Posts posts = postsRepository.save(Posts.builder()
                     .title("포스트 테스트 제목"+i)
                     .content("포스트 테스트 내용"+i)

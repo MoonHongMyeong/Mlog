@@ -29,8 +29,9 @@ export default function Comment(props) {
         author: commentAuthor,
         body: commentBody
       }
+      console.log(commentInfo);
       axios.post(url, commentInfo)
-        .then(response => props.reRenderCommentsAdd(response.data))
+        .then(response => { props.reRenderCommentsAdd(response.data); console.log(response) })
         .then(alert("댓글 등록이 성공했습니다.")).then(setCommentAuthor(""), setCommentBody(""), setvalAuthor(false), setvalBody(false))
         .catch(error => console.log(error))
     } else {
@@ -52,7 +53,7 @@ export default function Comment(props) {
                     type="text"
                     value={commentAuthor}
                     onChange={handleAuthorChange}
-                    placeholder={!valAuthor && "작성자를 입력해주세요."}
+                    placeholder={valAuthor ? "" : "작성자를 입력해주세요."}
                     name="author" /></td>
               </tr>
               <tr>
@@ -62,7 +63,7 @@ export default function Comment(props) {
                     id="comment"
                     value={commentBody}
                     onChange={handleBodyChange}
-                    placeholder={!valBody && "댓글내용을 입력해주세요."}
+                    placeholder={valBody ? "" : "댓글내용을 입력해주세요."}
                   ></textarea>
                 </td>
               </tr>
@@ -76,7 +77,7 @@ export default function Comment(props) {
         </form>
       </CommentFormContainer>
       {/* comment List */}
-      {props.commentsList && props.commentsList.map((comment) => {
+      {props.commentsList && props.commentsList.map((comment, index) => {
         if (!comment.parents) {
           return (
             <>
@@ -84,6 +85,7 @@ export default function Comment(props) {
                 reRenderCommentsAdd={props.reRenderCommentsAdd}
                 reRenderCommentUpdate={props.reRenderCommentUpdate}
                 comment={comment}
+                key={index}
                 postId={props.postId} />
 
               <ReplyComment

@@ -139,7 +139,7 @@ export default function PostList() {
   const [posts, setPosts] = useState([]);
   const [Loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(12);
+  const postsPerPage = 12;
 
   useEffect(() => {
     setLoading(true);

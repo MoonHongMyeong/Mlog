@@ -37,7 +37,11 @@ function PostView(props) {
 
   useEffect(() => {
     axios.get(pUrl)
-      .then(post => setPost(post.data))
+      .then(post => {
+        setPost(post.data);
+        setTitle(post.data.title);
+        setContent(post.data.content);
+      })
       .then(backgroundRef.current.style.opacity = "0.7", backgroundRef.current.style.transition = "opacity 1s ease-in-out")
       .then(titleRef.current.style.opacity = "1",
         titleRef.current.style.transition = "opacity 3s ease-in-out",
