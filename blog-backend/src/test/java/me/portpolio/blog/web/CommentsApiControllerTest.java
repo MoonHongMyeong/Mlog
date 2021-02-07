@@ -7,20 +7,22 @@ import me.portpolio.blog.domain.posts.PostsRepository;
 import me.portpolio.blog.web.dto.comments.CommentsSaveRequestDto;
 import me.portpolio.blog.web.dto.comments.CommentsUpdateRequestDto;
 import me.portpolio.blog.web.dto.comments.RepliesSaveRequestDto;
-import me.portpolio.blog.web.dto.posts.PostsSaveRequestDto;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.truth.Truth.*;
@@ -53,15 +55,26 @@ public class CommentsApiControllerTest {
         String content = "content";
         String author = "author";
 
-        Posts posts = postsRepository.save(Posts.builder()
-                .title(title)
-                .content(content)
-                .author(author)
-                .build());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String,Object> body = new LinkedMultiValueMap<>();
+        body.add("author", author);
+        body.add("content", content);
+        body.add("title", title);
+        body.add("image", getFileResource());
 
-        String url = "http://localhost:" + port + "/api/posts";
-        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, posts, Long.class);
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+        HttpEntity<MultiValueMap<String,Object>> requestEntity = new HttpEntity<>(body,headers);
+        String url = "http://localhost:"+port+"/api/posts";
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url,requestEntity,String.class);
+
+        assertThat(responseEntity.getStatusCode().is2xxSuccessful());
+    }
+
+    public static Resource getFileResource() throws Exception{
+        Path tempFile = Files.createTempFile("upload-test-file",".png");
+        Files.write(tempFile,"some test content".getBytes(StandardCharsets.UTF_8));
+        File file = tempFile.toFile();
+        return new FileSystemResource(file);
     }
 
     @Test
@@ -81,7 +94,7 @@ public class CommentsApiControllerTest {
 
     @Test
     public void Comments_수정() throws Exception{
-        Posts post = postsRepository.findById(1L).get();
+        Posts post = postsRepository.findById(3L).get();
         Comments savedComments = commentsRepository.save(Comments.builder()
                 .body("body")
                 .author("author")
@@ -108,7 +121,7 @@ public class CommentsApiControllerTest {
 
     @Test
     public void Comments_삭제(){
-        Posts post = postsRepository.findById(1L).get();
+        Posts post = postsRepository.findById(2L).get();
 
         Comments savedComments = commentsRepository.save(Comments.builder()
                 .author("author")
@@ -125,7 +138,7 @@ public class CommentsApiControllerTest {
 
     @Test
     public void Replies_등록(){
-        Posts post = postsRepository.findById(1L).get();
+        Posts post = postsRepository.findById(4L).get();
 
         Comments parents = commentsRepository.save(Comments.builder()
                 .author("parents author")

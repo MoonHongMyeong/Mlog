@@ -37,7 +37,7 @@ public class CommentsRepositoryTest {
     public void 댓글_저장_조회(){
         String body = "test comments body";
         String author = "test comments author";
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.of(2021,2,7,0,0,0);
 
         Posts post = postsRepository.save(Posts.builder()
                 .title("test title")
@@ -93,7 +93,7 @@ public class CommentsRepositoryTest {
     public void 대댓글_저장_조회(){
         String body = "test comments body";
         String author = "test comments author";
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.of(2020, 02, 07, 0,0,0);
 
         Posts post = postsRepository.save(Posts.builder()
                 .title("test title")
