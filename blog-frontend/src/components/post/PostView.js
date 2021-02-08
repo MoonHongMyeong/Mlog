@@ -170,7 +170,7 @@ function PostView(props) {
             <div className="btn">
               <div className="btnContainer">
                 <button type="submit" className="submit_btn">수정완료</button>
-                <button onClick={() => { window.location.href = `${props.match.params.postId}`; }} className="cancel_btn">수정취소</button>
+                <button onClick={() => { setmodifyMode(false) }} className="modify_cancel_btn">수정취소</button>
               </div>
             </div>
           </form>
@@ -197,8 +197,10 @@ function PostView(props) {
             <div id="markdown_content">
               {post.content}
             </div>
-            <button onClick={toggleModify}>수정하기</button>
-            <button onClick={deletePost}>삭제하기</button>
+            <div className="btnContainer">
+              <button onClick={toggleModify} className="submit_btn">수정하기</button>
+              <button onClick={deletePost} className="cancel_btn">삭제하기</button>
+            </div>
           </PostContentContainer>
         </>
       }
@@ -279,6 +281,39 @@ const PostContentContainer = styled.div`
   .user span {
     color: #cbcbcb;
   }
+
+  .btnContainer {
+    margin: 0 auto;
+    width: 30vw;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .btnContainer button,a {
+    width: 80px;
+    border: none;
+    height: 30px;
+    border-radius: 10px;
+    font-weight: 0;
+    font-size : 0.9rem;
+    text-align : center;
+    margin: 10px;
+    display : flex;
+    justify-content : center;
+    align-items : center;
+  }
+
+  .submit_btn {
+    background-color: #8c7ae6;
+    color: #f5f6fa;
+    cursor: pointer;
+  }
+  .cancel_btn {
+    text-decoration : none;
+    background-color: #c23616;
+    color: #f5f6fa;
+  }
+
   #markdown_content {
     padding-top: 2rem;
     border-top: 1px solid #000;
@@ -387,8 +422,7 @@ const PostFormContainer = styled.div`
     color: #f5f6fa;
     cursor: pointer;
   }
-  .cancel_btn {
-    text-decoration : none;
+  .modify_cancel_btn {
     background-color: #c23616;
     color: #f5f6fa;
   }

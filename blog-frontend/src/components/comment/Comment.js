@@ -69,7 +69,7 @@ export default function Comment(props) {
               </tr>
               <tr>
                 <td>
-                  <button type="submit">댓글등록</button>
+                  <button type="submit" className="cmtBtn">댓글등록</button>
                 </td>
               </tr>
             </tbody>
@@ -135,14 +135,14 @@ const CommentFormContainer = styled.div`
     padding-top: 10px;
     font-size: 15px;
   }
-  .cmt_tool .cmtBtn {
+  .cmtBtn {
     background-color: white;
     font-size: 16px;
     padding: 5px 5px;
     border-radius: 5px;
     border-color: #dedede;
   }
-  .cmt_tool .cmtBtn:hover {
+  .cmtBtn:hover {
     background-color: black;
     color: white;
     cursor: pointer;

@@ -180,7 +180,7 @@ class PostForm extends React.Component {
       }
     }
     formData.append('title', this.state.title);
-    formData.append('author', this.state.author);//회원기능 만들면 회원 받는 로직 v2에서 만들거임 1은 배포용이라서 개인정보보호 신경쓰기 싫음
+    formData.append('author', this.state.author);
     formData.append('image', this.state.file);
     formData.append('content', this.state.content);
 
@@ -189,7 +189,7 @@ class PostForm extends React.Component {
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    if (this.state.validation.title && this.state.validation.author && this.state.validation.content && this.state.valFile) {
+    if (this.state.validation.title && this.state.validation.author && this.state.validation.content) {
       this.addPost()
         .then((response) => {
           alert('게시글 등록이 완료되었습니다.');
