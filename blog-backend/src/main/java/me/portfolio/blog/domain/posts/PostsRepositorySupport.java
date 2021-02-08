@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static me.portpolio.blog.domain.posts.QPosts.posts;
+import static me.portfolio.blog.domain.posts.QPosts.posts;
 
 @Repository
 public class PostsRepositorySupport extends QuerydslRepositorySupport {

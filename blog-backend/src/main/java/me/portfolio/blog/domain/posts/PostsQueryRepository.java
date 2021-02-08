@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import static me.portpolio.blog.domain.posts.QPosts.posts;
+import static me.portfolio.blog.domain.posts.QPosts.posts;
 
 @RequiredArgsConstructor
 @Repository
