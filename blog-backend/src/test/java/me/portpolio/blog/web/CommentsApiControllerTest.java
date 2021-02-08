@@ -12,17 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.truth.Truth.*;
@@ -49,37 +41,13 @@ public class CommentsApiControllerTest {
         postsRepository.deleteAll();
     }
 
-    @BeforeEach
-    public void Posts_등록() throws Exception {
-        String title = "title";
-        String content = "content";
-        String author = "author";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        MultiValueMap<String,Object> body = new LinkedMultiValueMap<>();
-        body.add("author", author);
-        body.add("content", content);
-        body.add("title", title);
-        body.add("image", getFileResource());
-
-        HttpEntity<MultiValueMap<String,Object>> requestEntity = new HttpEntity<>(body,headers);
-        String url = "http://localhost:"+port+"/api/posts";
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url,requestEntity,String.class);
-
-        assertThat(responseEntity.getStatusCode().is2xxSuccessful());
-    }
-
-    public static Resource getFileResource() throws Exception{
-        Path tempFile = Files.createTempFile("upload-test-file",".png");
-        Files.write(tempFile,"some test content".getBytes(StandardCharsets.UTF_8));
-        File file = tempFile.toFile();
-        return new FileSystemResource(file);
-    }
-
     @Test
     public void Comments_등록() throws Exception{
-        Posts post = postsRepository.findById(1L).get();
+        Posts post = postsRepository.save(Posts.builder()
+                .title("test post title")
+                .author("test post author")
+                .content("test post content")
+                .build());
 
         CommentsSaveRequestDto requestDto = CommentsSaveRequestDto.builder()
                 .posts(post)
@@ -94,7 +62,12 @@ public class CommentsApiControllerTest {
 
     @Test
     public void Comments_수정() throws Exception{
-        Posts post = postsRepository.findById(3L).get();
+        Posts post = postsRepository.save(Posts.builder()
+                .title("test post title")
+                .author("test post author")
+                .content("test post content")
+                .build());
+
         Comments savedComments = commentsRepository.save(Comments.builder()
                 .body("body")
                 .author("author")
@@ -121,7 +94,11 @@ public class CommentsApiControllerTest {
 
     @Test
     public void Comments_삭제(){
-        Posts post = postsRepository.findById(2L).get();
+        Posts post = postsRepository.save(Posts.builder()
+                .title("test post title")
+                .author("test post author")
+                .content("test post content")
+                .build());
 
         Comments savedComments = commentsRepository.save(Comments.builder()
                 .author("author")
@@ -138,7 +115,11 @@ public class CommentsApiControllerTest {
 
     @Test
     public void Replies_등록(){
-        Posts post = postsRepository.findById(4L).get();
+        Posts post = postsRepository.save(Posts.builder()
+                .title("test post title")
+                .author("test post author")
+                .content("test post content")
+                .build());
 
         Comments parents = commentsRepository.save(Comments.builder()
                 .author("parents author")
