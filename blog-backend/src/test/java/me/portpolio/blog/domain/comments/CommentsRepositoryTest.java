@@ -1,7 +1,10 @@
 package me.portpolio.blog.domain.comments;
 
-import me.portpolio.blog.domain.posts.Posts;
-import me.portpolio.blog.domain.posts.PostsRepository;
+import me.portfolio.blog.domain.comments.Comments;
+import me.portfolio.blog.domain.comments.CommentsQueryRepository;
+import me.portfolio.blog.domain.comments.CommentsRepository;
+import me.portfolio.blog.domain.posts.Posts;
+import me.portfolio.blog.domain.posts.PostsRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

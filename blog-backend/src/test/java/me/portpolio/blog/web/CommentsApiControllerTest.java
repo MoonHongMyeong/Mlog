@@ -1,12 +1,12 @@
 package me.portpolio.blog.web;
 
-import me.portpolio.blog.domain.comments.Comments;
-import me.portpolio.blog.domain.comments.CommentsRepository;
-import me.portpolio.blog.domain.posts.Posts;
-import me.portpolio.blog.domain.posts.PostsRepository;
-import me.portpolio.blog.web.dto.comments.CommentsSaveRequestDto;
-import me.portpolio.blog.web.dto.comments.CommentsUpdateRequestDto;
-import me.portpolio.blog.web.dto.comments.RepliesSaveRequestDto;
+import me.portfolio.blog.domain.comments.Comments;
+import me.portfolio.blog.domain.comments.CommentsRepository;
+import me.portfolio.blog.domain.posts.Posts;
+import me.portfolio.blog.domain.posts.PostsRepository;
+import me.portfolio.blog.web.dto.comments.CommentsSaveRequestDto;
+import me.portfolio.blog.web.dto.comments.CommentsUpdateRequestDto;
+import me.portfolio.blog.web.dto.comments.RepliesSaveRequestDto;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

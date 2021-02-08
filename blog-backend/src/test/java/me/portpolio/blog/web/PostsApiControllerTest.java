@@ -1,15 +1,11 @@
 package me.portpolio.blog.web;
 
-import me.portpolio.blog.domain.posts.Posts;
-import me.portpolio.blog.domain.posts.PostsRepository;
-import me.portpolio.blog.web.dto.posts.PostsResponseDto;
-import me.portpolio.blog.web.dto.posts.PostsSaveRequestDto;
-import me.portpolio.blog.web.dto.posts.PostsUpdateRequestDto;
+import me.portfolio.blog.domain.posts.Posts;
+import me.portfolio.blog.domain.posts.PostsRepository;
+import me.portfolio.blog.web.dto.posts.PostsUpdateRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

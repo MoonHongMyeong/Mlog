@@ -1,5 +1,9 @@
 package me.portpolio.blog.domain.posts;
 
+import me.portfolio.blog.domain.posts.Posts;
+import me.portfolio.blog.domain.posts.PostsQueryRepository;
+import me.portfolio.blog.domain.posts.PostsRepository;
+import me.portfolio.blog.domain.posts.PostsRepositorySupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

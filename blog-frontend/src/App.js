@@ -31,6 +31,7 @@ function App() {
     axios.get('/api/posts/search', { params: { search: Search } })
       .then(response => {
         setSearchedPosts(response.data);
+        setSearch("");
       });
   }
 
