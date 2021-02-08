@@ -1,8 +1,5 @@
-package me.portpolio.blog.domain.comments;
+package me.portfolio.blog.domain.comments;
 
-import me.portfolio.blog.domain.comments.Comments;
-import me.portfolio.blog.domain.comments.CommentsQueryRepository;
-import me.portfolio.blog.domain.comments.CommentsRepository;
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
 import org.junit.jupiter.api.AfterEach;

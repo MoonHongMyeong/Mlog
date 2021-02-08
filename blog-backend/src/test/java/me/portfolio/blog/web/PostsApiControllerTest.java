@@ -1,4 +1,4 @@
-package me.portpolio.blog.web;
+package me.portfolio.blog.web;
 
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
