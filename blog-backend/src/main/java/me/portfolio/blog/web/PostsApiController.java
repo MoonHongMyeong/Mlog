@@ -53,8 +53,8 @@ public class PostsApiController {
             return postsService.addPost(requestDto);
 
         }else {
-            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
-            String filePath = baseDir + "\\" + image.getOriginalFilename();
+            String baseDir = "/home/ec2-user/portfolio-blog.v1/blog-frontend/public/images";
+            String filePath = baseDir + "/" + image.getOriginalFilename();
             image.transferTo(new File(filePath));
             String fileName = image.getOriginalFilename();
 
