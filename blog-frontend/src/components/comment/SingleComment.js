@@ -124,6 +124,7 @@ export default function SingleComment(props) {
                   <td><label htmlFor="author">작성자 : </label>
                     <input
                       type="text"
+                      spellCheck="false"
                       value={ReplyAuthor}
                       onChange={handleReplyAuthorChange}
                       placeholder={!valReplyAuthor && "작성자를 입력해주세요"}

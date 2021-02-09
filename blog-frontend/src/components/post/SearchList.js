@@ -6,7 +6,7 @@ import Loading from '../Loading';
 
 export default function SearchList({ searchedPosts }) {
   const [posts, setPosts] = useState([]);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 12;
 
@@ -15,9 +15,9 @@ export default function SearchList({ searchedPosts }) {
   const indexOfFirst = indexOfLast - postsPerPage;
 
   useEffect(() => {
-    setLoading(false);
-    setPosts(searchedPosts);
     setLoading(true);
+    setPosts(searchedPosts);
+    setLoading(false);
   }, [searchedPosts])
 
   const currentPosts = (tmp) => {
@@ -33,7 +33,7 @@ export default function SearchList({ searchedPosts }) {
         :
         <>
           <SearchListContainer>
-            <PostCard posts={currentPosts(posts)}></PostCard>
+            {searchedPosts.length > 0 ? <PostCard posts={currentPosts(posts)}></PostCard> : <div>포스트를 찾을 수 없습니다.</div>}
           </SearchListContainer >
           <Pagination postsPerPage={postsPerPage} totalPosts={posts.length} paginate={setCurrentPage} />
         </>

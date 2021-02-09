@@ -145,7 +145,9 @@ function PostView(props) {
                   <td className="input_name">제목</td>
                   <td className="input">
                     <input
-                      type="text" name="title"
+                      type="text"
+                      name="title"
+                      spellCheck="false"
                       value={Title}
                       onChange={handleTitleChange} />{!validateTitle && <span style={{ "color": "red" }}>제목을 입력해주세요</span>}</td>
                 </tr>

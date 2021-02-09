@@ -241,7 +241,9 @@ class PostForm extends React.Component {
                 <td className="input_name">제목</td>
                 <td className="input">
                   <input
-                    type="text" name="title"
+                    type="text"
+                    name="title"
+                    spellCheck="false"
                     value={this.state.title}
                     placeholder={this.state.validation.title ? "" : '제목을 입력해주세요'}
                     onChange={this.handleValueChange} /></td>
@@ -252,6 +254,7 @@ class PostForm extends React.Component {
                   <input
                     type="text"
                     name="author"
+                    spellCheck="false"
                     value={this.state.author}
                     placeholder={this.state.validation.author ? "" : '작성자를 입력해주세요'}
                     onChange={this.handleValueChange} /></td>

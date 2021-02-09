@@ -27,11 +27,22 @@ function App() {
   }
 
   const handleTitleSearch = (e) => {
-    axios.get('/api/posts/search', { params: { search: Search } })
-      .then(response => {
-        setSearchedPosts(response.data);
-        setSearch("");
-      });
+    if (Search.length < 2) {
+      alert("검색어를 두 글자 이상 입력해주세요.");
+      e.preventDefault();
+    } else {
+      axios.get('/api/posts/search', { params: { search: Search } })
+        .then(response => {
+          setSearchedPosts(response.data);
+          setSearch("");
+        });
+    }
+  }
+
+  const noEnterKey = (e) => {
+    if (e.charCode === 13) {
+      e.preventDefault()
+    }
   }
 
   return (
@@ -40,7 +51,16 @@ function App() {
       <nav className="navigation" ref={navRef}>
         <form>
           <div>
-            <input type="text" placeholder="Search" onKeyPress={(e) => e.preventDefault()} value={Search} onChange={searchValueChange} name="search" style={{ "color": "#CCCDC1" }} />
+            <input
+              type="text"
+              spellCheck="false"
+              placeholder="Search"
+              onKeyPress={noEnterKey}
+              value={Search}
+              onChange={searchValueChange}
+              name="search"
+              style={{ "color": "#CCCDC1" }}
+            />
             <Link to="/api/posts/search" onClick={handleTitleSearch}><i className="fas fa-search"></i></Link>
           </div>
         </form>

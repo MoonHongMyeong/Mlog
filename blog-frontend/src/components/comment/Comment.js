@@ -51,6 +51,7 @@ export default function Comment(props) {
                 <td><label htmlFor="author">작성자 : </label>
                   <input
                     type="text"
+                    spellCheck="false"
                     value={commentAuthor}
                     onChange={handleAuthorChange}
                     placeholder={valAuthor ? "" : "작성자를 입력해주세요."}

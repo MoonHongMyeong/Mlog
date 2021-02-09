@@ -81,7 +81,7 @@ footer a {
   outline: none;
   color: var(--text-white-color);
 }
-.navigation form button {
+.navigation form a {
   background-color: var(--main-bg-color);
   width: 1.5rem;
   height: 1.5rem;
@@ -89,7 +89,7 @@ footer a {
   color: var(--text-white-color);
   cursor: pointer;
 }
-.navigation form button:focus {
+.navigation form a:focus {
   outline: none;
 }
 .navigation ul li {
