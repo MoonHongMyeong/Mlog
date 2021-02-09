@@ -91,7 +91,7 @@ task appNpmInstall(type: NpmTask){
 }
 task yarnBuild(type: YarnTask){
 	workingDir = file('${project.projectDir}/frontend/blog-frontend')
-	args=['build']
+	args=['run','build']
 }
 task copyWebApp(type: Copy){
 	from "frontend/blog-frontend/build"
