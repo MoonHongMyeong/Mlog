@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.List;
 
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com, http://localhost:8000, http://localhost:3000")
+@CrossOrigin(origins = {"http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com, http://localhost:8000, http://localhost:3000"}, allowCredentials = "true")
 @RequestMapping("/api")
 @RestController
 public class PostsApiController {
@@ -57,7 +57,7 @@ public class PostsApiController {
 //            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
 //            String filePath = baseDir + "\\" + image.getOriginalFilename();
             //실제 리눅스 서버 배포용
-            String baseDir = "images";
+            String baseDir = "/home/ec2-user/portfolio-blog.v1/blog-frontend/build/images";
             String filePath = baseDir + "/" + image.getOriginalFilename();
             image.transferTo(new File(filePath));
             String fileName = image.getOriginalFilename();

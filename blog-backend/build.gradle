@@ -7,11 +7,11 @@ buildscript{
 plugins {
 	id 'org.springframework.boot' version '2.4.3-SNAPSHOT'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'com.github.node-gradle.node' version '2.2.4'
+//	id 'com.github.node-gradle.node' version '2.2.4'
 	id 'java'
 }
 //node plugin
-apply plugin: 'com.github.node-gradle.node'
+//apply plugin: 'com.github.node-gradle.node'
 
 group = 'me.portpolio'
 version = '0.0.1-SNAPSHOT'
@@ -69,40 +69,41 @@ clean.doLast {
 	file(generated).deleteDir()
 }
 
-//그레이들 빌드 시 노드 부분 빌드하고 같이 빌드함
-def webappDir = "$projectDir/frontend/blog-frontend"
-
-node{
-	//개발용 노트북 버전
-//	version='14.15.2'
-//	npmVersion='6.14.9'
-
-
-	//EC2 인스턴스 버전
-	version = '15.8.0'
-	npmVersion='7.5.1'
-	download = true
-	workDir = file("${project.projectDir}/frontend/nodejs")
-	npmWorkDir = file("${project.buildDir}/frontend/npm")
-	yarnWorkDir = file("${project.projectDir}/frontend/yarn")
-}
-
-task appNpmInstall(type: NpmTask){
-	workingDir = file("${project.projectDir}/frontend/blog-frontend")
-	args=['install']
-}
-task yarnBuild(type: YarnTask){
-	workingDir = file("${project.projectDir}/frontend/blog-frontend")
-	args=['run','build']
-}
-task copyWebApp(type: Copy){
-	from "frontend/blog-frontend/build"
-	into 'build/resources/main/static/.'
-}
-
-yarnBuild.dependsOn appNpmInstall
-copyWebApp.dependsOn yarnBuild
-compileJava.dependsOn copyWebApp
+// EC2프리티어에서 메모리가 1기가밖에 안되서 그런지 메모리 허용 초과로 빌드가 안됨
+////그레이들 빌드 시 노드 부분 빌드하고 같이 빌드함
+//def webappDir = "$projectDir/frontend/blog-frontend"
+//
+//node{
+//	//개발용 노트북 버전
+////	version='14.15.2'
+////	npmVersion='6.14.9'
+//
+//
+//	//EC2 인스턴스 버전
+//	version = '15.8.0'
+//	npmVersion='7.5.1'
+//	download = true
+//	workDir = file("${project.projectDir}/frontend/nodejs")
+//	npmWorkDir = file("${project.buildDir}/frontend/npm")
+//	yarnWorkDir = file("${project.projectDir}/frontend/yarn")
+//}
+//
+//task appNpmInstall(type: NpmTask){
+//	workingDir = file("${project.projectDir}/frontend/blog-frontend")
+//	args=['install']
+//}
+//task yarnBuild(type: YarnTask){
+//	workingDir = file("${project.projectDir}/frontend/blog-frontend")
+//	args=['run','build']
+//}
+//task copyWebApp(type: Copy){
+//	from "frontend/blog-frontend/build"
+//	into 'build/resources/main/static/.'
+//}
+//
+//yarnBuild.dependsOn appNpmInstall
+//copyWebApp.dependsOn yarnBuild
+//compileJava.dependsOn copyWebApp
 
 test {
 	useJUnitPlatform()
