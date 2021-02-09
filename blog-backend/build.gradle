@@ -82,8 +82,9 @@ node{
 	version = '15.8.0'
 	npmVersion='7.5.1'
 	download = true
-	workDir = file("${project.projectDir}/frontend/blog-frontend")
-	npmWorkDir = file("${project.buildDir}/npm")
+	workDir = file("${project.projectDir}/frontend/nodejs")
+	npmWorkDir = file("${project.buildDir}/frontend/npm")
+	yarnWorkDir = file("${project.projectDir}/frontend/yarn")
 }
 
 task appNpmInstall(type: NpmTask){
