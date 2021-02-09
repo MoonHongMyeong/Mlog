@@ -172,7 +172,7 @@ export default function PostList() {
         :
         <>
           <PostListContainer>
-            <PostCard posts={currentPosts(posts)}></PostCard>
+            {posts ? <PostCard posts={currentPosts(posts)}></PostCard> : null}
           </PostListContainer >
           <Pagination postsPerPage={postsPerPage} totalPosts={posts.length} paginate={setCurrentPage} />
         </>
