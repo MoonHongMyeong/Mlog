@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -8,9 +8,6 @@ function PostView(props) {
   const [modifyMode, setmodifyMode] = useState(false);
   const [post, setPost] = useState({});
   const [comments, setComments] = useState([]);
-  const backgroundRef = useRef();
-  const titleRef = useRef();
-  const dateRef = useRef();
 
   post.propTypes = {
     id: PropTypes.number.isRequired,
@@ -42,18 +39,14 @@ function PostView(props) {
         setTitle(post.data.title);
         setContent(post.data.content);
       })
-      .then(backgroundRef.current.style.opacity = "0.7", backgroundRef.current.style.transition = "opacity 1s ease-in-out")
-      .then(titleRef.current.style.opacity = "1",
-        titleRef.current.style.transition = "opacity 3s ease-in-out",
-        dateRef.current.style.opacity = "1",
-        dateRef.current.style.transition = "opacity 3s ease-in-out")
+
       .catch(error => console.log(error));
 
     axios.get(cUrl)
       .then(comment => { setComments(comment.data) })
       .catch(error => console.log(error));
 
-  }, [pUrl, cUrl, props])
+  }, [pUrl, cUrl])
 
   const reRenderCommentsAdd = (newComment) => {
     setComments(comments.concat(newComment));
@@ -161,6 +154,7 @@ function PostView(props) {
                   <td className="input content">
                     <textarea
                       name="content"
+                      spellCheck="false"
                       value={Content}
                       onChange={handleContentChange}></textarea>{!validateContent && <span style={{ "color": "red" }}>내용을 입력해주세요</span>}</td>
                 </tr>
@@ -170,7 +164,7 @@ function PostView(props) {
             <div className="btn">
               <div className="btnContainer">
                 <button type="submit" className="submit_btn">수정완료</button>
-                <button onClick={() => { setmodifyMode(false) }} className="modify_cancel_btn">수정취소</button>
+                <button onClick={() => { window.location.reload() }} className="modify_cancel_btn">수정취소</button>
               </div>
             </div>
           </form>
@@ -180,9 +174,9 @@ function PostView(props) {
           <PostTitleContainer>
             <div className="titleImg">
               <img src={post.imageUrl} alt={post.title}></img>
-              <div className="title_background" ref={backgroundRef}>
-                <h1 className="post_title" ref={titleRef}>{post.title}</h1>
-                <p className="post_time" ref={dateRef}>{post.modifiedDate}</p>
+              <div className="title_background">
+                <h1 className="post_title">{post.title}</h1>
+                <p className="post_time">{post.modifiedDate}</p>
               </div>
             </div>
           </PostTitleContainer>
@@ -191,7 +185,6 @@ function PostView(props) {
               <div className="picture"></div>
               <div className="user">
                 <h2>{post.author}</h2>
-                <p>{post.author}</p>
               </div>
             </div >
             <div id="markdown_content">
@@ -230,11 +223,26 @@ const PostTitleContainer = styled.div`
   .title_background {
     background-color: black;
     position: absolute;
-    opacity: 0.5;
     top : 0;
     left : 0;
     width: 100%;
     height: 100vh;
+    opacity : 0.7;
+    -webkit-animation-name : fadeOut;
+    -webkit-animation-duration : 1s;
+    -webkit-animation-timing-function : ease-in-out;
+    -moz-animation-name : fadeOut;
+    -moz-animation-duration : 1s;
+    -moz-animation-timing-function : ease-in-out;
+    -ms-animation-name : fadeOut;
+    -ms-animation-duration : 1s;
+    -ms-animation-timing-function : ease-in-out;
+    -o-animation-name : fadeOut;
+    -o-animation-duration : 1s;
+    -o-animation-timing-function : ease-in-out;
+    animation-name : fadeOut;
+    animation-duration : 1s;
+    animation-timing-function : ease-in-out;
   }
   .post_title {
     height : 85%;
@@ -242,12 +250,45 @@ const PostTitleContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0;
   }
   .post_time {
     color: white;
     text-align: center;
-    opacity : 0;
+  }
+  @-webkit-keyframes fadeOut{
+    from{
+      opacity : 0.2;
+    }to{
+      opacity : 0.7;
+    }
+  }
+  @-moz-keyframes fadeOut{
+    from{
+      opacity : 0.2;
+    }to{
+      opacity : 0.7;
+    }
+  }
+  @-ms-keyframes fadeOut{
+    from{
+      opacity : 0.2;
+    }to{
+      opacity : 0.7;
+    }
+  }
+  @-o-keyframes fadeOut{
+    from{
+      opacity : 0.2;
+    }to{
+      opacity : 0.7;
+    }
+  }
+  @keyframes fadeOut{
+    from{
+      opacity : 0.2;
+    }to{
+      opacity : 0.7;
+    }
   }
 `;
 
@@ -326,6 +367,9 @@ const PostContentContainer = styled.div`
   }
 
   @media screen and (max-width : 800px){
+    .user{
+      height : 150px;
+    }
     .author{
       width : 650px;
     }
@@ -345,7 +389,7 @@ const PostContentContainer = styled.div`
 
 const PostFormContainer = styled.div`
   width : 60vw;
-  height : 82.7vh;
+  height : 600px;
   margin : 0 auto;
   margin-top : 12vh;
 

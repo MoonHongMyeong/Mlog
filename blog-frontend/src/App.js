@@ -6,7 +6,6 @@ import PostForm from './components/post/PostForm';
 import PostView from './components/post/PostView';
 import SearchList from './components/post/SearchList';
 
-
 function App() {
   const [isMenuOpened, setMenuOpen] = useState(true);
   const [Search, setSearch] = useState("");
@@ -41,7 +40,7 @@ function App() {
       <nav className="navigation" ref={navRef}>
         <form>
           <div>
-            <input type="text" placeholder="Search" value={Search} onChange={searchValueChange} name="search" style={{ "color": "#CCCDC1" }} />
+            <input type="text" placeholder="Search" onKeyPress={(e) => e.preventDefault()} value={Search} onChange={searchValueChange} name="search" style={{ "color": "#CCCDC1" }} />
             <Link to="/api/posts/search" onClick={handleTitleSearch}><i className="fas fa-search"></i></Link>
           </div>
         </form>
@@ -58,6 +57,23 @@ function App() {
         <Route exact path="/api/posts/:postId" component={PostView} />
 
       </Switch>
+      <footer>
+        <p>
+          <span>#Contact : </span>
+          <span
+          ><a href="mailto:moonhongmyeong@gmail.com"
+          ><i className="fas fa-envelope"></i></a
+            ></span>
+          <span> , </span>
+          <span
+          ><a href="https://github.com/moon4368"
+          ><i className="fab fa-github-square"></i></a
+            ></span>
+        </p>
+        <p>
+          <span>Design by Moon Hong Myeong ⓒ 2021</span>
+        </p>
+      </footer>
     </Router>
   );
 }

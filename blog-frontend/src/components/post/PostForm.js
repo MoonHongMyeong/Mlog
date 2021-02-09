@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 const PostFormContainer = styled.div`
   width : 60vw;
-  height : 82.7vh;
+  height : 690px;
   margin : 0 auto;
   margin-top : 12vh;
 
@@ -127,7 +127,7 @@ const PostFormContainer = styled.div`
       display: flex;
       flex-direction: column;
     }
-    .btnContainer button {
+    .btnContainer button,a {
       width: 100%;
     }
     .input_name {
@@ -143,10 +143,6 @@ const PostFormContainer = styled.div`
       margin : 0;
       width: 10vw;
       height: 1.3rem;
-    }
-
-    #preview {
-      width : 80vw;
     }
   }
 `;
@@ -189,7 +185,10 @@ class PostForm extends React.Component {
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    if (this.state.validation.title && this.state.validation.author && this.state.validation.content) {
+    console.log(this.state);
+    if (!this.state.title || !this.state.validation.author || !this.state.validation.content) {
+      alert("입력하지 않은 곳이 있습니다. \n다시 입력해주세요.");
+    } else {
       this.addPost()
         .then((response) => {
           alert('게시글 등록이 완료되었습니다.');
@@ -197,12 +196,7 @@ class PostForm extends React.Component {
           window.location.href = `/api/posts/${response.data}`;
         })
         .catch(Error => console.log(Error));
-    } else if (!this.state.title || !this.state.validation.author || !this.state.validation.content) {
-      alert("입력하지 않은 곳이 있습니다. \n다시 입력해주세요.");
-    } else {
-      alert("파일을 넣어주세요.");
     }
-
   }
 
 
@@ -270,15 +264,15 @@ class PostForm extends React.Component {
                     name="image"
                     image={this.state.file}
                     value={this.state.fileName}
-                    placeholder={this.state.varFile ? "" : '그림파일을 넣어주세요'}
                     accept="image/*"
-                    onChange={this.handleFileChange} /></td>
+                    onChange={this.handleFileChange} /> <p style={{ "fontSize": "0.7rem  " }}>파일을 추가하지 않으면 기본값으로 설정됩니다.</p></td>
               </tr>
               <tr>
                 <td className="input_name content">내용</td>
                 <td className="input content">
                   <textarea
                     name="content"
+                    spellCheck="false"
                     value={this.state.content}
                     placeholder={this.state.validation.content ? "" : '내용을 입력해주세요'}
                     onChange={this.handleValueChange}></textarea></td>

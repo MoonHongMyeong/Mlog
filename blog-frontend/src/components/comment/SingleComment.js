@@ -134,6 +134,7 @@ export default function SingleComment(props) {
                     <textarea
                       name="body"
                       id="comment"
+                      spellCheck="false"
                       value={ReplyBody}
                       onChange={handleReplyBodyChange}
                       placeholder={!valReplyBody && "댓글을 작성해주세요"} />

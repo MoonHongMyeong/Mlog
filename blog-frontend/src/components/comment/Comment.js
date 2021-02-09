@@ -61,6 +61,7 @@ export default function Comment(props) {
                   <textarea
                     name="body"
                     id="comment"
+                    spellCheck="false"
                     value={commentBody}
                     onChange={handleBodyChange}
                     placeholder={valBody ? "" : "댓글내용을 입력해주세요."}

@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
-import axios from 'axios';
 import PostCard from './PostCard';
 import Pagination from './Pagination'
+import Loading from '../Loading';
 
 export default function SearchList({ searchedPosts }) {
-  const url = "/api/posts/search";
   const [posts, setPosts] = useState([]);
-  const [Loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(12);
+  const postsPerPage = 12;
 
   //pagination
   const indexOfLast = currentPage * postsPerPage;
   const indexOfFirst = indexOfLast - postsPerPage;
 
   useEffect(() => {
+    setLoading(false);
     setPosts(searchedPosts);
-
+    setLoading(true);
   }, [searchedPosts])
 
   const currentPosts = (tmp) => {
@@ -28,9 +28,8 @@ export default function SearchList({ searchedPosts }) {
 
   return (
     <>
-      {Loading ?
-        <div className="loading"><i className="fas fa-spinner"></i></div>
-
+      {isLoading ?
+        <Loading />
         :
         <>
           <SearchListContainer>

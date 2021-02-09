@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import PostCard from './PostCard';
 import Pagination from './Pagination'
+import Loading from '../Loading';
 
 const PostListContainer = styled.div`
   margin: 0 auto;
@@ -98,13 +99,14 @@ const PostListContainer = styled.div`
     }
 
     .postImg img{
-      width :25%;
+      width :100%;
       height : 100%;
     }
 
     .postTitle {
       width: 60%;
       justify-content: space-between;
+      font-size: 0.8rem;
     }
     .name {
       font-size: 10px;
@@ -137,16 +139,16 @@ const PostListContainer = styled.div`
 export default function PostList() {
   const url = "/api/posts";
   const [posts, setPosts] = useState([]);
-  const [Loading, setLoading] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 12;
 
   useEffect(() => {
-    setLoading(true);
+    setisLoading(true);
     axios.get(url)
       .then(post => {
         setPosts(post.data);
-        setLoading(false);
+        setisLoading(false);
       })
       .catch(Error => {
         console.log(Error);
@@ -165,8 +167,8 @@ export default function PostList() {
 
   return (
     <>
-      {Loading ?
-        <div className="loading"><i className="fas fa-spinner"></i></div>
+      {isLoading ?
+        <Loading />
         :
         <>
           <PostListContainer>

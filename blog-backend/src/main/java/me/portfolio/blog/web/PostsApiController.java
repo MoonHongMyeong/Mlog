@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.List;
 
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com:8000, http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com:3000")
+@CrossOrigin(origins = "http://localhost:8000, http://localhost:3000")
 @RequestMapping("/api")
 @RestController
 public class PostsApiController {
@@ -42,7 +42,7 @@ public class PostsApiController {
                         @RequestParam("content") String content) throws Exception {
 
         //파일 저장
-        if(image.isEmpty()){
+        if(image == null){
             PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
                     .title(title)
                     .author(author)
@@ -53,8 +53,11 @@ public class PostsApiController {
             return postsService.addPost(requestDto);
 
         }else {
-            String baseDir = "/home/ec2-user/portfolio-blog.v1/blog-frontend/public/images";
-            String filePath = baseDir + "/" + image.getOriginalFilename();
+            //로컬 테스트용
+            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
+            //실제 서버 배포용
+//            String baseDir = "/home/ec2-user/portfolio-blog.v1/blog-frontend/public/images";
+            String filePath = baseDir + "\\" + image.getOriginalFilename();
             image.transferTo(new File(filePath));
             String fileName = image.getOriginalFilename();
 
