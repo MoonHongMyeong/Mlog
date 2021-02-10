@@ -5,19 +5,17 @@ export default function ReplyComment(props) {
 
   return (
     <div>
-      {/* <p style={{ "paddingLeft": "2rem", }}>
-        View 1 more Comment(s)
-      </p> */}
       {props.commentsList &&
         props.commentsList.map((comment, index) => {
           if (comment.parents && comment.parents.id === props.parentCommentId) {
             return (
               <>
+                {console.log(comment)}
                 <SingleComment
                   reRenderCommentsAdd={props.reRenderCommentsAdd}
                   reRenderCommentUpdate={props.reRenderCommentUpdate}
                   comment={comment}
-                  key={index}
+                  key={comment.id}
                   postId={props.postId} />
 
                 <ReplyComment
@@ -29,7 +27,7 @@ export default function ReplyComment(props) {
               </>
             )
           }
-          return <div></div>
+          return <div key={comment.id}></div>
         })
       }
     </div>

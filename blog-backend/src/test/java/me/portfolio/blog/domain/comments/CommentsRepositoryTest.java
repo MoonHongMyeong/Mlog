@@ -25,10 +25,10 @@ public class CommentsRepositoryTest {
     @Autowired
     CommentsQueryRepository commentsQueryRepository;
 
-    @AfterEach
-    public void cleanup(){
-        postsRepository.deleteAll();
-    }
+//    @AfterEach
+//    public void cleanup(){
+//        postsRepository.deleteAll();
+//    }
 
     //passed
     @Test

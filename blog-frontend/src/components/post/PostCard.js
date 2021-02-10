@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 
 function PostCard({ posts }) {
   const [width, setWidth] = useState(window.innerWidth);
@@ -13,9 +14,9 @@ function PostCard({ posts }) {
             <div className="post" key={post.id}>
               <div className="postImg"><img src={post.imageUrl} alt={post.title} /></div>
               <div className="postTitle">
-                {width < 550 ? <h2><a href={`/api/posts/${post.id}`}>{post.title.substr(0, 8)}...</a></h2>
+                {width < 550 ? <h2><Link to={`/api/posts/${post.id}`}>{post.title.substr(0, 8)}...</Link></h2>
                   :
-                  <h2><a href={`/api/posts/${post.id}`}>{post.title}</a></h2>
+                  <h2><Link to={`/api/posts/${post.id}`}>{post.title}</Link></h2>
                 }
 
                 <div className="profile">

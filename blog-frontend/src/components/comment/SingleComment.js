@@ -127,7 +127,7 @@ export default function SingleComment(props) {
                       spellCheck="false"
                       value={ReplyAuthor}
                       onChange={handleReplyAuthorChange}
-                      placeholder={!valReplyAuthor && "작성자를 입력해주세요"}
+                      placeholder={!valReplyAuthor ? "작성자를 입력해주세요" : ""}
                       name="author" /></td>
                 </tr>
                 <tr>
@@ -138,7 +138,7 @@ export default function SingleComment(props) {
                       spellCheck="false"
                       value={ReplyBody}
                       onChange={handleReplyBodyChange}
-                      placeholder={!valReplyBody && "댓글을 작성해주세요"} />
+                      placeholder={!valReplyBody ? "댓글을 작성해주세요" : ""} />
                   </td>
                 </tr>
                 <tr>
@@ -233,6 +233,7 @@ const CommentCardContainer = styled.div`
   }
   .body {
     margin-top: 1rem;
+    white-space:pre;
   }
   .cmtlist_btns {
     margin: 10px;

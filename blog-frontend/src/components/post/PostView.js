@@ -162,11 +162,10 @@ function PostView(props) {
                 </tr>
               </tbody>
             </table>
-
             <div className="btn">
               <div className="btnContainer">
                 <button type="submit" className="submit_btn">수정완료</button>
-                <button onClick={() => { window.location.reload() }} className="modify_cancel_btn">수정취소</button>
+                <button onClick={() => { setmodifyMode(false) }} className="modify_cancel_btn">수정취소</button>
               </div>
             </div>
           </form>
@@ -201,6 +200,7 @@ function PostView(props) {
       }
 
       <Comment
+        key={post.id}
         reRenderCommentsAdd={reRenderCommentsAdd}
         reRenderCommentUpdate={reRenderCommentUpdate}
         commentsList={comments}
@@ -352,7 +352,7 @@ const PostContentContainer = styled.div`
     cursor: pointer;
   }
   .cancel_btn {
-    text-decoration : none;
+    cursor:pointer;
     background-color: #c23616;
     color: #f5f6fa;
   }
@@ -361,11 +361,7 @@ const PostContentContainer = styled.div`
     padding-top: 2rem;
     border-top: 1px solid #000;
     font-family: "Noto Sans KR", sans-serif;
-  }
-  #markdown_content textarea{
-    width : 47.5vw;
-    height : 500px;
-    resize:none;
+    white-space : pre;
   }
 
   @media screen and (max-width : 800px){

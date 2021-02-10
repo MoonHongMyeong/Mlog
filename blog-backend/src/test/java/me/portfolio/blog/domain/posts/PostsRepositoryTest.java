@@ -22,10 +22,10 @@ public class PostsRepositoryTest {
     @Autowired
     PostsQueryRepository postsQueryRepository;
 
-    @AfterEach
-    public void cleanup(){
-        postsRepository.deleteAll();
-    }
+//    @AfterEach
+//    public void cleanup(){
+//        postsRepository.deleteAll();
+//    }
 
     //passed
     @Test

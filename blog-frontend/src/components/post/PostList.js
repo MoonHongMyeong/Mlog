@@ -155,6 +155,12 @@ export default function PostList() {
       });
   }, [])
 
+  //페이징 방법 2개 생김
+  //1. 백엔드에서 JPA에 pagable을 통해서 요청하는 방법
+  //2. 프론트에서 전체를 나누어서 보여주는 방법
+  //택한 방식은 2번인데 이게 데이터베이스에 한번만 접근하면되서 이 방법을 사용함
+  //어디서 듣기로 데이터베이스에는 적게 연결하면 좋다고 들었던것 같음
+
   //pagination
   const indexOfLast = currentPage * postsPerPage;
   const indexOfFirst = indexOfLast - postsPerPage;

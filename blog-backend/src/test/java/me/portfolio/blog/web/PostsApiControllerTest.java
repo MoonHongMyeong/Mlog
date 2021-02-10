@@ -41,10 +41,10 @@ public class PostsApiControllerTest {
     @Autowired
     private PostsRepository postsRepository;
 
-    @AfterEach
-    public void tearDown() throws Exception{
-        postsRepository.deleteAll();
-    }
+//    @AfterEach
+//    public void tearDown() throws Exception{
+//        postsRepository.deleteAll();
+//    }
 
 
     //passed

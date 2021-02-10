@@ -186,7 +186,7 @@ class PostForm extends React.Component {
   handleFormSubmit = (e) => {
     e.preventDefault();
     if (!this.state.title || !this.state.validation.author || !this.state.validation.content) {
-      alert("입력하지 않은 곳이 있습니다. \n다시 입력해주세요.");
+      alert("입력하지 않은 곳이 있거나 두 글자 미만입니다. \n다시 입력해주세요.");
     } else {
       this.addPost()
         .then((response) => {
@@ -285,7 +285,7 @@ class PostForm extends React.Component {
           <div className="btn">
             <div className="btnContainer">
               <button type="submit" className="submit_btn">등록하기</button>
-              <a href="/" className="cancel_btn">취소하기</a>
+              <button onClick={() => { this.props.history.push('/') }} className="cancel_btn">취소하기</button>
             </div>
           </div>
         </form>

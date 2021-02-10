@@ -34,10 +34,10 @@ public class CommentsApiControllerTest {
     @Autowired
     private CommentsRepository commentsRepository;
 
-    @AfterEach
-    public void tearDown() throws Exception{
-        postsRepository.deleteAll();
-    }
+//    @AfterEach
+//    public void tearDown() throws Exception{
+//        postsRepository.deleteAll();
+//    }
 
     @Test
     public void Comments_등록() throws Exception{
