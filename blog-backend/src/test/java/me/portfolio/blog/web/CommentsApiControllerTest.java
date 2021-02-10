@@ -56,6 +56,8 @@ public class CommentsApiControllerTest {
         String url = "http://localhost:"+port+"/api/posts/"+post.getId()+"/comments";
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url,requestDto,String.class);
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+
+        postsRepository.deleteById(post.getId());
     }
 
     @Test
@@ -87,7 +89,9 @@ public class CommentsApiControllerTest {
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
         List<Comments> all = commentsRepository.findAll();
-        assertEquals(all.get(0).getBody(), exceptedBody);
+        assertEquals(all.get((all.size()-1)).getBody(), exceptedBody);
+
+        postsRepository.deleteById(post.getId());
     }
 
     @Test
@@ -109,6 +113,8 @@ public class CommentsApiControllerTest {
         HttpEntity<Comments> requestEntity = new HttpEntity<>(savedComments);
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Long.class);
         assertThat(responseEntity.getStatusCode().is2xxSuccessful());
+
+        postsRepository.deleteById(post.getId());
     }
 
     @Test
@@ -133,12 +139,12 @@ public class CommentsApiControllerTest {
                 .build();
 
         Long parent_id = parents.getId();
-        System.out.println("=================================================");
-        System.out.println(parent_id);
         String url ="http://localhost:"+port+"api/posts/"+post.getId()+"/comments/"+parent_id;
 
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, children, String.class);
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+
+        postsRepository.deleteById(post.getId());
 
     }
 

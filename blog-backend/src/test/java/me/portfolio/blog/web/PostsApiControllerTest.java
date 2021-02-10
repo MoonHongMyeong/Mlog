@@ -49,7 +49,7 @@ public class PostsApiControllerTest {
 
     //passed
     @Test
-    public void Posts_등록() throws Exception{
+    public void Posts_등록_파일있음() throws Exception{
         String author = "test posts author";
         String content = "test posts content";
         String title = "test posts title";
@@ -75,6 +75,10 @@ public class PostsApiControllerTest {
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url,requestEntity,String.class);
 
         assertThat(responseEntity.getStatusCode().is2xxSuccessful());
+
+        List<Posts> postsList = postsRepository.findAll();
+        Posts posts = postsList.get((postsList.size()-1));
+        postsRepository.deleteById(posts.getId());
     }
 
     public static Resource getFileResource() throws Exception{
@@ -82,6 +86,30 @@ public class PostsApiControllerTest {
         Files.write(tempFile,"some test content".getBytes(StandardCharsets.UTF_8));
         File file = tempFile.toFile();
         return new FileSystemResource(file);
+    }
+
+    @Test
+    public void Posts_등록_파일없음(){
+        String author = "test posts author";
+        String content = "test posts content";
+        String title = "test posts title";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String,Object> body = new LinkedMultiValueMap<>();
+        body.add("author", author);
+        body.add("content", content);
+        body.add("title", title);
+        body.add("image", null);
+        HttpEntity<MultiValueMap<String,Object>> requestEntity = new HttpEntity<>(body,headers);
+        String url = "http://localhost:"+port+"/api/posts";
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url,requestEntity,String.class);
+
+        assertThat(responseEntity.getStatusCode().is2xxSuccessful());
+
+        List<Posts> postsList = postsRepository.findAll();
+        Posts posts = postsList.get((postsList.size()-1));
+        postsRepository.deleteById(posts.getId());
     }
 
     //passed
@@ -111,8 +139,11 @@ public class PostsApiControllerTest {
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
         List<Posts> all = postsRepository.findAll();
-        assertEquals(all.get(0).getTitle(), exceptedTitle);
-        assertEquals(all.get(0).getContent(), exceptedContent);
+        assertEquals(all.get((all.size()-1)).getTitle(), exceptedTitle);
+        assertEquals(all.get((all.size()-1)).getContent(), exceptedContent);
+
+        Posts posts = all.get((all.size()-1));
+        postsRepository.deleteById(posts.getId());
     }
 
     

@@ -2,7 +2,6 @@ package me.portfolio.blog.domain.comments;
 
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,40 +49,43 @@ public class CommentsRepositoryTest {
                 .build());
 
         List<Comments> commentsList = commentsRepository.findAll();
-        Comments comments = commentsList.get(0);
+        Comments comments = commentsList.get((commentsList.size() - 1));
 
         assertEquals(comments.getPosts().getId(), post.getId());
         assertEquals(comments.getBody(), body);
         assertEquals(comments.getAuthor(), author);
         assertThat(comments.getCreatedDate()).isAtLeast(now);
         assertThat(comments.getModifiedDate()).isAtLeast(now);
+
+        postsRepository.deleteById(post.getId());
     }
 
     //passed
     @Test
     public void 댓글_목록_조회(){
         Posts post = postsRepository.save(Posts.builder()
-                .title("test title")
-                .content("test content")
-                .author("test author")
+                .title("comment test title")
+                .content("comment test content")
+                .author("comment test author")
                 .build());
 
         for(int i=1; i<=10; i++) {
             commentsRepository.save(Comments.builder()
                     .posts(post)
-                    .body("test body"+i)
-                    .author("test comment author"+i)
+                    .body("test body")
+                    .author("test comment author")
                     .build());
         }
 
         List<Comments> commentsList = commentsRepository.findAll();
 
-        for(int i=0; i<10; i++){
-            assertEquals(commentsList.get(i).getBody(), "test body"+(i+1));
-            assertEquals(commentsList.get(i).getAuthor(), "test comment author"+(i+1));
-            System.out.println(commentsList.get(i));
+        for(int i=commentsList.size()-1 ; i>commentsList.size()-11; i--){
+            assertEquals(commentsList.get(i).getBody(), "test body");
+            assertEquals(commentsList.get(i).getAuthor(), "test comment author");
+
         }
 
+        postsRepository.deleteById(post.getId());
     }
 
     //passed
@@ -113,7 +115,7 @@ public class CommentsRepositoryTest {
                 .build());
 
         List<Comments> commentsList = commentsRepository.findAll();
-        Comments parents = commentsList.get(0);
+        Comments parents = commentsList.get((commentsList.size()-2));
         assertEquals(parents.getPosts().getId(), post.getId());
         assertEquals(parents.getBody(), body);
         assertEquals(parents.getAuthor(), author);
@@ -126,6 +128,8 @@ public class CommentsRepositoryTest {
         assertEquals(children.get(0).getAuthor(), "test replies author");
         assertEquals(children.get(0).getParents().getId(), parents.getId());
         assertThat(children.get(0).getModifiedDate()).isAtLeast(now);
+
+        postsRepository.deleteById(post.getId());
     }
 
 }

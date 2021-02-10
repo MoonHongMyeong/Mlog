@@ -57,7 +57,7 @@ public class PostsApiController {
 //            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
 //            String filePath = baseDir + "\\" + image.getOriginalFilename();
             //실제 리눅스 서버 배포용
-            String baseDir = "/home/ec2-user/portfolio-blog.v1/blog-frontend/build/images";
+            String baseDir = "/home/ec2-user/portfolio-blog/blog-frontend/build/images";
             String filePath = baseDir + "/" + image.getOriginalFilename();
             image.transferTo(new File(filePath));
             String fileName = image.getOriginalFilename();
