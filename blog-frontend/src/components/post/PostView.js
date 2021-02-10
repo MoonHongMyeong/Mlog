@@ -39,7 +39,6 @@ function PostView(props) {
         setTitle(post.data.title);
         setContent(post.data.content);
       })
-
       .catch(error => console.log(error));
 
     axios.get(cUrl)
@@ -106,7 +105,16 @@ function PostView(props) {
       updatePost()
         .then((response) => {
           alert('게시글 수정이 완료되었습니다.');
-          window.location.href = `/api/posts/${response.data}`;
+
+          axios.get(pUrl)
+            .then(post => {
+              setPost(post.data);
+              setTitle(post.data.title);
+              setContent(post.data.content);
+            })
+
+          props.history.push(props.location.pathname);
+          setmodifyMode(false);
         })
         .catch(Error => console.log(Error))
     };

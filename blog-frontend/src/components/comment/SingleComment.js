@@ -66,6 +66,7 @@ export default function SingleComment(props) {
     }
     axios.put(url, exceptedComment)
       .then(response => {
+        alert("댓글이 수정되었습니다.")
         props.reRenderCommentUpdate();
         setModifyMode();
       })

@@ -191,8 +191,7 @@ class PostForm extends React.Component {
       this.addPost()
         .then((response) => {
           alert('게시글 등록이 완료되었습니다.');
-          console.log(response.data);
-          window.location.href = `/api/posts/${response.data}`;
+          this.props.history.push(`/api/posts/${response.data}`)
         })
         .catch(Error => console.log(Error));
     }
