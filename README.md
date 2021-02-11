@@ -7,7 +7,6 @@ http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com/
 <br/>
 <br/>
 ## 사용 기술 및 환경
----
 |section|description|
 |:--:|:--:|
 |BACKEND|springboot 2.4.3(SNAPSHOT)<br/>java 11.0.9<br/>gradle 6.7.1<br/>spring data jpa<br/>Querydsl<br/>Lombok<br/>devtools|
@@ -15,7 +14,6 @@ http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com/
 |DATABASE| H2database(dev only)<br/>MySQL 5.6|
 |FRONTEND| React 17.0.1<br/>axios 0.21.1<br>react-router-dom 5.2.0<br/>styled-components 5.2.1|
 |DEPLOY|Nginx<br/>EC2<br/>RDS|
----
 <br/><br/>
 ## 아키텍쳐 의사결정 기록
 ---
