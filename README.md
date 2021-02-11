@@ -15,7 +15,7 @@ http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com/
 |FRONTEND| React 17.0.1<br/>axios 0.21.1<br>react-router-dom 5.2.0<br/>styled-components 5.2.1|
 |DEPLOY|Nginx<br/>EC2<br/>RDS|
 
-<br/><br/><br/><br/>
+<br/><br/>
 
 ## 아키텍쳐 의사결정 기록
 ### =프로그래밍 언어 : React, java, springboot
