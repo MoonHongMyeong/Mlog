@@ -12,11 +12,11 @@
 #### JPA가 많이 어렵다;; 러닝커브가 높다고 하더니 확실 높은 것 같다.... 영속성 컨텍스트부터 라이프 사이클까지 후........
 #### posts와 comments 엔티티를 작성하고 연관관계 매핑을 했다. 
 #### posts crud기능을 RestAPI를 생각하면서 구현했다. 기본적인 도메인에 api부분은 생략들을 많이 한다던데 일단 넣었다. 대신에 버전부분을 뺐다. 
-#### /posts 전체 포스트 조회
-#### /posts/form 포스트 작성 폼으로 이동GET, 포스트 작성POST
-#### /posts/{postsId} postsId의 포스트를 조회GET, 수정PUT, 삭제DELETE
-#### /posts/{postsId}/comments 포스트의 댓글 리스트 조회GET, 댓글 작성POST
-#### /posts/{postsId}/comments/{commentsId} 댓글의 수정PUT 삭제DELETE 대댓글작성POST 댓글을 개별로 조회할 필요는 없으니 GET은 뺐다.
+#### /api/posts 전체 포스트 조회
+#### /api/posts/form 포스트 작성 폼으로 이동GET, 포스트 작성POST
+#### /api/posts/{postsId} postsId의 포스트를 조회GET, 수정PUT, 삭제DELETE
+#### /api/posts/{postsId}/comments 포스트의 댓글 리스트 조회GET, 댓글 작성POST
+#### /api/posts/{postsId}/comments/{commentsId} 댓글의 수정PUT 삭제DELETE 대댓글작성POST 댓글을 개별로 조회할 필요는 없으니 GET은 뺐다.
 
 ---
 
