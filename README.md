@@ -7,6 +7,7 @@ http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com/
 ---
 <br/>
 <br/>
+
 ## 사용 기술 및 환경
 |section|description|
 |:--:|:--:|
@@ -34,6 +35,7 @@ http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com/
 #### 기능적인 목표는 markdown언어가 문서작업에 최적화 되어있는데 블로그에서는 글이 중심이니 깃허브의 markdown api를 가져오거나-이것은 횟수제한이 있다고 들었다- 직접 구현을 해보고싶다.
 #### 리액트를 배우면서 만들었기 때문에 코드가 너무 지저분하고 프론트엔드도 테스팅 툴이 있다고 해서 그 부분도 나중에 리팩토링 할 때 적용할 예정이다.
 ---
+
 <br/>
 <br/>
 
