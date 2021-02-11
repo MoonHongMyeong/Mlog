@@ -54,11 +54,11 @@ public class PostsApiController {
 
         }else {
             //로컬 테스트용
-//            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
-//            String filePath = baseDir + "\\" + image.getOriginalFilename();
+            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
+            String filePath = baseDir + "\\" + image.getOriginalFilename();
             //실제 리눅스 서버 배포용
-            String baseDir = "/home/ec2-user/portfolio-blog/blog-frontend/build/images";
-            String filePath = baseDir + "/" + image.getOriginalFilename();
+//            String baseDir = "/home/ec2-user/portfolio-blog/blog-frontend/build/images";
+//            String filePath = baseDir + "/" + image.getOriginalFilename();
             image.transferTo(new File(filePath));
             String fileName = image.getOriginalFilename();
 
