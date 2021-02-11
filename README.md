@@ -14,7 +14,9 @@ http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com/
 |DATABASE| H2database(dev only)<br/>MySQL 5.6|
 |FRONTEND| React 17.0.1<br/>axios 0.21.1<br>react-router-dom 5.2.0<br/>styled-components 5.2.1|
 |DEPLOY|Nginx<br/>EC2<br/>RDS|
-<br/><br/>
+
+<br/><br/><br/><br/>
+
 ## 아키텍쳐 의사결정 기록
 ### =프로그래밍 언어 : React, java, springboot
 #### 국비지원 6개월 과정을 수료하고 나에게 가장 부족한 부분이 javascript를 다루는 것이라고 생각했고-jquery는 생각도 안했다.- 공부를 시작했다. 재미도 많이 느꼈고 그러다 보니 리액트에도 손을 대었고 처음에는 리액트 프로젝트로 만들다가 학원에서는 백엔드쪽을 배웠는데 안 하기는 아까워서 백엔드도 만들려고 했고 학원에서 배운 것은 java와 spring framework, mybatis였는데 그 쪽도 더 공부를 하고 싶어서 springboot와 jpa를 선택했다.
