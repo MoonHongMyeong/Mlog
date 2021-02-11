@@ -1,5 +1,7 @@
 package me.portfolio.blog.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.portfolio.blog.domain.comments.Comments;
 import me.portfolio.blog.domain.comments.CommentsRepository;
 import me.portfolio.blog.domain.posts.Posts;
@@ -13,12 +15,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.Model;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
 import static com.google.common.truth.Truth.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles("local")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CommentsApiControllerTest {
 
@@ -26,21 +38,31 @@ public class CommentsApiControllerTest {
     private int port;
 
     @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Autowired
     private PostsRepository postsRepository;
 
     @Autowired
     private CommentsRepository commentsRepository;
 
+    @Autowired
+    private WebApplicationContext context;
+
+    private MockMvc mvc;
 //    @AfterEach
 //    public void tearDown() throws Exception{
 //        postsRepository.deleteAll();
 //    }
 
+    @BeforeEach
+    public void setup() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+    }
+
     @Test
-    public void Comments_등록() throws Exception{
+    @WithMockUser(roles = "USER")
+    public void Comments_등록() throws Exception {
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
                 .author("test post author")
@@ -53,15 +75,18 @@ public class CommentsApiControllerTest {
                 .author("test comment author")
                 .build();
 
-        String url = "http://localhost:"+port+"/api/posts/"+post.getId()+"/comments";
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url,requestDto,String.class);
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+        String url = "http://localhost:" + port + "/api/v2/posts/" + post.getId() + "/comments";
+
+        mvc.perform(post(url).contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .andExpect(status().isOk());
 
         postsRepository.deleteById(post.getId());
     }
 
     @Test
-    public void Comments_수정() throws Exception{
+    @WithMockUser(roles = "USER")
+    public void Comments_수정() throws Exception {
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
                 .author("test post author")
@@ -81,21 +106,17 @@ public class CommentsApiControllerTest {
                 .body(exceptedBody)
                 .build();
 
-        String url = "http://localhost:"+port+"/api/posts/"+post.getId()+"/comments/"+updateId;
-        HttpEntity<CommentsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
+        String url = "http://localhost:" + port + "/api/v2/posts/" + post.getId() + "/comments/" + updateId;
 
-        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity,Long.class);
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isGreaterThan(0L);
-
-        List<Comments> all = commentsRepository.findAll();
-        assertEquals(all.get((all.size()-1)).getBody(), exceptedBody);
+        mvc.perform(put(url).contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .andExpect(status().isOk());
 
         postsRepository.deleteById(post.getId());
     }
 
     @Test
-    public void Comments_삭제(){
+    public void Comments_삭제() throws Exception {
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
                 .author("test post author")
@@ -109,16 +130,16 @@ public class CommentsApiControllerTest {
                 .build());
 
         Long id = savedComments.getId();
-        String url = "http://localhost:"+port+"/api/posts/"+post.getId()+"/comments/"+id;
-        HttpEntity<Comments> requestEntity = new HttpEntity<>(savedComments);
-        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Long.class);
-        assertThat(responseEntity.getStatusCode().is2xxSuccessful());
+        String url = "http://localhost:" + port + "/api/v2/posts/" + post.getId() + "/comments/" + id;
+
+        mvc.perform(delete(url)).andExpect(status().isOk());
 
         postsRepository.deleteById(post.getId());
     }
 
     @Test
-    public void Replies_등록(){
+    @WithMockUser(roles = "USER")
+    public void Replies_등록() throws Exception {
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
                 .author("test post author")
@@ -139,10 +160,11 @@ public class CommentsApiControllerTest {
                 .build();
 
         Long parent_id = parents.getId();
-        String url ="http://localhost:"+port+"api/posts/"+post.getId()+"/comments/"+parent_id;
+        String url = "http://localhost:" + port + "api/v2/posts/" + post.getId() + "/comments/" + parent_id;
 
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, children, String.class);
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+        mvc.perform(post(url).contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(children)))
+                .andExpect(status().is(200));
 
         postsRepository.deleteById(post.getId());
 

@@ -9,8 +9,8 @@ import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
 import me.portfolio.blog.domain.posts.PostsRepositorySupport;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +22,7 @@ public class PostsService {
     private final PostsRepositorySupport postsRepositorySupport;
 
     //포스트 리스트 조회
+    @Transactional(readOnly = true)
     public List<PostsListResponseDto> getPostList() {
         return postsRepositorySupport.findAllDesc()
                 .stream()
@@ -30,6 +31,7 @@ public class PostsService {
     }
 
     //포스트 검색 리스트 조회
+    @Transactional(readOnly = true)
     public List<PostsListResponseDto> getListSearchTitle(String title) {
         return postsRepositorySupport.findByTitle(title)
                 .stream()
@@ -44,6 +46,7 @@ public class PostsService {
     }
 
     //포스트 조회
+    @Transactional(readOnly = true)
     public PostsResponseDto getPost(Long postId){
         Posts entity = postsRepository.findById(postId).orElseThrow(
                 ()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));
@@ -61,6 +64,7 @@ public class PostsService {
         return postId;
     }
     //포스트 삭제
+    @Transactional
     public void deletePost(Long postId){
         Posts posts = postsRepository.findById(postId).orElseThrow(
                 ()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));

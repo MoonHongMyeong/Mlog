@@ -11,8 +11,8 @@ import me.portfolio.blog.domain.comments.CommentsRepository;
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +24,7 @@ public class CommentsService {
     private final CommentsRepositorySupport commentsRepositorySupport;
 
     //댓글 리스트 조회
+    @Transactional(readOnly = true)
     public List<CommentsResponseDto> getCommentList(Long postsId) {
         Posts postItem = postsRepository.findById(postsId).get();
 
@@ -55,10 +56,10 @@ public class CommentsService {
     }
 
     //대댓글 등록
+    @Transactional
     public CommentsResponseDto addReply(Long postId, Long parentsId, RepliesSaveRequestDto requestDto) {
 
         Posts postItem = postsRepository.findById(postId).get();
-
         Comments parentsItem = commentsRepository.findById(parentsId).get();
 
         RepliesSaveRequestDto repliesDto = RepliesSaveRequestDto.builder()
@@ -85,6 +86,7 @@ public class CommentsService {
     }
 
     //댓글 삭제
+    @Transactional
     public void deleteComment(Long commentId) {
         Comments comments = commentsRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));

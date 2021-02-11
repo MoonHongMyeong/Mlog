@@ -1,9 +1,11 @@
 package me.portfolio.blog.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
+import me.portfolio.blog.web.dto.posts.PostsSaveRequestDto;
 import me.portfolio.blog.web.dto.posts.PostsUpdateRequestDto;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -15,8 +17,12 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -25,8 +31,12 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles("local")
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -36,85 +46,86 @@ public class PostsApiControllerTest {
     private int port;
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private PostsRepository postsRepository;
 
     @Autowired
-    private PostsRepository postsRepository;
+    private WebApplicationContext context;
+
+    private MockMvc mvc;
 
 //    @AfterEach
 //    public void tearDown() throws Exception{
 //        postsRepository.deleteAll();
 //    }
 
+    @BeforeEach
+    public void setup() {
+        mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+    }
+
 
     //passed
     @Test
-    public void Posts_등록_파일있음() throws Exception{
+    @WithMockUser(roles = "USER")
+    public void Posts_등록_파일있음() throws Exception {
         String author = "test posts author";
         String content = "test posts content";
         String title = "test posts title";
 
-//        String filePath = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-backend\\src\\test\\resources\\test.png";
-//        MultipartFile file = new MockMultipartFile("test.png", new FileInputStream(new File(filePath)));
+        PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+                .title(title)
+                .content(content)
+                .author("author")
+                .build();
 
-//        1.그냥 file을 add해서 사용하면 ByteArrayInputStream 에서 에러가 발생함 바이트 문제인것 같아서 해결하기 위해 새로 resource 로 가져옴
-//        2.여전히 400 에러가 발생함
-//        ByteArrayResource fileResource = new ByteArrayResource(file.getBytes());
+        String url = "http://localhost:" + port + "/api/v2/posts";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        MultiValueMap<String,Object> body = new LinkedMultiValueMap<>();
-        body.add("author", author);
-        body.add("content", content);
-        body.add("title", title);
-//        3. 그래서 그냥 리소스 통쨰로 메서드로 불러옴
-        body.add("image", getFileResource());
+        mvc.perform(multipart(url).file(new MockMultipartFile("image","test","image/png","/test.png".getBytes()))
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .param("author", author)
+                .param("content", content)
+                .param("title", title))
+                .andDo(print())
+                .andExpect(status().isOk());
 
-        HttpEntity<MultiValueMap<String,Object>> requestEntity = new HttpEntity<>(body,headers);
-        String url = "http://localhost:"+port+"/api/posts";
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url,requestEntity,String.class);
 
-        assertThat(responseEntity.getStatusCode().is2xxSuccessful());
-
-        List<Posts> postsList = postsRepository.findAll();
-        Posts posts = postsList.get((postsList.size()-1));
-        postsRepository.deleteById(posts.getId());
+        List<Posts> all = postsRepository.findAll();
+        assertThat(all.get(0).getTitle()).isEqualTo(title);
+        assertThat(all.get(0).getContent()).isEqualTo(content);
     }
 
-    public static Resource getFileResource() throws Exception{
-        Path tempFile = Files.createTempFile("upload-test-file",".png");
-        Files.write(tempFile,"some test content".getBytes(StandardCharsets.UTF_8));
+    public static Resource getFileResource() throws Exception {
+        Path tempFile = Files.createTempFile("upload-test-file", ".png");
+        Files.write(tempFile, "some test content".getBytes(StandardCharsets.UTF_8));
         File file = tempFile.toFile();
         return new FileSystemResource(file);
     }
 
     @Test
-    public void Posts_등록_파일없음(){
+    @WithMockUser(roles = "USER")
+    public void Posts_등록_파일없음() throws Exception {
         String author = "test posts author";
         String content = "test posts content";
         String title = "test posts title";
+        String url = "http://localhost:" + port + "/api/v2/posts";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        MultiValueMap<String,Object> body = new LinkedMultiValueMap<>();
-        body.add("author", author);
-        body.add("content", content);
-        body.add("title", title);
-        body.add("image", null);
-        HttpEntity<MultiValueMap<String,Object>> requestEntity = new HttpEntity<>(body,headers);
-        String url = "http://localhost:"+port+"/api/posts";
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url,requestEntity,String.class);
-
-        assertThat(responseEntity.getStatusCode().is2xxSuccessful());
+        mvc.perform(multipart(url)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .param("author", author)
+                .param("content", content)
+                .param("title", title))
+                .andDo(print())
+                .andExpect(status().isOk());
 
         List<Posts> postsList = postsRepository.findAll();
-        Posts posts = postsList.get((postsList.size()-1));
+        Posts posts = postsList.get((postsList.size() - 1));
         postsRepository.deleteById(posts.getId());
     }
 
     //passed
     @Test
-    public void Posts_수정() throws Exception{
+    @WithMockUser(roles = "USER")
+    public void Posts_수정() throws Exception {
 
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
@@ -131,25 +142,28 @@ public class PostsApiControllerTest {
                 .content(exceptedContent)
                 .build();
 
-        String url = "http://localhost:"+port+"/api/posts/"+updateId;
-        HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
+        String url = "http://localhost:" + port + "/api/v2/posts/" + updateId;
 
-        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isGreaterThan(0L);
+        mvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .andExpect(status().isOk());
 
         List<Posts> all = postsRepository.findAll();
-        assertEquals(all.get((all.size()-1)).getTitle(), exceptedTitle);
-        assertEquals(all.get((all.size()-1)).getContent(), exceptedContent);
+        Posts posts = all.get((all.size() - 1));
 
-        Posts posts = all.get((all.size()-1));
+        assertThat(posts.getTitle().equals(exceptedTitle));
+        assertThat(posts.getContent().equals(exceptedContent));
+
+
         postsRepository.deleteById(posts.getId());
     }
 
-    
+
     //@AfterEach 주석 처리해야 테스트 패스함
     @Test
-    public void Posts_삭제() throws Exception{
+    @WithMockUser(roles = "USER")
+    public void Posts_삭제() throws Exception {
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
@@ -157,10 +171,9 @@ public class PostsApiControllerTest {
                 .build());
 
         Long id = savedPosts.getId();
-        String url = "http://localhost:"+port+"/api/posts/"+id;
-        HttpEntity<Posts> requestEntity = new HttpEntity<>(savedPosts);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, String.class);
-        assertThat(responseEntity.getStatusCode().is2xxSuccessful());
+        String url = "http://localhost:" + port + "/api/v2/posts/" + id;
+
+        mvc.perform(delete(url)).andExpect(status().isOk());
     }
 
 }
