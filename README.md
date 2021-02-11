@@ -2,7 +2,7 @@
 
 프론트 작업은 React, 백엔드 작업은 springboot를 이용해서 개인용 블로그를 만들어야겠다. <br/>
 사용자 입장에서 체험할 수 있게 포스트 CRUD기능도 살림<br>
-하나의 서비스를 제작하는데 설계부터 프론트엔드작업 백엔드작업 AWS배포까지<br>
+하나의 서비스를 제작하는데 설계부터 프론트엔드작업 백엔드작업 AWS배포까지 체험해보자<br>
 url : http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com/
 
 참고 사이트 blex.me  
