@@ -1,6 +1,10 @@
 package me.portfolio.blog.domain.posts;
 
+import me.portfolio.blog.domain.user.Role;
+import me.portfolio.blog.domain.user.User;
+import me.portfolio.blog.domain.user.UserRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,19 +20,32 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class PostsRepositoryTest {
     @Autowired
-    PostsRepository postsRepository;
+    private PostsRepository postsRepository;
 
     @Autowired
-    PostsRepositorySupport postsRepositorySupport;
+    private PostsRepositorySupport postsRepositorySupport;
 
     @Autowired
-    PostsQueryRepository postsQueryRepository;
+    private PostsQueryRepository postsQueryRepository;
 
-//    @AfterEach
-//    public void cleanup(){
-//        postsRepository.deleteAll();
-//    }
+    @Autowired
+    private UserRepository userRepository;
 
+    @AfterEach
+    public void cleanup(){
+        List<User> userList = userRepository.findAll();
+        User testUser = userList.get((userList.size()-1));
+        userRepository.deleteById(testUser.getId());
+    }
+
+    @BeforeEach
+    public void setUser(){
+        User testUser = userRepository.save(User.builder()
+                .email("test@test.com")
+                .name("test user")
+                .picture("/images/default")
+                .role(Role.USER).build());
+    }
     //passed
     @Test
     public void 포스트_저장_조회(){
@@ -38,7 +55,7 @@ public class PostsRepositoryTest {
         postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
-                .author("test@test.com")
+                .user(userRepository.findByEmail("test@test.com").get())
                 .build());
 
         List<Posts> postsList = postsRepository.findAll();
@@ -58,7 +75,7 @@ public class PostsRepositoryTest {
         postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .author("author")
+                .user(userRepository.findByEmail("test@test.com").get())
                 .build());
 
         List<Posts> postsList = postsRepository.findAll();
@@ -81,7 +98,7 @@ public class PostsRepositoryTest {
             postsRepository.save(Posts.builder()
                     .title("title")
                     .content("content")
-                    .author("author")
+                    .user(userRepository.findByEmail("test@test.com").get())
                     .build());
         }
 
@@ -90,7 +107,7 @@ public class PostsRepositoryTest {
         for (int i = postsList.size() - 1; i > postsList.size() - 6; i--) {
             assertEquals(postsList.get(i).getTitle(), "title");
             assertEquals(postsList.get(i).getContent(), "content");
-            assertEquals(postsList.get(i).getAuthor(), "author");
+            assertEquals(postsList.get(i).getUser().getEmail(), "test@test.com");
         }
 
         for (int i = postsList.size() - 1; i > postsList.size() - 6; i--) {
@@ -104,12 +121,11 @@ public class PostsRepositoryTest {
     public void 검색_조회_기능(){
         String title = "절대따라할수없는테스트 제목";
         String content = "테스트 내용";
-        String author = "테스트 작성자";
 
         postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
-                .author(author)
+                .user(userRepository.findByEmail("test@test.com").get())
                 .build());
 
         List<Posts> result = postsRepositorySupport.findByTitle(title);
@@ -117,7 +133,7 @@ public class PostsRepositoryTest {
         assertEquals(result.size(), 1);
         assertEquals(result.get(0).getTitle(),title);
         assertEquals(result.get(0).getContent(), content);
-        assertEquals(result.get(0).getAuthor(),author);
+        assertEquals(result.get(0).getUser().getEmail(),"test@test.com");
 
         postsRepository.deleteById(result.get(0).getId());
     }
@@ -127,12 +143,11 @@ public class PostsRepositoryTest {
     public void querydsl_custom_설정_기능_확인(){
         String title = "절대따라할수없는테스트 제목";
         String content = "테스트 내용";
-        String author = "테스트 작성자";
 
         postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
-                .author(author)
+                .user(userRepository.findByEmail("test@test.com").get())
                 .build());
 
         List<Posts> result = postsRepository.findByTitle(title);
@@ -148,12 +163,11 @@ public class PostsRepositoryTest {
     public void querydsl_queryRepository_기능_확인(){
         String title = "절대따라할수없는테스트 제목";
         String content = "테스트 내용";
-        String author = "테스트 작성자";
 
         postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
-                .author(author)
+                .user(userRepository.findByEmail("test@test.com").get())
                 .build());
 
         List<Posts> result = postsQueryRepository.findByTitle(title);
@@ -168,29 +182,16 @@ public class PostsRepositoryTest {
     public void Posts_검색_기능(){
         String title = "절대따라할수없는테스트 title";
         String content = "test content";
-        String author = "test author";
-        String dummy = "절대따라할수없는더미 title";
 
-        //검색 받을 2개의 데이터와 2개의 더미를 insert
         Posts savedPosts1 = postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
-                .author(author)
-                .build());
-        Posts dummy1 = postsRepository.save(Posts.builder()
-                .title(dummy)
-                .content(content)
-                .author(author)
-                .build());
-        Posts dummy2 = postsRepository.save(Posts.builder()
-                .title(dummy)
-                .content(content)
-                .author(author)
+                .user(userRepository.findByEmail("test@test.com").get())
                 .build());
         Posts savedPosts2 =postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
-                .author(author)
+                .user(userRepository.findByEmail("test@test.com").get())
                 .build());
 
         List<Posts> postsList = postsRepositorySupport.findByTitle(title);
@@ -199,13 +200,13 @@ public class PostsRepositoryTest {
         Posts posts2 = postsList.get(1);
 
         assertEquals(postsList.size(), 2);
-        assertEquals(posts1.getAuthor(),author);
-        assertEquals(posts2.getAuthor(),author);
+        assertEquals(posts1.getUser().getEmail(),"test@test.com");
+        assertEquals(posts1.getContent(),content);
+        assertEquals(posts2.getUser().getEmail(),"test@test.com");
+        assertEquals(posts2.getContent(),content);
 
         postsRepository.deleteById(savedPosts1.getId());
         postsRepository.deleteById(savedPosts2.getId());
-        postsRepository.deleteById(dummy1.getId());
-        postsRepository.deleteById(dummy2.getId());
 
 
     }

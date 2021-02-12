@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.portfolio.blog.domain.comments.Comments;
 import me.portfolio.blog.domain.posts.Posts;
+import me.portfolio.blog.domain.user.User;
 
 
 @Getter
@@ -12,19 +13,19 @@ import me.portfolio.blog.domain.posts.Posts;
 public class CommentsSaveRequestDto {
     private Posts posts;
     private String body;
-    private String author;
+    private User user;
 
     @Builder
-    public CommentsSaveRequestDto(Posts posts, String body, String author) {
+    public CommentsSaveRequestDto(Posts posts, String body, User user) {
         this.posts = posts;
         this.body = body;
-        this.author = author;
+        this.user = user;
     }
 
     public Comments toEntity() {
         return Comments.builder()
                 .body(body)
-                .author(author)
+                .user(user)
                 .posts(posts)
                 .build();
     }

@@ -3,8 +3,12 @@ package me.portfolio.blog.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
+import me.portfolio.blog.domain.user.Role;
+import me.portfolio.blog.domain.user.User;
+import me.portfolio.blog.domain.user.UserRepository;
 import me.portfolio.blog.web.dto.posts.PostsSaveRequestDto;
 import me.portfolio.blog.web.dto.posts.PostsUpdateRequestDto;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,11 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -51,16 +55,29 @@ public class PostsApiControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private MockMvc mvc;
 
-//    @AfterEach
-//    public void tearDown() throws Exception{
-//        postsRepository.deleteAll();
-//    }
+    @AfterEach
+    public void cleanup(){
+        List<User> userList = userRepository.findAll();
+        User testUser = userList.get((userList.size()-1));
+        userRepository.deleteById(testUser.getId());
+    }
 
     @BeforeEach
     public void setup() {
-        mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+        mvc = MockMvcBuilders.webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+
+        User testUser = userRepository.save(User.builder()
+                .email("test@test.com")
+                .name("test user")
+                .picture("/images/default")
+                .role(Role.USER).build());
     }
 
 
@@ -68,21 +85,23 @@ public class PostsApiControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void Posts_등록_파일있음() throws Exception {
-        String author = "test posts author";
         String content = "test posts content";
         String title = "test posts title";
 
         PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
                 .title(title)
                 .content(content)
-                .author("author")
+                .user(userRepository.findByEmail("test@test.com").get())
                 .build();
 
         String url = "http://localhost:" + port + "/api/v2/posts";
 
+        MockHttpSession mockHttpSession = new MockHttpSession();
+        mockHttpSession.setAttribute("user", userRepository.findByEmail("test@test.com").get());
+
         mvc.perform(multipart(url).file(new MockMultipartFile("image","test","image/png","/test.png".getBytes()))
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                .param("author", author)
+                .session(mockHttpSession)
                 .param("content", content)
                 .param("title", title))
                 .andDo(print())
@@ -104,14 +123,16 @@ public class PostsApiControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void Posts_등록_파일없음() throws Exception {
-        String author = "test posts author";
         String content = "test posts content";
         String title = "test posts title";
         String url = "http://localhost:" + port + "/api/v2/posts";
 
+        MockHttpSession mockHttpSession = new MockHttpSession();
+        mockHttpSession.setAttribute("user", userRepository.findByEmail("test@test.com").get());
+
         mvc.perform(multipart(url)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                .param("author", author)
+                .session(mockHttpSession)
                 .param("content", content)
                 .param("title", title))
                 .andDo(print())
@@ -130,7 +151,7 @@ public class PostsApiControllerTest {
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .author("author")
+                .user(userRepository.findByEmail("test@test.com").get())
                 .build());
 
         Long updateId = savedPosts.getId();
@@ -167,7 +188,7 @@ public class PostsApiControllerTest {
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .author("author")
+                .user(userRepository.findByEmail("test@test.com").get())
                 .build());
 
         Long id = savedPosts.getId();

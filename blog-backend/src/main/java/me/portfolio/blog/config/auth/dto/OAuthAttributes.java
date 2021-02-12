@@ -65,7 +65,7 @@ public class OAuthAttributes {
                 .name(name)
                 .email(email)
                 .picture(picture)
-                .role(Role.USER)
+                .role(Role.USER)//직접 사용할때는 이부분을 Role.GUEST 로 바꿔줘야한다
                 .build();
     }
 }

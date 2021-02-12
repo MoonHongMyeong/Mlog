@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.portfolio.blog.domain.BaseTimeEntity;
 import me.portfolio.blog.domain.posts.Posts;
+import me.portfolio.blog.domain.user.User;
 
 import javax.persistence.*;
 import java.util.List;
@@ -26,8 +27,9 @@ public class Comments extends BaseTimeEntity {
     @Column(nullable = false)
     private String body;
 
-    @Column(nullable = false)
-    private String author;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne()
     @JoinColumn(name="parents_id", referencedColumnName = "comments_id", columnDefinition = "bigint default 0")
@@ -38,11 +40,11 @@ public class Comments extends BaseTimeEntity {
     private List<Comments> replies;
 
     @Builder
-    public Comments(Posts posts, String body, String author, Comments parents){
+    public Comments(Posts posts, String body, Comments parents, User user){
         this.posts = posts;
         this.body = body;
-        this.author = author;
         this.parents=parents;
+        this.user = user;
     }
 
     public void update(String body){

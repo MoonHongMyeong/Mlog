@@ -27,6 +27,7 @@ public class PostsRepositorySupport extends QuerydslRepositorySupport {
     public List<Posts> findByTitle(String title){
         return queryFactory.selectFrom(posts)
                 .where(posts.title.contains((title)))
+                .orderBy(posts.id.desc())
                 .fetch();
 
 

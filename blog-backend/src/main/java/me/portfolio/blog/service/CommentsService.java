@@ -1,7 +1,10 @@
 package me.portfolio.blog.service;
 
 import lombok.RequiredArgsConstructor;
+import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.domain.comments.CommentsRepositorySupport;
+import me.portfolio.blog.domain.user.User;
+import me.portfolio.blog.domain.user.UserRepository;
 import me.portfolio.blog.web.dto.comments.CommentsResponseDto;
 import me.portfolio.blog.web.dto.comments.CommentsSaveRequestDto;
 import me.portfolio.blog.web.dto.comments.CommentsUpdateRequestDto;
@@ -22,6 +25,7 @@ public class CommentsService {
     private final PostsRepository postsRepository;
     private final CommentsRepository commentsRepository;
     private final CommentsRepositorySupport commentsRepositorySupport;
+    private final UserRepository userRepository;
 
     //댓글 리스트 조회
     @Transactional(readOnly = true)
@@ -37,14 +41,14 @@ public class CommentsService {
 
     //댓글 등록
     @Transactional
-    public CommentsResponseDto addComment(Long postId, CommentsSaveRequestDto requestDto) {
+    public CommentsResponseDto addComment(SessionUser sessionUser, Long postId, CommentsSaveRequestDto requestDto) {
 
         Posts postItem = postsRepository.findById(postId).get();
 
         CommentsSaveRequestDto saveRequestDto
                 = CommentsSaveRequestDto.builder()
                 .posts(postItem)
-                .author(requestDto.getAuthor())
+                .user(userRepository.findByEmail(sessionUser.getEmail()).get())
                 .body(requestDto.getBody())
                 .build();
 
@@ -56,16 +60,17 @@ public class CommentsService {
     }
 
     //대댓글 등록
+    //20210212 대댓글 한번 등록하는데 너무 많이 db에 접속하는 것 같은데;;;
     @Transactional
-    public CommentsResponseDto addReply(Long postId, Long parentsId, RepliesSaveRequestDto requestDto) {
-
+    public CommentsResponseDto addReply(SessionUser sessionUser, Long postId, Long parentsId, RepliesSaveRequestDto requestDto) {
+        User user =userRepository.findByEmail(sessionUser.getEmail()).get();
         Posts postItem = postsRepository.findById(postId).get();
         Comments parentsItem = commentsRepository.findById(parentsId).get();
 
         RepliesSaveRequestDto repliesDto = RepliesSaveRequestDto.builder()
                 .posts(postItem)
                 .parents(parentsItem)
-                .author(requestDto.getAuthor())
+                .user(user)
                 .body(requestDto.getBody())
                 .build();
 

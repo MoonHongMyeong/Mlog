@@ -3,6 +3,7 @@ package me.portfolio.blog.web.dto.posts;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.portfolio.blog.domain.posts.Posts;
+import me.portfolio.blog.domain.user.User;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +13,7 @@ public class PostsResponseDto {
     private Long id;
     private String title;
     private String content;
-    private String author;
+    private User user;
     private String imageUrl;
     private LocalDateTime modifiedDate;
 
@@ -20,7 +21,7 @@ public class PostsResponseDto {
         this.id=entity.getId();
         this.title=entity.getTitle();
         this.content=entity.getContent();
-        this.author=entity.getAuthor();
+        this.user=entity.getUser();
         this.imageUrl=entity.getImageUrl();
         this.modifiedDate=entity.getModifiedDate();
     }

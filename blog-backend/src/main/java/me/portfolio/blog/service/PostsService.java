@@ -1,6 +1,9 @@
 package me.portfolio.blog.service;
 
 import lombok.RequiredArgsConstructor;
+import me.portfolio.blog.config.auth.dto.SessionUser;
+import me.portfolio.blog.domain.user.User;
+import me.portfolio.blog.domain.user.UserRepository;
 import me.portfolio.blog.web.dto.posts.PostsListResponseDto;
 import me.portfolio.blog.web.dto.posts.PostsResponseDto;
 import me.portfolio.blog.web.dto.posts.PostsSaveRequestDto;
@@ -10,7 +13,10 @@ import me.portfolio.blog.domain.posts.PostsRepository;
 import me.portfolio.blog.domain.posts.PostsRepositorySupport;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +26,7 @@ public class PostsService {
 
     private final PostsRepository postsRepository;
     private final PostsRepositorySupport postsRepositorySupport;
+    private final UserRepository userRepository;
 
     //포스트 리스트 조회
     @Transactional(readOnly = true)
@@ -41,8 +48,39 @@ public class PostsService {
 
     //포스트 등록
     @Transactional
-    public Long addPost(PostsSaveRequestDto requestDto){
-        return postsRepository.save(requestDto.toEntity()).getId();
+    public Long addPost(SessionUser sessionUser, MultipartFile image, String title, String content) throws IOException {
+        //세션 유저 정보 불러오기
+        User user = userRepository.findByEmail(sessionUser.getEmail()).get();
+
+        //파일 저장
+        if (image == null) {
+            PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+                    .title(title)
+                    .user(user)
+                    .content(content)
+                    .imageUrl("/images/default.png")
+                    .build();
+
+            return postsRepository.save(requestDto.toEntity()).getId();
+
+        } else {
+            //로컬 테스트용
+            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
+            String filePath = baseDir + "\\" + image.getOriginalFilename();
+            //실제 리눅스 서버 배포용
+//            String baseDir = "/home/ec2-user/portfolio-blog/blog-frontend/build/images";
+//            String filePath = baseDir + "/" + image.getOriginalFilename();
+            image.transferTo(new File(filePath));
+            String fileName = image.getOriginalFilename();
+
+            PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+                    .title(title)
+                    .user(user)
+                    .content(content)
+                    .imageUrl("/images/" + fileName)
+                    .build();
+            return postsRepository.save(requestDto.toEntity()).getId();
+        }
     }
 
     //포스트 조회
