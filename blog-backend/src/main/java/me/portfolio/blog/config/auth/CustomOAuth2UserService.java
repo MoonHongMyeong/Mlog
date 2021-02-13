@@ -3,8 +3,10 @@ package me.portfolio.blog.config.auth;
 import lombok.RequiredArgsConstructor;
 import me.portfolio.blog.config.auth.dto.OAuthAttributes;
 import me.portfolio.blog.config.auth.dto.SessionUser;
+import me.portfolio.blog.domain.categories.CategoriesRepository;
 import me.portfolio.blog.domain.user.User;
 import me.portfolio.blog.domain.user.UserRepository;
+import me.portfolio.blog.web.dto.categories.CategoriesSaveRequestDto;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -21,7 +23,9 @@ import java.util.Collections;
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final UserRepository userRepository;
+    private final CategoriesRepository categoriesRepository;
     private final HttpSession httpSession;
+    private OAuthAttributes attributes;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -45,6 +49,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 
     private User saveOrUpdate(OAuthAttributes attributes) {
+        this.attributes = attributes;
         User user = userRepository.findByEmail(attributes.getEmail())
                 .map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
                 .orElse(attributes.toEntity());

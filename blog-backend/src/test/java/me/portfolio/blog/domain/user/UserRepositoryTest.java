@@ -37,5 +37,8 @@ public class UserRepositoryTest {
 
         assertThat(guestUser.getEmail().equals("guest@test.com"));
         assertThat(guestUser.getRole().equals(Role.GUEST));
+
+        userRepository.delete(user);
+        userRepository.delete(guestUser);
     }
 }

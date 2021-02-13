@@ -112,9 +112,10 @@ public class UserApiControllerTest {
         userRepository.delete(guestUser);
     }
 
+    //사용자 유저 탈퇴로 이름바꾸자
     @Test
     @WithMockUser(roles = "USER")
-    public void 유저_탈퇴() throws Exception {
+    public void 사용자_유저_탈퇴() throws Exception {
         User user = userRepository.findByEmail("test@test.com").get();
 
         String url = "http://localhost:" + port + "/api/v2/user/" + user.getId();

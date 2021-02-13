@@ -1,6 +1,7 @@
 package me.portfolio.blog.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.domain.comments.Comments;
 import me.portfolio.blog.domain.comments.CommentsRepository;
 import me.portfolio.blog.domain.posts.Posts;
@@ -12,10 +13,14 @@ import me.portfolio.blog.web.dto.comments.CommentsSaveRequestDto;
 import me.portfolio.blog.web.dto.comments.CommentsUpdateRequestDto;
 import me.portfolio.blog.web.dto.comments.RepliesSaveRequestDto;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +32,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("local")
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CommentsApiControllerTest {
 
     @LocalServerPort
@@ -47,7 +55,7 @@ public class CommentsApiControllerTest {
 
     private MockMvc mvc;
 
-    @AfterEach
+    @AfterAll
     public void cleanup(){
         User user = userRepository.findByEmail("test@test.com").get();
         User guestUser = userRepository.findByEmail("guest@test.com").get();
@@ -55,7 +63,7 @@ public class CommentsApiControllerTest {
         userRepository.delete(guestUser);
     }
 
-    @BeforeEach
+    @BeforeAll
     public void setup() {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
@@ -67,32 +75,41 @@ public class CommentsApiControllerTest {
                 .name("test user")
                 .picture("/images/default")
                 .role(Role.USER).build());
-
+        System.out.println("=============save testUser===============");
         User guestUser = userRepository.save(User.builder()
                 .email("guest@test.com")
                 .name("guest user")
                 .picture("/images/default")
-                .role(Role.USER).build());
+                .role(Role.GUEST).build());
+        System.out.println("============save guestUser===============");
     }
 
     @Test
     @WithMockUser(roles = "USER")
     public void 사용자_Comments_등록() throws Exception {
+        User user = userRepository.findByEmail("test@test.com").get();
+        System.out.println("==============get testUser===============");
+
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .content("test post content")
                 .build());
-
+        System.out.println("================save posts=======================");
         CommentsSaveRequestDto requestDto = CommentsSaveRequestDto.builder()
                 .posts(post)
                 .body("test comment body")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .build();
-
+        System.out.println("===================requestDto build==================");
         String url = "http://localhost:" + port + "/api/v2/posts/" + post.getId() + "/comments";
 
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", new SessionUser(user));
+        System.out.println("==================set Session+========================");
+
         mvc.perform(post(url).contentType(MediaType.APPLICATION_JSON)
+                .session(session)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
@@ -100,23 +117,29 @@ public class CommentsApiControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    @WithMockUser(roles = "GUEST")
     public void 게스트_Comments_등록() throws Exception {
+        User guestUser = userRepository.findByEmail("guest@test.com").get();
+
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(guestUser)
                 .content("test post content")
                 .build());
 
         CommentsSaveRequestDto requestDto = CommentsSaveRequestDto.builder()
                 .posts(post)
                 .body("test comment body")
-                .user(userRepository.findByEmail("guest@test.com").get())
+                .user(guestUser)
                 .build();
 
         String url = "http://localhost:" + port + "/api/v2/posts/" + post.getId() + "/comments";
 
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", new SessionUser(guestUser));
+
         mvc.perform(post(url).contentType(MediaType.APPLICATION_JSON)
+                .session(session)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
@@ -126,15 +149,17 @@ public class CommentsApiControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void 사용자_Comments_수정() throws Exception {
+        User user = userRepository.findByEmail("test@test.com").get();
+
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .content("test post content")
                 .build());
 
         Comments savedComments = commentsRepository.save(Comments.builder()
                 .body("body")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .posts(post)
                 .build());
 
@@ -157,15 +182,16 @@ public class CommentsApiControllerTest {
     @Test
     @WithMockUser(roles = "GUEST")
     public void 게스트_Comments_수정() throws Exception {
+        User guestUser = userRepository.findByEmail("guest@test.com").get();
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(guestUser)
                 .content("test post content")
                 .build());
 
         Comments savedComments = commentsRepository.save(Comments.builder()
                 .body("body")
-                .user(userRepository.findByEmail("guest@test.com").get())
+                .user(guestUser)
                 .posts(post)
                 .build());
 
@@ -188,14 +214,16 @@ public class CommentsApiControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void 사용자_Comments_삭제() throws Exception {
+        User user = userRepository.findByEmail("test@test.com").get();
+
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .content("test post content")
                 .build());
 
         Comments savedComments = commentsRepository.save(Comments.builder()
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .body("body")
                 .posts(post)
                 .build());
@@ -211,14 +239,15 @@ public class CommentsApiControllerTest {
     @Test
     @WithMockUser(roles = "GUEST")
     public void 게스트_Comments_삭제() throws Exception {
+        User guestUser = userRepository.findByEmail("guest@test.com").get();
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(guestUser)
                 .content("test post content")
                 .build());
 
         Comments savedComments = commentsRepository.save(Comments.builder()
-                .user(userRepository.findByEmail("guest@test.com").get())
+                .user(guestUser)
                 .body("body")
                 .posts(post)
                 .build());
@@ -234,20 +263,22 @@ public class CommentsApiControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void 사용자_Replies_등록() throws Exception {
+        User user = userRepository.findByEmail("test@test.com").get();
+
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .content("test post content")
                 .build());
 
         Comments parents = commentsRepository.save(Comments.builder()
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .body("parents body")
                 .posts(post)
                 .build());
 
         RepliesSaveRequestDto children = RepliesSaveRequestDto.builder()
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .body("children body")
                 .posts(post)
                 .parents(parents)
@@ -256,7 +287,11 @@ public class CommentsApiControllerTest {
         Long parent_id = parents.getId();
         String url = "http://localhost:" + port + "api/v2/posts/" + post.getId() + "/comments/" + parent_id;
 
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", new SessionUser(user));
+
         mvc.perform(post(url).contentType(MediaType.APPLICATION_JSON)
+                .session(session)
                 .content(new ObjectMapper().writeValueAsString(children)))
                 .andExpect(status().is(200));
 
@@ -266,20 +301,21 @@ public class CommentsApiControllerTest {
     @Test
     @WithMockUser(roles = "GUEST")
     public void 게스트_Replies_등록() throws Exception {
+        User guestUser = userRepository.findByEmail("guest@test.com").get();
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(guestUser)
                 .content("test post content")
                 .build());
 
         Comments parents = commentsRepository.save(Comments.builder()
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(guestUser)
                 .body("parents body")
                 .posts(post)
                 .build());
 
         RepliesSaveRequestDto children = RepliesSaveRequestDto.builder()
-                .user(userRepository.findByEmail("guest@test.com").get())
+                .user(guestUser)
                 .body("children body")
                 .posts(post)
                 .parents(parents)
@@ -288,7 +324,11 @@ public class CommentsApiControllerTest {
         Long parent_id = parents.getId();
         String url = "http://localhost:" + port + "api/v2/posts/" + post.getId() + "/comments/" + parent_id;
 
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", new SessionUser(guestUser));
+
         mvc.perform(post(url).contentType(MediaType.APPLICATION_JSON)
+                .session(session)
                 .content(new ObjectMapper().writeValueAsString(children)))
                 .andExpect(status().is(200));
 

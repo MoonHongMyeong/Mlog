@@ -25,24 +25,24 @@ public class CommentsApiController {
 
     //댓글 리스트 조회
     @GetMapping("/{postsId}/comments")
-    public List<CommentsResponseDto> getCommentList(@PathVariable Long postsId) throws Exception {
+    public List<CommentsResponseDto> getCommentList(@PathVariable(name = "postsId") Long postsId) throws Exception {
         return commentsService.getCommentList(postsId);
     }
 
     //댓글 등록
     @PostMapping("/{postsId}/comments")
     public ResponseEntity<CommentsResponseDto> addComment(@LoginUser SessionUser sessionUser,
-                                                          @PathVariable Long postsId,
+                                                          @PathVariable(name = "postsId") Long postsId,
                                                           @RequestBody CommentsSaveRequestDto requestDto) throws Exception {
         CommentsResponseDto responseDto = commentsService.addComment(sessionUser, postsId, requestDto);
         return new ResponseEntity<CommentsResponseDto>(responseDto, HttpStatus.OK);
     }
 
     //대댓글 등록
-    @PostMapping("/{postId}/comments/{parentsId}")
+    @PostMapping("/{postsId}/comments/{parentsId}")
     public ResponseEntity<CommentsResponseDto> addReply(@LoginUser SessionUser sessionUser,
-                                                        @PathVariable Long postId,
-                                                        @PathVariable Long parentsId,
+                                                        @PathVariable(name = "postsId") Long postId,
+                                                        @PathVariable(name = "parentsId") Long parentsId,
                                                         @RequestBody RepliesSaveRequestDto requestDto) {
         CommentsResponseDto responseDto = commentsService.addReply(sessionUser, postId, parentsId, requestDto);
         return new ResponseEntity<CommentsResponseDto>(responseDto, HttpStatus.OK);
@@ -50,13 +50,13 @@ public class CommentsApiController {
 
     //댓글 수정
     @PutMapping("/{postsId}/comments/{commentsId}")
-    public Long updateComment(@PathVariable Long commentsId, @RequestBody CommentsUpdateRequestDto requestDto) throws Exception {
+    public Long updateComment(@PathVariable(name = "postsId") Long postId, @PathVariable(name = "commentsId") Long commentsId, @RequestBody CommentsUpdateRequestDto requestDto) throws Exception {
         return commentsService.updateComment(commentsId, requestDto);
     }
 
     //댓글 삭제
     @DeleteMapping("/{postsId}/comments/{commentsId}")
-    public Long deleteComment(@PathVariable Long postsId, @PathVariable Long commentsId) throws Exception {
+    public Long deleteComment(@PathVariable(name = "postsId") Long postsId, @PathVariable(name = "commentsId") Long commentsId) throws Exception {
         commentsService.deleteComment(commentsId);
         return commentsId;
     }

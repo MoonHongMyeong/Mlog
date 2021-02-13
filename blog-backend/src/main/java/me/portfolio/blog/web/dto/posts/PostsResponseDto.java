@@ -2,6 +2,7 @@ package me.portfolio.blog.web.dto.posts;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.portfolio.blog.domain.categories.Categories;
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.user.User;
 
@@ -14,6 +15,7 @@ public class PostsResponseDto {
     private String title;
     private String content;
     private User user;
+    private Categories categories;
     private String imageUrl;
     private LocalDateTime modifiedDate;
 
@@ -22,6 +24,7 @@ public class PostsResponseDto {
         this.title=entity.getTitle();
         this.content=entity.getContent();
         this.user=entity.getUser();
+        this.categories=entity.getCategories();
         this.imageUrl=entity.getImageUrl();
         this.modifiedDate=entity.getModifiedDate();
     }

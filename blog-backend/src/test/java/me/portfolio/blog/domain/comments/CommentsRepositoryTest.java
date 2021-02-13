@@ -5,9 +5,7 @@ import me.portfolio.blog.domain.posts.PostsRepository;
 import me.portfolio.blog.domain.user.Role;
 import me.portfolio.blog.domain.user.User;
 import me.portfolio.blog.domain.user.UserRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("local")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CommentsRepositoryTest {
 
     @Autowired
@@ -34,14 +33,14 @@ public class CommentsRepositoryTest {
     @Autowired
     private CommentsQueryRepository commentsQueryRepository;
 
-    @AfterEach
+    @AfterAll
     public void cleanup(){
         List<User> userList = userRepository.findAll();
         User testUser = userList.get((userList.size()-1));
         userRepository.deleteById(testUser.getId());
     }
 
-    @BeforeEach
+    @BeforeAll
     public void setUser(){
         User testUser = userRepository.save(User.builder()
                 .email("test@test.com")
@@ -143,11 +142,11 @@ public class CommentsRepositoryTest {
         assertThat(parents.getModifiedDate()).isAtLeast(now);
 
         List<Comments> children = commentsQueryRepository.findByParents(comments);
-        assertEquals(children.get(0).getPosts().getId(), parents.getPosts().getId());
-        assertEquals(children.get(0).getBody(), "test replies body");
-        assertEquals(children.get(0).getUser().getEmail(), "test@test.com");
-        assertEquals(children.get(0).getParents().getId(), parents.getId());
-        assertThat(children.get(0).getModifiedDate()).isAtLeast(now);
+        assertEquals(children.get((children.size()-1)).getPosts().getId(), parents.getPosts().getId());
+        assertEquals(children.get((children.size()-1)).getBody(), "test replies body");
+        assertEquals(children.get((children.size()-1)).getUser().getEmail(), "test@test.com");
+        assertEquals(children.get((children.size()-1)).getParents().getId(), parents.getId());
+        assertThat(children.get((children.size()-1)).getModifiedDate()).isAtLeast(now);
 
         postsRepository.deleteById(post.getId());
     }

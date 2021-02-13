@@ -3,15 +3,14 @@ package me.portfolio.blog.web;
 import lombok.RequiredArgsConstructor;
 import me.portfolio.blog.config.auth.LoginUser;
 import me.portfolio.blog.config.auth.dto.SessionUser;
-import me.portfolio.blog.domain.user.User;
+import me.portfolio.blog.service.CategoriesService;
 import me.portfolio.blog.service.PostsService;
+import me.portfolio.blog.web.dto.categories.CategoriesResponseDto;
 import me.portfolio.blog.web.dto.posts.PostsListResponseDto;
 import me.portfolio.blog.web.dto.posts.PostsResponseDto;
-import me.portfolio.blog.web.dto.posts.PostsSaveRequestDto;
 import me.portfolio.blog.web.dto.posts.PostsUpdateRequestDto;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
 
@@ -22,6 +21,7 @@ import java.util.List;
 public class PostsApiController {
 
     private final PostsService postsService;
+    private final CategoriesService categoriesService;
 
     //포스트 리스트 조회
     @GetMapping("/posts")
@@ -32,6 +32,11 @@ public class PostsApiController {
     @GetMapping("/posts/search")
     public List<PostsListResponseDto> getSearchedList(@RequestParam("search") String title) throws Exception {
         return postsService.getListSearchTitle(title);
+    }
+    //포스트 등록 폼으로 이동 시 현재 로그인한 유저의 카테고리 정보를 불러옴
+    @GetMapping("/posts/form")
+    public List<CategoriesResponseDto> getUserCategoryList(@LoginUser SessionUser sessionUser) throws Exception{
+        return categoriesService.getUserCategories(sessionUser);
     }
 
     //포스트 등록
@@ -45,19 +50,19 @@ public class PostsApiController {
 
     //포스트 조회
     @GetMapping("/posts/{postId}")
-    public PostsResponseDto getPost(@PathVariable Long postId) throws Exception {
+    public PostsResponseDto getPost(@PathVariable(name = "postId") Long postId) throws Exception {
         return postsService.getPost(postId);
     }
 
     //포스트 수정
     @PutMapping("/posts/{postId}")
-    public Long updatePost(@PathVariable Long postId, @RequestBody PostsUpdateRequestDto requestDto) throws Exception {
+    public Long updatePost(@PathVariable(name = "postId") Long postId, @RequestBody PostsUpdateRequestDto requestDto) throws Exception {
         return postsService.updatePost(postId, requestDto);
     }
 
     //포스트 삭제
     @DeleteMapping("/posts/{postId}")
-    public String deletePost(@PathVariable Long postId) throws Exception {
+    public String deletePost(@PathVariable(name = "postId") Long postId) throws Exception {
         postsService.deletePost(postId);
         return postId + "번 포스트 삭제 완료";
     }
