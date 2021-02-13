@@ -21,7 +21,7 @@ public class Comments extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "posts_id", nullable = false)
     private Posts posts;
 
     @Column(nullable = false)
@@ -31,7 +31,7 @@ public class Comments extends BaseTimeEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name="parents_id", referencedColumnName = "comments_id", columnDefinition = "bigint default 0")
     private Comments parents;
 

@@ -1,6 +1,7 @@
 package me.portfolio.blog.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
 import me.portfolio.blog.domain.user.Role;
@@ -8,9 +9,7 @@ import me.portfolio.blog.domain.user.User;
 import me.portfolio.blog.domain.user.UserRepository;
 import me.portfolio.blog.web.dto.posts.PostsSaveRequestDto;
 import me.portfolio.blog.web.dto.posts.PostsUpdateRequestDto;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PostsApiControllerTest {
 
     @LocalServerPort
@@ -60,14 +60,14 @@ public class PostsApiControllerTest {
 
     private MockMvc mvc;
 
-    @AfterEach
+    @AfterAll
     public void cleanup(){
         List<User> userList = userRepository.findAll();
         User testUser = userList.get((userList.size()-1));
         userRepository.deleteById(testUser.getId());
     }
 
-    @BeforeEach
+    @BeforeAll
     public void setup() {
         mvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(springSecurity())
@@ -85,19 +85,20 @@ public class PostsApiControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void Posts_등록_파일있음() throws Exception {
+        User user = userRepository.findByEmail("test@test.com").get();
         String content = "test posts content";
         String title = "test posts title";
 
         PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
                 .title(title)
                 .content(content)
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .build();
 
         String url = "http://localhost:" + port + "/api/v2/posts";
 
         MockHttpSession mockHttpSession = new MockHttpSession();
-        mockHttpSession.setAttribute("user", userRepository.findByEmail("test@test.com").get());
+        mockHttpSession.setAttribute("user", new SessionUser(user));
 
         mvc.perform(multipart(url).file(new MockMultipartFile("image","test","image/png","/test.png".getBytes()))
                 .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -123,12 +124,13 @@ public class PostsApiControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void Posts_등록_파일없음() throws Exception {
+        User user = userRepository.findByEmail("test@test.com").get();
         String content = "test posts content";
         String title = "test posts title";
         String url = "http://localhost:" + port + "/api/v2/posts";
 
         MockHttpSession mockHttpSession = new MockHttpSession();
-        mockHttpSession.setAttribute("user", userRepository.findByEmail("test@test.com").get());
+        mockHttpSession.setAttribute("user", new SessionUser(user));
 
         mvc.perform(multipart(url)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -147,11 +149,11 @@ public class PostsApiControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void Posts_수정() throws Exception {
-
+        User user = userRepository.findByEmail("test@test.com").get();
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .build());
 
         Long updateId = savedPosts.getId();
@@ -185,10 +187,11 @@ public class PostsApiControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void Posts_삭제() throws Exception {
+        User user = userRepository.findByEmail("test@test.com").get();
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .user(userRepository.findByEmail("test@test.com").get())
+                .user(user)
                 .build());
 
         Long id = savedPosts.getId();

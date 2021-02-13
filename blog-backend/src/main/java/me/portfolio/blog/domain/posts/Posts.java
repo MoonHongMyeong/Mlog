@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.portfolio.blog.domain.BaseTimeEntity;
+import me.portfolio.blog.domain.categories.Categories;
 import me.portfolio.blog.domain.comments.Comments;
 import me.portfolio.blog.domain.user.User;
 
@@ -34,16 +35,21 @@ public class Posts extends BaseTimeEntity {
     @Column(columnDefinition = "varchar(255) default '/images/default.jpg'")
     private String imageUrl;
 
+    @ManyToOne
+    @JoinColumn(name="categories_id", referencedColumnName = "categories_id")
+    private Categories categories;
+
     @JsonIgnore
     @OneToMany(mappedBy = "posts", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Comments> commentsList;
 
     @Builder
-    public Posts(String title, String content, String imageUrl, User user){
+    public Posts(String title, String content, String imageUrl, User user, Categories categories){
         this.title=title;
         this.content=content;
         this.imageUrl=imageUrl;
         this.user=user;
+        this.categories=categories;
     }
 
     public void update(String title, String content){
