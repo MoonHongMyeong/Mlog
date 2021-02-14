@@ -24,6 +24,4 @@ public class CategoriesRepositorySupport extends QuerydslRepositorySupport {
                 .fetch();
     }
 
-    //유저 가입(등록)시 자동으로 카테고리에 "일반"이라는 카테고리명으로 테이블에 넣기 이걸 여기서 해야되나? UserRepositorySupport 를 만들어서 쿼리를 같이 쏴주는게 맞지않나?
-    //feature-user에서 해결하기로 함
 }
