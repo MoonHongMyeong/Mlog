@@ -28,15 +28,15 @@ public class Comments extends BaseTimeEntity {
     private String body;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="parents_id", referencedColumnName = "comments_id", columnDefinition = "bigint default 0")
+    @JoinColumn(name="parents_id")
     private Comments parents;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "parents", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parents", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Comments> replies;
 
     @Builder

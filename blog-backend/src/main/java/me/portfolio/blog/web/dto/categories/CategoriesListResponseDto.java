@@ -15,6 +15,6 @@ public class CategoriesListResponseDto {
 
     public CategoriesListResponseDto(Categories entity){
         this.name= entity.getName();
-        this.postInCategory=entity.getPostsInCategory();
+        this.postInCategory=entity.getPostsList();
     }
 }

@@ -1,6 +1,5 @@
 package me.portfolio.blog.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.portfolio.blog.domain.user.Role;
 import me.portfolio.blog.domain.user.User;

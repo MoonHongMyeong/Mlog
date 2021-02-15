@@ -44,11 +44,11 @@ public class CommentsService {
     public CommentsResponseDto addComment(SessionUser sessionUser, Long postId, CommentsSaveRequestDto requestDto) {
 
         Posts postItem = postsRepository.findById(postId).get();
-
+        User user = userRepository.findByEmail(sessionUser.getEmail()).get();
         CommentsSaveRequestDto saveRequestDto
                 = CommentsSaveRequestDto.builder()
                 .posts(postItem)
-                .user(userRepository.findByEmail(sessionUser.getEmail()).get())
+                .user(user)
                 .body(requestDto.getBody())
                 .build();
 

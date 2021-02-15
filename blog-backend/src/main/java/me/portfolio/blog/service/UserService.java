@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+
     private final UserRepositorySupport userRepositorySupport;
 
     //회원 정보 조회

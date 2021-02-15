@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import me.portfolio.blog.domain.BaseTimeEntity;
 import me.portfolio.blog.domain.categories.Categories;
 import me.portfolio.blog.domain.comments.Comments;
+import me.portfolio.blog.domain.like.LikeVal;
 import me.portfolio.blog.domain.posts.Posts;
 
 import javax.persistence.*;
@@ -35,17 +36,20 @@ public class User extends BaseTimeEntity {
     private Role role;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Categories.class ,mappedBy = "user", cascade = CascadeType.ALL)
     private List<Categories> categoriesList;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Posts.class, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Posts> postsList;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Comments.class, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comments> commentsList;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = LikeVal.class, mappedBy = "user", cascade = CascadeType.ALL)
+    private List<LikeVal> likeValList;
 
     @Builder
     public User(String name, String email, String picture, Role role){

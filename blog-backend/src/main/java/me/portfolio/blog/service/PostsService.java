@@ -2,6 +2,11 @@ package me.portfolio.blog.service;
 
 import lombok.RequiredArgsConstructor;
 import me.portfolio.blog.config.auth.dto.SessionUser;
+import me.portfolio.blog.domain.categories.Categories;
+import me.portfolio.blog.domain.categories.CategoriesRepositorySupport;
+import me.portfolio.blog.domain.like.LikeVal;
+import me.portfolio.blog.domain.like.LikeValRepository;
+import me.portfolio.blog.domain.like.LikeValRepositorySupport;
 import me.portfolio.blog.domain.user.User;
 import me.portfolio.blog.domain.user.UserRepository;
 import me.portfolio.blog.web.dto.posts.PostsListResponseDto;
@@ -27,6 +32,9 @@ public class PostsService {
     private final PostsRepository postsRepository;
     private final PostsRepositorySupport postsRepositorySupport;
     private final UserRepository userRepository;
+    private final CategoriesRepositorySupport categoriesRepositorySupport;
+    private final LikeValRepository likeValRepository;
+    private final LikeValRepositorySupport likeValRepositorySupport;
 
     //포스트 리스트 조회
     @Transactional(readOnly = true)
@@ -48,10 +56,10 @@ public class PostsService {
 
     //포스트 등록
     @Transactional
-    public Long addPost(SessionUser sessionUser, MultipartFile image, String title, String content) throws IOException {
+    public Long addPost(SessionUser sessionUser, MultipartFile image, String title, String content, String categoryName) throws IOException {
         //세션 유저 정보 불러오기
         User user = userRepository.findByEmail(sessionUser.getEmail()).get();
-
+        Categories categories = categoriesRepositorySupport.findByUserAndName(sessionUser.getId(),categoryName);
         //파일 저장
         if (image == null) {
             PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
@@ -59,6 +67,8 @@ public class PostsService {
                     .user(user)
                     .content(content)
                     .imageUrl("/images/default.png")
+                    .categories(categories)
+                    .likeCount(0)
                     .build();
 
             return postsRepository.save(requestDto.toEntity()).getId();
@@ -78,6 +88,8 @@ public class PostsService {
                     .user(user)
                     .content(content)
                     .imageUrl("/images/" + fileName)
+                    .categories(categories)
+                    .likeCount(0)
                     .build();
             return postsRepository.save(requestDto.toEntity()).getId();
         }
@@ -108,6 +120,31 @@ public class PostsService {
                 ()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));
         postsRepository.delete(posts);
     }
+    //좋아요
+    public int plusLikeCount(Long postId, SessionUser sessionUser) {
+        User user = userRepository.findByEmail(sessionUser.getEmail()).get();
+        Posts post = postsRepository.findById(postId).get();
 
+        LikeVal likeVal = likeValRepositorySupport.checkLikeWithUser(user, post);
+        if (likeVal == null){
+            likeValRepository.save(LikeVal.builder()
+                    .user(user)
+                    .posts(post)
+                    .build());
+            post.plusCount();
+        }
+        return post.getLikeCount();
+    }
 
+    public int minusLikeCount(Long postId, SessionUser sessionUser) {
+        User user = userRepository.findByEmail(sessionUser.getEmail()).get();
+        Posts post = postsRepository.findById(postId).get();
+
+        LikeVal likeVal = likeValRepositorySupport.checkLikeWithUser(user, post);
+        if(likeVal != null){
+            post.minusCount();
+            likeValRepository.delete(likeVal);
+        }
+        return post.getLikeCount();
+    }
 }

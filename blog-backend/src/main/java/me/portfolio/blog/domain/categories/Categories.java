@@ -23,14 +23,13 @@ public class Categories extends BaseTimeEntity {
     @Column(length = 50, nullable = false)
     private String name;
 
-    // xxx 유저의 카테고리 구분짓기 위해서
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "categories", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Posts> postsInCategory;
+    @OneToMany(targetEntity = Posts.class, mappedBy = "categories", cascade = CascadeType.ALL)
+    private List<Posts> postsList;
 
     @Builder
     public Categories(String name, User user){

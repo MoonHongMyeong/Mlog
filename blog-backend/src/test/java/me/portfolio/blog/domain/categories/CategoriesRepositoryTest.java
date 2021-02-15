@@ -1,5 +1,7 @@
 package me.portfolio.blog.domain.categories;
 
+import me.portfolio.blog.domain.posts.Posts;
+import me.portfolio.blog.domain.posts.PostsRepository;
 import me.portfolio.blog.domain.user.Role;
 import me.portfolio.blog.domain.user.User;
 import me.portfolio.blog.domain.user.UserRepository;
@@ -21,13 +23,19 @@ public class CategoriesRepositoryTest {
     private CategoriesRepository categoriesRepository;
 
     @Autowired
+    private CategoriesRepositorySupport categoriesRepositorySupport;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PostsRepository postsRepository;
 
     @AfterAll
     public void cleanup(){
         List<User> userList = userRepository.findAll();
         User testUser = userList.get((userList.size()-1));
-        userRepository.deleteById(testUser.getId());
+        userRepository.delete(testUser);
     }
 
     @BeforeAll
@@ -60,5 +68,58 @@ public class CategoriesRepositoryTest {
 
         categoriesRepository.delete(category1);
         categoriesRepository.delete(category2);
+    }
+
+    @Test
+    public void 해당유저의_카테고리이름_검색(){
+        User testUser = userRepository.findByEmail("test@test.com").get();
+        String name = "test category";
+        categoriesRepository.save(Categories.builder()
+                .name(name)
+                .user(testUser)
+                .build());
+        categoriesRepository.save(Categories.builder()
+                .name("test2category")
+                .user(testUser)
+                .build());
+
+        Categories searchedCategory = categoriesRepositorySupport.findByUserAndName(testUser.getId(), name);
+        assertEquals(searchedCategory.getName(), name);
+    }
+
+    //해당 유저의 카테고리 목록과 그 카테고리 안에 있는 포스트들의 갯수 구하기
+    @Test
+    public void 유저의_카테고리목록_포스트(){
+        User testUser = userRepository.findByEmail("test@test.com").get();
+        String name = "test category";
+        Categories category = categoriesRepository.save(Categories.builder()
+                .name(name)
+                .user(testUser)
+                .build());
+        postsRepository.save(Posts.builder()
+                .categories(category)
+                .title("testTitle")
+                .imageUrl("testImageURL")
+                .content("testContent")
+                .user(testUser)
+                .build());
+        postsRepository.save(Posts.builder()
+                .categories(category)
+                .title("testTitle")
+                .imageUrl("testImageURL")
+                .content("testContent")
+                .user(testUser)
+                .build());
+        postsRepository.save(Posts.builder()
+                .categories(category)
+                .title("testTitle")
+                .imageUrl("testImageURL")
+                .content("testContent")
+                .user(testUser)
+                .build());
+
+        List<Categories> searchedCategories = categoriesRepositorySupport.findByUserId(testUser.getId());
+        Categories searchedCategory = searchedCategories.get(0);
+        assertEquals(searchedCategory.getName(), name);
     }
 }

@@ -13,16 +13,18 @@ public class PostsSaveRequestDto {
     private String title;
     private String content;
     private User user;
+    private int likeCount;
     private Categories categories;
     private String imageUrl;
 
     @Builder
-    public PostsSaveRequestDto(String title, String content, User user,String imageUrl, Categories categories){
+    public PostsSaveRequestDto(String title, String content, User user,String imageUrl, Categories categories, int likeCount){
         this.title=title;
         this.content=content;
         this.user=user;
         this.categories=categories;
         this.imageUrl=imageUrl;
+        this.likeCount=likeCount;
     }
 
     public Posts toEntity(){
@@ -32,6 +34,7 @@ public class PostsSaveRequestDto {
                 .user(user)
                 .categories(categories)
                 .imageUrl(imageUrl)
+                .likeCount(likeCount)
                 .build();
     }
 
