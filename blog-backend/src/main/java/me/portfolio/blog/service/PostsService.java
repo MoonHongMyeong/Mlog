@@ -142,8 +142,8 @@ public class PostsService {
 
         LikeVal likeVal = likeValRepositorySupport.checkLikeWithUser(user, post);
         if(likeVal != null){
-            likeValRepository.delete(likeVal);
             post.minusCount();
+            likeValRepository.delete(likeVal);
         }
         return post.getLikeCount();
     }

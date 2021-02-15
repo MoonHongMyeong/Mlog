@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.domain.categories.Categories;
 import me.portfolio.blog.domain.categories.CategoriesRepository;
+import me.portfolio.blog.domain.like.LikeValRepository;
+import me.portfolio.blog.domain.like.LikeValRepositorySupport;
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
 import me.portfolio.blog.domain.user.Role;
@@ -53,13 +55,10 @@ public class PostsApiControllerTest {
 
     @Autowired
     private PostsRepository postsRepository;
-
     @Autowired
     private WebApplicationContext context;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private CategoriesRepository categoriesRepository;
 
@@ -90,8 +89,6 @@ public class PostsApiControllerTest {
                 .build());
     }
 
-
-    //passed
     @Test
     @WithMockUser(roles = "USER")
     public void Posts_등록_파일있음() throws Exception {
@@ -162,7 +159,6 @@ public class PostsApiControllerTest {
         postsRepository.deleteById(posts.getId());
     }
 
-    //passed
     @Test
     @WithMockUser(roles = "USER")
     public void Posts_수정() throws Exception {
@@ -174,6 +170,7 @@ public class PostsApiControllerTest {
                 .content("content")
                 .user(user)
                 .categories(category)
+                .likeCount(0)
                 .build());
 
         Long updateId = savedPosts.getId();
@@ -203,7 +200,6 @@ public class PostsApiControllerTest {
     }
 
 
-    //@AfterEach 주석 처리해야 테스트 패스함
     @Test
     @WithMockUser(roles = "USER")
     public void Posts_삭제() throws Exception {
@@ -215,6 +211,7 @@ public class PostsApiControllerTest {
                 .content("content")
                 .user(user)
                 .categories(category)
+                .likeCount(0)
                 .build());
 
         Long id = savedPosts.getId();
@@ -223,7 +220,4 @@ public class PostsApiControllerTest {
         mvc.perform(delete(url)).andExpect(status().isOk());
     }
 
-    //좋아요 추가
-
-    //좋아요 취소
 }
