@@ -19,9 +19,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.List;
+
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("local")
 @AutoConfigureMockMvc
@@ -80,6 +83,13 @@ public class UserApiControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
+
+        List<User> userList = userRepository.findAll();
+        User assertionUser = userList.get((userList.size()-2));
+
+        assertEquals(assertionUser.getName(), exceptedName);
+        assertEquals(assertionUser.getPicture(), exceptedPicture);
+
     }
 
     @Test
@@ -102,6 +112,11 @@ public class UserApiControllerTest {
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
+        List<User> userList = userRepository.findAll();
+        User assertionUser = userList.get((userList.size()-1));
+
+        assertEquals(assertionUser.getName(), exceptedName);
+        assertEquals(assertionUser.getPicture(), exceptedPicture);
     }
 
     @Test

@@ -33,6 +33,7 @@ import java.util.List;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("local")
 @AutoConfigureMockMvc
@@ -95,6 +96,11 @@ public class CategoriesApiControllerTest {
         mvc.perform(post(url).contentType(MediaType.APPLICATION_JSON)
                 .session(session).content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
+
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size()-1));
+
+        assertEquals(category.getName(), "test category");
     }
 
     @Test
@@ -118,6 +124,11 @@ public class CategoriesApiControllerTest {
         mvc.perform(put(url).contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
+
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size()-1));
+
+        assertEquals(category.getName(), exceptedName);
 
     }
 

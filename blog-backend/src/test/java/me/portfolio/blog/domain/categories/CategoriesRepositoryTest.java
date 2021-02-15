@@ -65,9 +65,6 @@ public class CategoriesRepositoryTest {
 
         assertEquals(category1.getName(), name);
         assertEquals(category2.getName(),"test2category");
-
-        categoriesRepository.delete(category1);
-        categoriesRepository.delete(category2);
     }
 
     @Test
@@ -87,7 +84,6 @@ public class CategoriesRepositoryTest {
         assertEquals(searchedCategory.getName(), name);
     }
 
-    //해당 유저의 카테고리 목록과 그 카테고리 안에 있는 포스트들의 갯수 구하기
     @Test
     public void 유저의_카테고리목록_포스트(){
         User testUser = userRepository.findByEmail("test@test.com").get();
@@ -118,7 +114,7 @@ public class CategoriesRepositoryTest {
                 .user(testUser)
                 .build());
 
-        List<Categories> searchedCategories = categoriesRepositorySupport.findByUserId(testUser.getId());
+        List<Categories> searchedCategories = categoriesRepositorySupport.findNameByUserId(testUser.getId());
         Categories searchedCategory = searchedCategories.get(0);
         assertEquals(searchedCategory.getName(), name);
     }

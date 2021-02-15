@@ -1,13 +1,17 @@
 package me.portfolio.blog.domain.user;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import me.portfolio.blog.domain.categories.Categories;
+import me.portfolio.blog.domain.categories.QCategories;
 import me.portfolio.blog.domain.comments.Comments;
 import me.portfolio.blog.domain.posts.Posts;
+import me.portfolio.blog.web.dto.categories.CategoriesListResponseDto;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static me.portfolio.blog.domain.categories.QCategories.categories;
 import static me.portfolio.blog.domain.posts.QPosts.posts;
 import static me.portfolio.blog.domain.comments.QComments.comments;
 @Repository
@@ -32,5 +36,10 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
                 .where(comments.user.id.eq(userId))
                 .fetch();
     }
-
+    //해당 유저의 카테고리 목록 조회
+    public List<Categories> CategoriesByUser(Long userId) {
+        return queryFactory.selectFrom(categories)
+                .where(categories.user.id.eq(userId))
+                .fetch();
+    }
 }
