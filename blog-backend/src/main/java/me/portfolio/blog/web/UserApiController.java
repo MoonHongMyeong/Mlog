@@ -50,10 +50,4 @@ public class UserApiController {
         userService.secedeUser(userId);
         return userId;
     }
-
-    //회원 정보 내 포스트
-
-    //회원 정보 내 댓글
-
-    //회원 정보 내 시리즈(카테고리)
 }

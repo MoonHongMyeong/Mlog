@@ -35,6 +35,7 @@ import java.util.List;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("local")
 @AutoConfigureMockMvc
@@ -86,25 +87,21 @@ public class CommentsApiControllerTest {
                 .name("test user")
                 .picture("/images/default")
                 .role(Role.USER).build());
-        System.out.println("=============save testUser===============");
         User guestUser = userRepository.save(User.builder()
                 .email("guest@test.com")
                 .name("guest user")
                 .picture("/images/default")
                 .role(Role.GUEST).build());
-        System.out.println("============save guestUser===============");
         Categories userCategory = categoriesRepository.save(Categories.builder()
                 .name("testUserCategory")
                 .user(testUser)
                 .build());
-        System.out.println("=============save testUser Category ================");
         Posts post = postsRepository.save(Posts.builder()
                 .title("test post title")
                 .user(testUser)
                 .content("test post content")
                 .categories(userCategory)
                 .build());
-        System.out.println("================save posts=======================");
     }
 
     @Test
@@ -112,10 +109,8 @@ public class CommentsApiControllerTest {
     public void 사용자_Comments_등록() throws Exception {
         List<User> userList = userRepository.findAll();
         User user = userList.get((userList.size()-2));
-        System.out.println("=======find user========");
         List<Posts> postsList = postsRepository.findAll();
         Posts post = postsList.get((postsList.size())-1);
-        System.out.println("=========find post=======");
         CommentsSaveRequestDto requestDto = CommentsSaveRequestDto.builder()
                 .body("test comment body")
                 .build();
@@ -128,6 +123,11 @@ public class CommentsApiControllerTest {
                 .session(session)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
+
+        List<Comments> commentsList = commentsRepository.findAll();
+        Comments comment = commentsList.get((commentsList.size()-1));
+
+        assertEquals(comment.getBody(), "test comment body");
 
     }
 
@@ -152,6 +152,11 @@ public class CommentsApiControllerTest {
                 .session(session)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
+
+        List<Comments> commentsList = commentsRepository.findAll();
+        Comments comment = commentsList.get((commentsList.size()-1));
+
+        assertEquals(comment.getBody(), "test comment body");
 
     }
 
@@ -180,6 +185,11 @@ public class CommentsApiControllerTest {
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
+        List<Comments> commentsList = commentsRepository.findAll();
+        Comments comment = commentsList.get((commentsList.size()-1));
+
+        assertEquals(comment.getBody(), exceptedBody);
+
     }
 
     @Test
@@ -207,6 +217,10 @@ public class CommentsApiControllerTest {
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
+        List<Comments> commentsList = commentsRepository.findAll();
+        Comments comment = commentsList.get((commentsList.size()-1));
+
+        assertEquals(comment.getBody(), exceptedBody);
     }
 
     @Test
@@ -273,6 +287,11 @@ public class CommentsApiControllerTest {
                 .session(session)
                 .content(new ObjectMapper().writeValueAsString(children)))
                 .andExpect(status().is(200));
+
+        List<Comments> commentsList = commentsRepository.findAll();
+        Comments comment = commentsList.get((commentsList.size()-1));
+
+        assertEquals(comment.getBody(), "children body");
     }
 
     @Test
@@ -303,6 +322,11 @@ public class CommentsApiControllerTest {
                 .session(session)
                 .content(new ObjectMapper().writeValueAsString(children)))
                 .andExpect(status().is(200));
+
+        List<Comments> commentsList = commentsRepository.findAll();
+        Comments comment = commentsList.get((commentsList.size()-1));
+
+        assertEquals(comment.getBody(), "children body");
 
     }
 

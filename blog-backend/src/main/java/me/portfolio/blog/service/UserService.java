@@ -39,7 +39,8 @@ public class UserService {
 
     //해당 유저의 댓글 목록 조회
     public List<CommentsResponseDto> getUsersComments(Long userId) {
-        return userRepositorySupport.CommentsByUser(userId).stream()
+        return userRepositorySupport.CommentsByUser(userId)
+                .stream()
                 .map(comment -> new CommentsResponseDto(comment))
                 .collect(Collectors.toList());
     }
@@ -57,5 +58,6 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
         userRepository.delete(user);
     }
+
 
 }

@@ -27,10 +27,7 @@ public class CategoriesService {
     public List<CategoriesListResponseDto> getCategories(Long userId) {
         //해당 유저의 카테고리 목록과 그 카테고리 안에 있는 포스트들 가져오기
         User user = userRepository.findById(userId).get();
-        return categoriesRepositorySupport.findByUserId(userId)
-                .stream()
-                .map(category -> new CategoriesListResponseDto(category))
-                .collect(Collectors.toList());
+        return categoriesRepositorySupport.findByUserId(userId);
     }
 
     //카테고리 등록
@@ -68,7 +65,7 @@ public class CategoriesService {
     @Transactional(readOnly = true)
     public List<CategoriesResponseDto> getUserCategories(SessionUser sessionUser) {
         User user = userRepository.findByEmail(sessionUser.getEmail()).get();
-        return categoriesRepositorySupport.findByUserId(user.getId())
+        return categoriesRepositorySupport.findNameByUserId(user.getId())
                 .stream()
                 .map(category -> new CategoriesResponseDto(category))
                 .collect(Collectors.toList());
