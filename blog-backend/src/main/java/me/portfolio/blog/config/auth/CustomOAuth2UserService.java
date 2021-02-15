@@ -23,7 +23,6 @@ import java.util.Collections;
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final UserRepository userRepository;
-    private final CategoriesRepository categoriesRepository;
     private final HttpSession httpSession;
     private OAuthAttributes attributes;
 

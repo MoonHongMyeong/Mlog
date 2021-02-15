@@ -33,9 +33,10 @@ public class PostsApiController {
     public List<PostsListResponseDto> getSearchedList(@RequestParam("search") String title) throws Exception {
         return postsService.getListSearchTitle(title);
     }
+
     //포스트 등록 폼으로 이동 시 현재 로그인한 유저의 카테고리 정보를 불러옴
     @GetMapping("/posts/form")
-    public List<CategoriesResponseDto> getUserCategoryList(@LoginUser SessionUser sessionUser) throws Exception{
+    public List<CategoriesResponseDto> getUserCategoryList(@LoginUser SessionUser sessionUser) throws Exception {
         return categoriesService.getUserCategories(sessionUser);
     }
 
@@ -44,8 +45,9 @@ public class PostsApiController {
     public Long addPost(@LoginUser SessionUser sessionUser,
                         @RequestParam(value = "image", required = false) MultipartFile image,
                         @RequestParam("title") String title,
-                        @RequestParam("content") String content) throws Exception {
-        return postsService.addPost(sessionUser, image, title, content);
+                        @RequestParam("content") String content,
+                        @RequestParam("category") String categoryName) throws Exception {
+        return postsService.addPost(sessionUser, image, title, content, categoryName);
     }
 
     //포스트 조회
@@ -65,6 +67,18 @@ public class PostsApiController {
     public String deletePost(@PathVariable(name = "postId") Long postId) throws Exception {
         postsService.deletePost(postId);
         return postId + "번 포스트 삭제 완료";
+    }
+
+    //좋아요
+    @GetMapping("/posts/{postId}/like")
+    public int plusLikeCount(@PathVariable(name = "postId") Long postId, @LoginUser SessionUser sessionUser) throws Exception {
+        return postsService.plusLikeCount(postId, sessionUser);
+    }
+
+    //좋아요 취소
+    @GetMapping("/posts/{postId}/disLike")
+    public int minusLikeCount(@PathVariable(name = "postId") Long postId, @LoginUser SessionUser sessionUser) throws Exception {
+        return postsService.minusLikeCount(postId, sessionUser);
     }
 
 

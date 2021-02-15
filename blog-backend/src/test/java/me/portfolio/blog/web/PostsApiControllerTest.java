@@ -2,6 +2,8 @@ package me.portfolio.blog.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.portfolio.blog.config.auth.dto.SessionUser;
+import me.portfolio.blog.domain.categories.Categories;
+import me.portfolio.blog.domain.categories.CategoriesRepository;
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
 import me.portfolio.blog.domain.user.Role;
@@ -58,12 +60,15 @@ public class PostsApiControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CategoriesRepository categoriesRepository;
+
     private MockMvc mvc;
 
     @AfterAll
-    public void cleanup(){
+    public void cleanup() {
         List<User> userList = userRepository.findAll();
-        User testUser = userList.get((userList.size()-1));
+        User testUser = userList.get((userList.size() - 1));
         userRepository.deleteById(testUser.getId());
     }
 
@@ -78,6 +83,11 @@ public class PostsApiControllerTest {
                 .name("test user")
                 .picture("/images/default")
                 .role(Role.USER).build());
+
+        Categories category = categoriesRepository.save(Categories.builder()
+                .name("testCategory")
+                .user(testUser)
+                .build());
     }
 
 
@@ -86,6 +96,8 @@ public class PostsApiControllerTest {
     @WithMockUser(roles = "USER")
     public void Posts_등록_파일있음() throws Exception {
         User user = userRepository.findByEmail("test@test.com").get();
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size() - 1));
         String content = "test posts content";
         String title = "test posts title";
 
@@ -93,6 +105,7 @@ public class PostsApiControllerTest {
                 .title(title)
                 .content(content)
                 .user(user)
+                .categories(category)
                 .build();
 
         String url = "http://localhost:" + port + "/api/v2/posts";
@@ -100,18 +113,19 @@ public class PostsApiControllerTest {
         MockHttpSession mockHttpSession = new MockHttpSession();
         mockHttpSession.setAttribute("user", new SessionUser(user));
 
-        mvc.perform(multipart(url).file(new MockMultipartFile("image","test","image/png","/test.png".getBytes()))
+        mvc.perform(multipart(url).file(new MockMultipartFile("image", "test", "image/png", "/test.png".getBytes()))
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .session(mockHttpSession)
                 .param("content", content)
-                .param("title", title))
+                .param("title", title)
+                .param("category", category.getName()))
                 .andDo(print())
                 .andExpect(status().isOk());
 
 
         List<Posts> all = postsRepository.findAll();
-        assertThat(all.get(0).getTitle()).isEqualTo(title);
-        assertThat(all.get(0).getContent()).isEqualTo(content);
+        assertThat(all.get((all.size() - 1)).getTitle()).isEqualTo(title);
+        assertThat(all.get((all.size() - 1)).getContent()).isEqualTo(content);
     }
 
     public static Resource getFileResource() throws Exception {
@@ -125,6 +139,8 @@ public class PostsApiControllerTest {
     @WithMockUser(roles = "USER")
     public void Posts_등록_파일없음() throws Exception {
         User user = userRepository.findByEmail("test@test.com").get();
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size() - 1));
         String content = "test posts content";
         String title = "test posts title";
         String url = "http://localhost:" + port + "/api/v2/posts";
@@ -136,7 +152,8 @@ public class PostsApiControllerTest {
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .session(mockHttpSession)
                 .param("content", content)
-                .param("title", title))
+                .param("title", title)
+                .param("category", category.getName()))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -150,10 +167,13 @@ public class PostsApiControllerTest {
     @WithMockUser(roles = "USER")
     public void Posts_수정() throws Exception {
         User user = userRepository.findByEmail("test@test.com").get();
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size() - 1));
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
                 .user(user)
+                .categories(category)
                 .build());
 
         Long updateId = savedPosts.getId();
@@ -188,10 +208,13 @@ public class PostsApiControllerTest {
     @WithMockUser(roles = "USER")
     public void Posts_삭제() throws Exception {
         User user = userRepository.findByEmail("test@test.com").get();
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size() - 1));
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
                 .user(user)
+                .categories(category)
                 .build());
 
         Long id = savedPosts.getId();
@@ -200,4 +223,7 @@ public class PostsApiControllerTest {
         mvc.perform(delete(url)).andExpect(status().isOk());
     }
 
+    //좋아요 추가
+
+    //좋아요 취소
 }

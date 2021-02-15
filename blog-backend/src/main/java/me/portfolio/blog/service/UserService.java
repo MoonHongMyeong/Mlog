@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    //회원 정보 조회
 
     //회원 수정
     @Transactional

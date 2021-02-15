@@ -2,6 +2,9 @@ package me.portfolio.blog.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.portfolio.blog.config.auth.dto.SessionUser;
+import me.portfolio.blog.domain.categories.Categories;
+import me.portfolio.blog.domain.categories.CategoriesRepository;
+import me.portfolio.blog.domain.categories.CategoriesRepositorySupport;
 import me.portfolio.blog.domain.comments.Comments;
 import me.portfolio.blog.domain.comments.CommentsRepository;
 import me.portfolio.blog.domain.posts.Posts;
@@ -26,6 +29,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.List;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -52,6 +57,12 @@ public class CommentsApiControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CategoriesRepository categoriesRepository;
+
+    @Autowired
+    private CategoriesRepositorySupport categoriesRepositorySupport;
 
     private MockMvc mvc;
 
@@ -82,55 +93,54 @@ public class CommentsApiControllerTest {
                 .picture("/images/default")
                 .role(Role.GUEST).build());
         System.out.println("============save guestUser===============");
+        Categories userCategory = categoriesRepository.save(Categories.builder()
+                .name("testUserCategory")
+                .user(testUser)
+                .build());
+        System.out.println("=============save testUser Category ================");
+        Posts post = postsRepository.save(Posts.builder()
+                .title("test post title")
+                .user(testUser)
+                .content("test post content")
+                .categories(userCategory)
+                .build());
+        System.out.println("================save posts=======================");
     }
 
     @Test
     @WithMockUser(roles = "USER")
     public void 사용자_Comments_등록() throws Exception {
-        User user = userRepository.findByEmail("test@test.com").get();
-        System.out.println("==============get testUser===============");
-
-        Posts post = postsRepository.save(Posts.builder()
-                .title("test post title")
-                .user(user)
-                .content("test post content")
-                .build());
-        System.out.println("================save posts=======================");
+        List<User> userList = userRepository.findAll();
+        User user = userList.get((userList.size()-2));
+        System.out.println("=======find user========");
+        List<Posts> postsList = postsRepository.findAll();
+        Posts post = postsList.get((postsList.size())-1);
+        System.out.println("=========find post=======");
         CommentsSaveRequestDto requestDto = CommentsSaveRequestDto.builder()
-                .posts(post)
                 .body("test comment body")
-                .user(user)
                 .build();
-        System.out.println("===================requestDto build==================");
-        String url = "http://localhost:" + port + "/api/v2/posts/" + post.getId() + "/comments";
 
+        String url = "http://localhost:" + port + "/api/v2/posts/" + post.getId() + "/comments";
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("user", new SessionUser(user));
-        System.out.println("==================set Session+========================");
 
         mvc.perform(post(url).contentType(MediaType.APPLICATION_JSON)
                 .session(session)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
-        postsRepository.deleteById(post.getId());
     }
 
     @Test
     @WithMockUser(roles = "GUEST")
     public void 게스트_Comments_등록() throws Exception {
-        User guestUser = userRepository.findByEmail("guest@test.com").get();
-
-        Posts post = postsRepository.save(Posts.builder()
-                .title("test post title")
-                .user(guestUser)
-                .content("test post content")
-                .build());
+        List<User> userList = userRepository.findAll();
+        User guestUser = userList.get((userList.size()-2));
+        List<Posts> postsList = postsRepository.findAll();
+        Posts post = postsList.get((postsList.size())-1);
 
         CommentsSaveRequestDto requestDto = CommentsSaveRequestDto.builder()
-                .posts(post)
                 .body("test comment body")
-                .user(guestUser)
                 .build();
 
         String url = "http://localhost:" + port + "/api/v2/posts/" + post.getId() + "/comments";
@@ -143,19 +153,13 @@ public class CommentsApiControllerTest {
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
-        postsRepository.deleteById(post.getId());
     }
 
     @Test
     @WithMockUser(roles = "USER")
     public void 사용자_Comments_수정() throws Exception {
         User user = userRepository.findByEmail("test@test.com").get();
-
-        Posts post = postsRepository.save(Posts.builder()
-                .title("test post title")
-                .user(user)
-                .content("test post content")
-                .build());
+        Posts post = postsRepository.findByTitle("test post title").get(0);
 
         Comments savedComments = commentsRepository.save(Comments.builder()
                 .body("body")
@@ -176,18 +180,13 @@ public class CommentsApiControllerTest {
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
-        postsRepository.deleteById(post.getId());
     }
 
     @Test
     @WithMockUser(roles = "GUEST")
     public void 게스트_Comments_수정() throws Exception {
         User guestUser = userRepository.findByEmail("guest@test.com").get();
-        Posts post = postsRepository.save(Posts.builder()
-                .title("test post title")
-                .user(guestUser)
-                .content("test post content")
-                .build());
+        Posts post = postsRepository.findByTitle("test post title").get(0);
 
         Comments savedComments = commentsRepository.save(Comments.builder()
                 .body("body")
@@ -208,19 +207,13 @@ public class CommentsApiControllerTest {
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
-        postsRepository.deleteById(post.getId());
     }
 
     @Test
     @WithMockUser(roles = "USER")
     public void 사용자_Comments_삭제() throws Exception {
         User user = userRepository.findByEmail("test@test.com").get();
-
-        Posts post = postsRepository.save(Posts.builder()
-                .title("test post title")
-                .user(user)
-                .content("test post content")
-                .build());
+        Posts post = postsRepository.findByTitle("test post title").get(0);
 
         Comments savedComments = commentsRepository.save(Comments.builder()
                 .user(user)
@@ -233,19 +226,13 @@ public class CommentsApiControllerTest {
 
         mvc.perform(delete(url)).andExpect(status().isOk());
 
-        postsRepository.deleteById(post.getId());
     }
 
     @Test
     @WithMockUser(roles = "GUEST")
     public void 게스트_Comments_삭제() throws Exception {
         User guestUser = userRepository.findByEmail("guest@test.com").get();
-        Posts post = postsRepository.save(Posts.builder()
-                .title("test post title")
-                .user(guestUser)
-                .content("test post content")
-                .build());
-
+        Posts post = postsRepository.findByTitle("test post title").get(0);
         Comments savedComments = commentsRepository.save(Comments.builder()
                 .user(guestUser)
                 .body("body")
@@ -256,20 +243,15 @@ public class CommentsApiControllerTest {
         String url = "http://localhost:" + port + "/api/v2/posts/" + post.getId() + "/comments/" + id;
 
         mvc.perform(delete(url)).andExpect(status().isOk());
-
-        postsRepository.deleteById(post.getId());
     }
 
     @Test
     @WithMockUser(roles = "USER")
     public void 사용자_Replies_등록() throws Exception {
-        User user = userRepository.findByEmail("test@test.com").get();
-
-        Posts post = postsRepository.save(Posts.builder()
-                .title("test post title")
-                .user(user)
-                .content("test post content")
-                .build());
+        List<User> userList = userRepository.findAll();
+        User user = userList.get((userList.size()-2));
+        List<Posts> postsList = postsRepository.findAll();
+        Posts post = postsList.get((postsList.size())-1);
 
         Comments parents = commentsRepository.save(Comments.builder()
                 .user(user)
@@ -278,10 +260,7 @@ public class CommentsApiControllerTest {
                 .build());
 
         RepliesSaveRequestDto children = RepliesSaveRequestDto.builder()
-                .user(user)
                 .body("children body")
-                .posts(post)
-                .parents(parents)
                 .build();
 
         Long parent_id = parents.getId();
@@ -294,19 +273,15 @@ public class CommentsApiControllerTest {
                 .session(session)
                 .content(new ObjectMapper().writeValueAsString(children)))
                 .andExpect(status().is(200));
-
-        postsRepository.deleteById(post.getId());
     }
 
     @Test
     @WithMockUser(roles = "GUEST")
     public void 게스트_Replies_등록() throws Exception {
-        User guestUser = userRepository.findByEmail("guest@test.com").get();
-        Posts post = postsRepository.save(Posts.builder()
-                .title("test post title")
-                .user(guestUser)
-                .content("test post content")
-                .build());
+        List<User> userList = userRepository.findAll();
+        User guestUser = userList.get((userList.size()-1));
+        List<Posts> postsList = postsRepository.findAll();
+        Posts post = postsList.get((postsList.size())-1);
 
         Comments parents = commentsRepository.save(Comments.builder()
                 .user(guestUser)
@@ -315,10 +290,7 @@ public class CommentsApiControllerTest {
                 .build());
 
         RepliesSaveRequestDto children = RepliesSaveRequestDto.builder()
-                .user(guestUser)
                 .body("children body")
-                .posts(post)
-                .parents(parents)
                 .build();
 
         Long parent_id = parents.getId();
@@ -331,8 +303,6 @@ public class CommentsApiControllerTest {
                 .session(session)
                 .content(new ObjectMapper().writeValueAsString(children)))
                 .andExpect(status().is(200));
-
-        postsRepository.deleteById(post.getId());
 
     }
 

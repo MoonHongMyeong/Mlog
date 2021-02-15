@@ -12,6 +12,7 @@ public class PostsListResponseDto {
     private Long id;
     private String title;
     private User user;
+    private int likeCount;
     private String imageUrl;
     private Categories categories;
     private LocalDateTime modifiedDate;
@@ -23,5 +24,9 @@ public class PostsListResponseDto {
         this.categories = entity.getCategories();
         this.imageUrl = entity.getImageUrl();
         this.modifiedDate = entity.getModifiedDate();
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import me.portfolio.blog.domain.BaseTimeEntity;
 import me.portfolio.blog.domain.categories.Categories;
 import me.portfolio.blog.domain.comments.Comments;
+import me.portfolio.blog.domain.like.LikeVal;
 import me.portfolio.blog.domain.user.User;
 
 import javax.persistence.*;
@@ -28,33 +29,49 @@ public class Posts extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    private User user;
-
     @Column(columnDefinition = "varchar(255) default '/images/default.jpg'")
     private String imageUrl;
 
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int likeCount;
+
     @ManyToOne
-    @JoinColumn(name="categories_id", referencedColumnName = "categories_id")
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name="categories_id", nullable = false)
     private Categories categories;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "posts", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Comments.class, mappedBy = "posts", cascade = CascadeType.ALL)
     private List<Comments> commentsList;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = LikeVal.class, mappedBy = "posts", cascade = CascadeType.ALL)
+    private List<LikeVal> likeValList;
+
     @Builder
-    public Posts(String title, String content, String imageUrl, User user, Categories categories){
+    public Posts(String title, String content, String imageUrl, User user, Categories categories, int likeCount){
         this.title=title;
         this.content=content;
         this.imageUrl=imageUrl;
         this.user=user;
         this.categories=categories;
+        this.likeCount=likeCount;
     }
 
     public void update(String title, String content){
         this.title=title;
         this.content=content;
+    }
+
+    public void plusCount(){
+        this.likeCount+=1;
+    }
+
+    public void minusCount(){
+        this.likeCount-=1;
     }
 
 }

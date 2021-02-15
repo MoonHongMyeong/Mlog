@@ -1,6 +1,5 @@
 package me.portfolio.blog.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.domain.categories.Categories;
@@ -96,11 +95,6 @@ public class CategoriesApiControllerTest {
         mvc.perform(post(url).contentType(MediaType.APPLICATION_JSON)
                 .session(session).content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
-
-        List<Categories> categoriesList = categoriesRepository.findAll();
-        Categories categories = categoriesList.get((categoriesList.size() - 1));
-
-        categoriesRepository.delete(categories);
     }
 
     @Test
@@ -125,7 +119,6 @@ public class CategoriesApiControllerTest {
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
-        categoriesRepository.delete(savedCategories);
     }
 
     @Test

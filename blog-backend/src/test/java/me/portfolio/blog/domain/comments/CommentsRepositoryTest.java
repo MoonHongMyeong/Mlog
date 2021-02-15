@@ -1,5 +1,7 @@
 package me.portfolio.blog.domain.comments;
 
+import me.portfolio.blog.domain.categories.Categories;
+import me.portfolio.blog.domain.categories.CategoriesRepository;
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
 import me.portfolio.blog.domain.user.Role;
@@ -33,6 +35,9 @@ public class CommentsRepositoryTest {
     @Autowired
     private CommentsQueryRepository commentsQueryRepository;
 
+    @Autowired
+    private CategoriesRepository categoriesRepository;
+
     @AfterAll
     public void cleanup(){
         List<User> userList = userRepository.findAll();
@@ -47,6 +52,19 @@ public class CommentsRepositoryTest {
                 .name("test user")
                 .picture("/images/default")
                 .role(Role.USER).build());
+
+        Categories categories = categoriesRepository.save(Categories.builder()
+                .user(testUser)
+                .name("testCategory")
+                .build());
+
+        Posts posts = postsRepository.save(Posts.builder()
+                .categories(categories)
+                .user(testUser)
+                .content("testContentTest")
+                .imageUrl("testImageUrl")
+                .title("testTitleTest")
+                .build());
     }
     //passed
     @Test
@@ -55,11 +73,8 @@ public class CommentsRepositoryTest {
 
         LocalDateTime now = LocalDateTime.of(2021,2,7,0,0,0);
 
-        Posts post = postsRepository.save(Posts.builder()
-                .title("test title")
-                .content("test content")
-                .user(userRepository.findByEmail("test@test.com").get())
-                .build());
+        List<Posts> postsList = postsRepository.findAll();
+        Posts post = postsList.get((postsList.size()-1));
 
         commentsRepository.save(Comments.builder()
                 .posts(post)
@@ -76,17 +91,13 @@ public class CommentsRepositoryTest {
         assertThat(comments.getCreatedDate()).isAtLeast(now);
         assertThat(comments.getModifiedDate()).isAtLeast(now);
 
-        postsRepository.deleteById(post.getId());
     }
 
     //passed
     @Test
     public void 댓글_목록_조회(){
-        Posts post = postsRepository.save(Posts.builder()
-                .title("comment test title")
-                .content("comment test content")
-                .user(userRepository.findByEmail("test@test.com").get())
-                .build());
+        List<Posts> postsList = postsRepository.findAll();
+        Posts post = postsList.get((postsList.size()-1));
 
         for(int i=1; i<=10; i++) {
             commentsRepository.save(Comments.builder()
@@ -104,7 +115,6 @@ public class CommentsRepositoryTest {
 
         }
 
-        postsRepository.deleteById(post.getId());
     }
 
     //passed
@@ -114,11 +124,8 @@ public class CommentsRepositoryTest {
         String author = "test comments author";
         LocalDateTime now = LocalDateTime.of(2020, 02, 07, 0,0,0);
 
-        Posts post = postsRepository.save(Posts.builder()
-                .title("test title")
-                .content("test content")
-                .user(userRepository.findByEmail("test@test.com").get())
-                .build());
+        List<Posts> postsList = postsRepository.findAll();
+        Posts post = postsList.get((postsList.size()-1));
 
         Comments comments = commentsRepository.save(Comments.builder()
                 .posts(post)
@@ -148,7 +155,6 @@ public class CommentsRepositoryTest {
         assertEquals(children.get((children.size()-1)).getParents().getId(), parents.getId());
         assertThat(children.get((children.size()-1)).getModifiedDate()).isAtLeast(now);
 
-        postsRepository.deleteById(post.getId());
     }
 
 }

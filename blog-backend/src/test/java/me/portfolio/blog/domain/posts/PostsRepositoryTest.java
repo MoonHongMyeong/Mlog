@@ -1,5 +1,8 @@
 package me.portfolio.blog.domain.posts;
 
+import me.portfolio.blog.domain.categories.Categories;
+import me.portfolio.blog.domain.categories.CategoriesRepository;
+import me.portfolio.blog.domain.categories.CategoriesRepositorySupport;
 import me.portfolio.blog.domain.user.Role;
 import me.portfolio.blog.domain.user.User;
 import me.portfolio.blog.domain.user.UserRepository;
@@ -31,12 +34,14 @@ public class PostsRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CategoriesRepository categoriesRepository;
+
     @AfterAll
     public void cleanup(){
         List<User> userList = userRepository.findAll();
         User testUser = userList.get((userList.size()-1));
         userRepository.deleteById(testUser.getId());
-        System.out.println("===========delete user===============");
     }
 
     @BeforeAll
@@ -47,18 +52,24 @@ public class PostsRepositoryTest {
                 .picture("/images/default")
                 .role(Role.USER).build());
 
-        System.out.println("==============insert user================");
+        Categories categories = categoriesRepository.save(Categories.builder()
+                .name("testCategory")
+                .user(testUser)
+                .build());
     }
     //passed
     @Test
     public void 포스트_저장_조회(){
         String title = "Test title";
         String content = "Test content";
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size()-1));
 
         postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
                 .user(userRepository.findByEmail("test@test.com").get())
+                .categories(category)
                 .build());
 
         List<Posts> postsList = postsRepository.findAll();
@@ -75,17 +86,18 @@ public class PostsRepositoryTest {
     @Test
     public void BaseTimeEntity_등록(){
         LocalDateTime now = LocalDateTime.of(2020,1,4,0,0,0);
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size()-1));
         postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
                 .user(userRepository.findByEmail("test@test.com").get())
+                .categories(category)
                 .build());
 
         List<Posts> postsList = postsRepository.findAll();
 
         Posts posts = postsList.get((postsList.size()-1));
-
-        System.out.println(">>>>>>>> createDate="+posts.getCreatedDate()+", modifiedDate="+posts.getModifiedDate());
 
         //isAtLeast == isAfter, isAtMost == isBefore
         assertThat(posts.getCreatedDate()).isAtLeast(now);
@@ -98,28 +110,26 @@ public class PostsRepositoryTest {
     @Test
     public void 포스트_목록_조회() {
         User user = userRepository.findByEmail("test@test.com").get();
-        System.out.println("================get user=====================");
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size()-1));
         for (int i = 1; i <= 5; i++) {
             postsRepository.save(Posts.builder()
                     .title("title")
                     .content("content")
                     .user(user)
+                    .categories(category)
                     .build());
-            System.out.println("=============insert posts"+i+"=================");
         }
         List<Posts> postsList = postsRepository.findAll();
-        System.out.println("=================call list==================");
 
         for (int i = postsList.size() - 1; i > postsList.size() - 6; i--) {
             assertEquals(postsList.get(i).getTitle(), "title");
             assertEquals(postsList.get(i).getContent(), "content");
-            System.out.println("=======================check post"+i+"=====================");
         }
 
         for (int i = postsList.size() - 1; i > postsList.size() - 6; i--) {
             Posts post = postsList.get(i);
             postsRepository.deleteById(post.getId());
-            System.out.println("=================delete post"+i+"=======================");
         }
     }
 
@@ -128,11 +138,13 @@ public class PostsRepositoryTest {
     public void 검색_조회_기능(){
         String title = "절대따라할수없는테스트 제목";
         String content = "테스트 내용";
-
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size()-1));
         postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
                 .user(userRepository.findByEmail("test@test.com").get())
+                .categories(category)
                 .build());
 
         List<Posts> result = postsRepositorySupport.findByTitle(title);
@@ -149,11 +161,13 @@ public class PostsRepositoryTest {
     public void querydsl_custom_설정_기능_확인(){
         String title = "절대따라할수없는테스트 제목";
         String content = "테스트 내용";
-
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size()-1));
         postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
                 .user(userRepository.findByEmail("test@test.com").get())
+                .categories(category)
                 .build());
 
         List<Posts> result = postsRepository.findByTitle(title);
@@ -169,11 +183,13 @@ public class PostsRepositoryTest {
     public void querydsl_queryRepository_기능_확인(){
         String title = "절대따라할수없는테스트 제목";
         String content = "테스트 내용";
-
+        List<Categories> categories = categoriesRepository.findAll();
+        Categories category = categories.get((categories.size()-1));
         postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
                 .user(userRepository.findByEmail("test@test.com").get())
+                .categories(category)
                 .build());
 
         List<Posts> result = postsQueryRepository.findByTitle(title);
