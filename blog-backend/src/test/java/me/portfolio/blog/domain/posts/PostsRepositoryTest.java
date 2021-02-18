@@ -70,6 +70,7 @@ public class PostsRepositoryTest {
                 .content(content)
                 .user(userRepository.findByEmail("test@test.com").get())
                 .categories(category)
+                .temp("Y")
                 .build());
 
         List<Posts> postsList = postsRepository.findAll();
@@ -93,6 +94,7 @@ public class PostsRepositoryTest {
                 .content("content")
                 .user(userRepository.findByEmail("test@test.com").get())
                 .categories(category)
+                .temp("Y")
                 .build());
 
         List<Posts> postsList = postsRepository.findAll();
@@ -118,6 +120,7 @@ public class PostsRepositoryTest {
                     .content("content")
                     .user(user)
                     .categories(category)
+                    .temp("Y")
                     .build());
         }
         List<Posts> postsList = postsRepository.findAll();
@@ -145,6 +148,7 @@ public class PostsRepositoryTest {
                 .content(content)
                 .user(userRepository.findByEmail("test@test.com").get())
                 .categories(category)
+                .temp("Y")
                 .build());
 
         List<Posts> result = postsRepositorySupport.findByTitle(title);
@@ -168,6 +172,7 @@ public class PostsRepositoryTest {
                 .content(content)
                 .user(userRepository.findByEmail("test@test.com").get())
                 .categories(category)
+                .temp("Y")
                 .build());
 
         List<Posts> result = postsRepository.findByTitle(title);
@@ -190,6 +195,7 @@ public class PostsRepositoryTest {
                 .content(content)
                 .user(userRepository.findByEmail("test@test.com").get())
                 .categories(category)
+                .temp("Y")
                 .build());
 
         List<Posts> result = postsQueryRepository.findByTitle(title);

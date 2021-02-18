@@ -103,9 +103,10 @@ public class PostsApiControllerTest {
                 .content(content)
                 .user(user)
                 .categories(category)
+                .temp("Y")
                 .build();
 
-        String url = "http://localhost:" + port + "/api/v2/posts";
+        String url = "http://localhost:" + port + "/api/v2/write";
 
         MockHttpSession mockHttpSession = new MockHttpSession();
         mockHttpSession.setAttribute("user", new SessionUser(user));
@@ -140,7 +141,7 @@ public class PostsApiControllerTest {
         Categories category = categories.get((categories.size() - 1));
         String content = "test posts content";
         String title = "test posts title";
-        String url = "http://localhost:" + port + "/api/v2/posts";
+        String url = "http://localhost:" + port + "/api/v2/write";
 
         MockHttpSession mockHttpSession = new MockHttpSession();
         mockHttpSession.setAttribute("user", new SessionUser(user));
@@ -171,6 +172,7 @@ public class PostsApiControllerTest {
                 .user(user)
                 .categories(category)
                 .likeCount(0)
+                .temp("Y")
                 .build());
 
         Long updateId = savedPosts.getId();
@@ -212,6 +214,7 @@ public class PostsApiControllerTest {
                 .user(user)
                 .categories(category)
                 .likeCount(0)
+                .temp("Y")
                 .build());
 
         Long id = savedPosts.getId();

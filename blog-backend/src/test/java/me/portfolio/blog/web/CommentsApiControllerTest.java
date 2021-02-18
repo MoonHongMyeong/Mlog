@@ -101,6 +101,7 @@ public class CommentsApiControllerTest {
                 .user(testUser)
                 .content("test post content")
                 .categories(userCategory)
+                .temp("Y")
                 .build());
     }
 

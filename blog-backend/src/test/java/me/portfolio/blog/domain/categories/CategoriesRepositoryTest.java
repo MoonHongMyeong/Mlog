@@ -50,7 +50,7 @@ public class CategoriesRepositoryTest {
     @Test
     public void 카테고리_저장_조회(){
         User testUser = userRepository.findByEmail("test@test.com").get();
-        String name = "test category";
+        String name = "testCategory";
         categoriesRepository.save(Categories.builder()
                 .name(name)
                 .user(testUser)
@@ -98,6 +98,7 @@ public class CategoriesRepositoryTest {
                 .imageUrl("testImageURL")
                 .content("testContent")
                 .user(testUser)
+                .temp("Y")
                 .build());
         postsRepository.save(Posts.builder()
                 .categories(category)
@@ -105,6 +106,7 @@ public class CategoriesRepositoryTest {
                 .imageUrl("testImageURL")
                 .content("testContent")
                 .user(testUser)
+                .temp("Y")
                 .build());
         postsRepository.save(Posts.builder()
                 .categories(category)
@@ -112,10 +114,11 @@ public class CategoriesRepositoryTest {
                 .imageUrl("testImageURL")
                 .content("testContent")
                 .user(testUser)
+                .temp("Y")
                 .build());
 
         List<Categories> searchedCategories = categoriesRepositorySupport.findNameByUserId(testUser.getId());
-        Categories searchedCategory = searchedCategories.get(0);
+        Categories searchedCategory = searchedCategories.get((searchedCategories.size()-1));
         assertEquals(searchedCategory.getName(), name);
     }
 }

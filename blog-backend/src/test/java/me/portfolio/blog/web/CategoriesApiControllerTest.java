@@ -8,6 +8,7 @@ import me.portfolio.blog.domain.categories.CategoriesRepositorySupport;
 import me.portfolio.blog.domain.user.Role;
 import me.portfolio.blog.domain.user.User;
 import me.portfolio.blog.domain.user.UserRepository;
+import me.portfolio.blog.web.dto.categories.CategoriesResponseDto;
 import me.portfolio.blog.web.dto.categories.CategoriesSaveRequestDto;
 import me.portfolio.blog.web.dto.categories.CategoriesUpdateRequestDto;
 import org.junit.jupiter.api.AfterAll;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -77,6 +79,26 @@ public class CategoriesApiControllerTest {
                 .picture("/images/default")
                 .role(Role.USER).build());
     }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void 유저의_카테고리_목록_조회() throws Exception{
+        User user = userRepository.findByEmail("test@test.com").get();
+
+        CategoriesSaveRequestDto requestDto = CategoriesSaveRequestDto.builder()
+                .name("testCategory")
+                .user(user)
+                .build();
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", new SessionUser(user));
+
+        String url = "http://localhost:" + port + "/api/v2/user/" + user.getId() + "/categories";
+
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON).session(session).content(new ObjectMapper().writeValueAsString(requestDto)))
+                .andExpect(status().isOk());
+    }
+
 
     @Test
     @WithMockUser(roles = "USER")

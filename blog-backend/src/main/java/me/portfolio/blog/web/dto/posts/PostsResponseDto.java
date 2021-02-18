@@ -17,6 +17,7 @@ public class PostsResponseDto {
     private int likeCount;
     private User user;
     private Categories categories;
+    private String temp;
     private String imageUrl;
     private LocalDateTime modifiedDate;
 
@@ -25,6 +26,7 @@ public class PostsResponseDto {
         this.title=entity.getTitle();
         this.content=entity.getContent();
         this.user=entity.getUser();
+        this.temp=entity.getTemp();
         this.categories=entity.getCategories();
         this.imageUrl=entity.getImageUrl();
         this.modifiedDate=entity.getModifiedDate();

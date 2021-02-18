@@ -61,6 +61,7 @@ public class LIkeValRepositoryTest {
                 .content("testContentTest")
                 .imageUrl("testImageUrl")
                 .title("testTitleTest")
+                .temp("Y")
                 .build());
     }
 

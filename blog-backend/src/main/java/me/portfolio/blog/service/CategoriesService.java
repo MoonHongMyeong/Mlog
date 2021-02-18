@@ -27,7 +27,9 @@ public class CategoriesService {
     public List<CategoriesListResponseDto> getCategories(Long userId) {
         //해당 유저의 카테고리 목록과 그 카테고리 안에 있는 포스트들 가져오기
         User user = userRepository.findById(userId).get();
-        return categoriesRepositorySupport.findByUserId(userId);
+        return categoriesRepositorySupport.findByUserId(userId).stream()
+                .map(category -> new CategoriesListResponseDto(category))
+                .collect(Collectors.toList());
     }
 
     //카테고리 등록
