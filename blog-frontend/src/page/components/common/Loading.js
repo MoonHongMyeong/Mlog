@@ -1,18 +1,18 @@
-import React from 'react'
-import styled from 'styled-components';
+import React from 'react';
+import styled from '@emotion/styled';
 
 export default function Loading() {
   return (
-    <LoadingContainer>
+    <Container>
       <i className="fas fa-spinner"></i>
       <span>Loading...</span>
-    </LoadingContainer>
+    </Container>
   )
 }
 
-const LoadingContainer = styled.div`
+const Container = styled.div`
   width : 100vw;
-  height : 803px;
+  height : 90vh;
   display : flex;
   flex-direction : column;
   justify-content : center;
