@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.portfolio.blog.domain.user.Role;
 import me.portfolio.blog.domain.user.User;
 import me.portfolio.blog.domain.user.UserRepository;
+import me.portfolio.blog.web.dto.user.AboutRequestDto;
 import me.portfolio.blog.web.dto.user.UserUpdateRequestDto;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -90,6 +91,27 @@ public class UserApiControllerTest {
         assertEquals(assertionUser.getName(), exceptedName);
         assertEquals(assertionUser.getPicture(), exceptedPicture);
 
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void 사용자_유저_소개_수정() throws Exception{
+        String about = "testUserAbout";
+
+        User user = userRepository.findByEmail("test@test.com").get();
+
+        AboutRequestDto requestDto = AboutRequestDto.builder()
+                .about(about)
+                .build();
+
+        String url = "http://localhost:" + port + "/api/v2/user/" + user.getId()+"/about";
+
+        mvc.perform(put(url).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(requestDto))).andExpect(status().isOk());
+
+        List<User> userList = userRepository.findAll();
+        User assertionUser = userList.get((userList.size()-2));
+
+        assertEquals(assertionUser.getAbout(), about);
     }
 
     @Test

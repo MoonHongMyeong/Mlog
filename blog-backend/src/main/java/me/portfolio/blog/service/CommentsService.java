@@ -60,7 +60,6 @@ public class CommentsService {
     }
 
     //대댓글 등록
-    //20210212 대댓글 한번 등록하는데 너무 많이 db에 접속하는 것 같은데;;;
     @Transactional
     public CommentsResponseDto addReply(SessionUser sessionUser, Long postId, Long parentsId, RepliesSaveRequestDto requestDto) {
         User user =userRepository.findByEmail(sessionUser.getEmail()).get();

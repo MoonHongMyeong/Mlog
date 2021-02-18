@@ -64,6 +64,7 @@ public class CommentsRepositoryTest {
                 .content("testContentTest")
                 .imageUrl("testImageUrl")
                 .title("testTitleTest")
+                .temp("Y")
                 .build());
     }
     //passed

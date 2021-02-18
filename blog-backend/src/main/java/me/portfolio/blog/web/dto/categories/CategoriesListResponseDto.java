@@ -3,18 +3,17 @@ package me.portfolio.blog.web.dto.categories;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.portfolio.blog.domain.categories.Categories;
-import me.portfolio.blog.domain.posts.Posts;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 public class CategoriesListResponseDto {
     private String name;
-    private List<Posts> postInCategory;
+    private LocalDateTime modifiedDate;
 
     public CategoriesListResponseDto(Categories entity){
         this.name= entity.getName();
-        this.postInCategory=entity.getPostsList();
+        this.modifiedDate=entity.getModifiedDate();
     }
 }

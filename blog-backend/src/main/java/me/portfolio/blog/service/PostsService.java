@@ -53,6 +53,13 @@ public class PostsService {
                 .map(posts -> new PostsListResponseDto(posts))
                 .collect(Collectors.toList());
     }
+    //인기 포스트 조회
+    public List<PostsListResponseDto> getPopPostList() {
+        return postsRepositorySupport.findAllPop()
+                .stream()
+                .map(posts -> new PostsListResponseDto(posts))
+                .collect(Collectors.toList());
+    }
 
     //포스트 등록
     @Transactional
@@ -69,6 +76,7 @@ public class PostsService {
                     .imageUrl("/images/default.png")
                     .categories(categories)
                     .likeCount(0)
+                    .temp("Y")
                     .build();
 
             return postsRepository.save(requestDto.toEntity()).getId();
@@ -90,6 +98,7 @@ public class PostsService {
                     .imageUrl("/images/" + fileName)
                     .categories(categories)
                     .likeCount(0)
+                    .temp("Y")
                     .build();
             return postsRepository.save(requestDto.toEntity()).getId();
         }
@@ -121,6 +130,7 @@ public class PostsService {
         postsRepository.delete(posts);
     }
     //좋아요
+    @Transactional
     public int plusLikeCount(Long postId, SessionUser sessionUser) {
         User user = userRepository.findByEmail(sessionUser.getEmail()).get();
         Posts post = postsRepository.findById(postId).get();
@@ -135,7 +145,8 @@ public class PostsService {
         }
         return post.getLikeCount();
     }
-
+    //좋아요 취소
+    @Transactional
     public int minusLikeCount(Long postId, SessionUser sessionUser) {
         User user = userRepository.findByEmail(sessionUser.getEmail()).get();
         Posts post = postsRepository.findById(postId).get();
@@ -146,5 +157,27 @@ public class PostsService {
             likeValRepository.delete(likeVal);
         }
         return post.getLikeCount();
+    }
+    //임시저장
+    @Transactional
+    public Long addTempPost(SessionUser sessionUser, PostsSaveRequestDto requestDto) {
+        User user = userRepository.findByEmail(sessionUser.getEmail()).get();
+
+        PostsSaveRequestDto saveRequestDto = PostsSaveRequestDto.builder()
+                .temp("N")
+                .user(user)
+                .likeCount(0)
+                .content(requestDto.getContent())
+                .title(requestDto.getTitle())
+                .build();
+        return postsRepository.save(saveRequestDto.toEntity()).getId();
+    }
+    //임시저장 목록 조회
+    @Transactional(readOnly = true)
+    public List<PostsResponseDto> getTempPost(SessionUser sessionUser) {
+        return postsRepositorySupport.findTempPost(sessionUser)
+                .stream()
+                .map(temp -> new PostsResponseDto(temp))
+                .collect(Collectors.toList());
     }
 }

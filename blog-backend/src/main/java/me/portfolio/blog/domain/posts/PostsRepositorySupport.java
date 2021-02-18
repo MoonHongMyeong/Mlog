@@ -1,7 +1,10 @@
 package me.portfolio.blog.domain.posts;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.domain.like.LikeVal;
+import me.portfolio.blog.web.dto.posts.PostsListResponseDto;
+import me.portfolio.blog.web.dto.posts.PostsResponseDto;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -30,5 +33,19 @@ public class PostsRepositorySupport extends QuerydslRepositorySupport {
                 .where(posts.title.contains((title)))
                 .orderBy(posts.id.desc())
                 .fetch();
+    }
+
+    //인기 포스트 조회
+    public List<Posts> findAllPop() {
+        return queryFactory.selectFrom(posts)
+                .orderBy(posts.likeCount.desc())
+                .fetch();
+    }
+    //유저의 임시저장 목록 조회
+    public List<Posts> findTempPost(SessionUser sessionUser) {
+         return queryFactory.selectFrom(posts)
+                 .where(posts.user.id.eq(sessionUser.getId()),
+                         posts.temp.eq("N"))
+                 .fetch();
     }
 }

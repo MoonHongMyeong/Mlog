@@ -35,12 +35,15 @@ public class Posts extends BaseTimeEntity {
     @Column(nullable = false, columnDefinition = "int default 0")
     private int likeCount;
 
+    @Column(nullable = false)
+    private String temp;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="categories_id", nullable = false)
+    @JoinColumn(name="categories_id")
     private Categories categories;
 
     @JsonIgnore
@@ -52,13 +55,14 @@ public class Posts extends BaseTimeEntity {
     private List<LikeVal> likeValList;
 
     @Builder
-    public Posts(String title, String content, String imageUrl, User user, Categories categories, int likeCount){
+    public Posts(String title, String content, String imageUrl, User user, Categories categories, int likeCount, String temp){
         this.title=title;
         this.content=content;
         this.imageUrl=imageUrl;
         this.user=user;
         this.categories=categories;
         this.likeCount=likeCount;
+        this.temp=temp;
     }
 
     public void update(String title, String content){
