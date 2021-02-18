@@ -10,7 +10,6 @@ export default function ReplyComment(props) {
           if (comment.parents && comment.parents.id === props.parentCommentId) {
             return (
               <>
-                {console.log(comment)}
                 <SingleComment
                   reRenderCommentsAdd={props.reRenderCommentsAdd}
                   reRenderCommentUpdate={props.reRenderCommentUpdate}
