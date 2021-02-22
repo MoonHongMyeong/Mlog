@@ -1,6 +1,7 @@
 package me.portfolio.blog.service;
 
 import lombok.RequiredArgsConstructor;
+import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.domain.user.User;
 import me.portfolio.blog.domain.user.UserRepository;
 import me.portfolio.blog.domain.user.UserRepositorySupport;
@@ -50,10 +51,10 @@ public class UserService {
 
     //유저의 소개 글 수정
     @Transactional
-    public Long updateUserAbout(AboutRequestDto responseDto, Long userId) {
+    public UserResponseDto updateUserAbout(AboutRequestDto requestDto, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
-        user.updateAbout(responseDto.getAbout());
-        return userId;
+        user.updateAbout(requestDto.getAbout());
+        return new UserResponseDto(user);
     }
 
     //회원 수정
@@ -70,6 +71,10 @@ public class UserService {
         userRepository.delete(user);
     }
 
-
-
+    //현재 로그인한 회원의 정보 가져오기
+    public UserResponseDto getLoginUser(SessionUser sessionUser) {
+        User user = userRepositorySupport.getLoginUser(sessionUser);
+        UserResponseDto responseDto = new UserResponseDto(user);
+        return responseDto;
+    }
 }

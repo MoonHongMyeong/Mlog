@@ -14,7 +14,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ActiveProfiles("local")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 public class CategoriesRepositoryTest {

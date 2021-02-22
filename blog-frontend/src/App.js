@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-// import Loading from './page/components/common/Loading';
 import PostList from './page/PostList';
 import Header from './page/components/common/Header';
 import PostForm from './page/PostForm';
 import PostView from './page/PostView';
 import UserPage from './page/UserPage';
-
+import SearchedPost from './page/SearchedPost';
+import PopPosts from './page/PopPosts';
 function App() {
   return (
     <Router>
@@ -14,9 +14,12 @@ function App() {
         <Header />
         <Switch>
           <Route exact path="/" component={PostList} />
-          <Route exact path="/form" component={PostForm} />
-          <Route exact path="/post" component={PostView} />
-          <Route exact path="/user" component={UserPage} />
+          <Route exact path="/api/v2/posts" component={PostList} />
+          <Route exact path="/api/v2/popPosts" component={PopPosts} />
+          <Route exact path="/api/v2/searchedPost" component={SearchedPost} />
+          <Route exact path="/api/v2/write" component={PostForm} />
+          <Route exact path="/api/v2/posts/:postId" component={PostView} />
+          <Route exact path="/api/v2/user/:userId" component={UserPage} />
         </Switch>
       </>
     </Router>

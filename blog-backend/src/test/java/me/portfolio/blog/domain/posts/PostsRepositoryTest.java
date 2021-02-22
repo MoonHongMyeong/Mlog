@@ -18,7 +18,6 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ActiveProfiles("local")
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PostsRepositoryTest {

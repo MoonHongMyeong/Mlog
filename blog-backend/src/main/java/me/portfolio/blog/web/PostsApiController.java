@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com", "http://localhost:8000", "http://localhost:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = {"https://accounts.google.com","http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com", "http://localhost:8000", "http://localhost:3000"}, allowCredentials = "true")
 @RequestMapping("/api/v2")
 @RestController
 public class PostsApiController {
@@ -54,7 +54,7 @@ public class PostsApiController {
                         @RequestParam(value = "image", required = false) MultipartFile image,
                         @RequestParam("title") String title,
                         @RequestParam("content") String content,
-                        @RequestParam("category") String categoryName) throws Exception {
+                        @RequestParam(value = "category", required = false) String categoryName) throws Exception {
         return postsService.addPost(sessionUser, image, title, content, categoryName);
     }
     //포스트 임시저장

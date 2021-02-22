@@ -58,7 +58,8 @@ dependencies {
 	//OAUTH2.0 추가
 	implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
 	//Spring session 추가
-	implementation ("org.springframework.session:spring-session-jdbc")
+	implementation 'org.springframework.session:spring-session-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	//Spring security test 추가
 	testImplementation("org.springframework.security:spring-security-test")
 

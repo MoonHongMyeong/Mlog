@@ -2,10 +2,11 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components';
 import { LongButton } from '../atoms/Buttons';
 import { ModalBackLayout } from '../atoms/Layouts'
+import axios from 'axios';
 
 const body = document.querySelector('#root');
 
-export default function Login() {
+export default function Login(props) {
   useEffect(() => {
     body.setAttribute("style", "overflow: hidden;");
     return () => {
@@ -13,11 +14,29 @@ export default function Login() {
     }
   }, [])
 
+  const googleLogin = () => {
+    axios.get('/oauth2/authorization/google', { header: { 'Access-Control-Allow-Origin': '*' } })
+      .then(response => {
+        console.log(response);
+        window.open()
+      })
+  }
+
   return (
     <>
       <ModalBackLayout>
         <ModalLayout>
-          <GoogleButton color={"#cf4332;"}>
+          <div style={{
+            "width": "90%",
+            "display": "flex",
+            "justifyContent": "flex-end",
+          }}>
+            <button style={{
+              "backgroundColor": "white",
+              "border": "none",
+            }} onClick={props.handleLoginModal}>X</button>
+          </div>
+          <GoogleButton onClick={googleLogin} color={"#cf4332;"}>
             <i className="fab fa-google"></i> Google 계정으로 로그인
         </GoogleButton>
           <NaverButton color={"#27ae60"}>
@@ -40,6 +59,7 @@ const ModalLayout = styled.div`
   box-shadow : 0 4px 8px 0;
   height : 10rem;
   border-radius : 10px;
+  z-index : 10;
 
   @media screen and (max-width : 550px){
     width : calc(100% - 2rem);

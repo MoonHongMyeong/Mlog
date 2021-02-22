@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.Session;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -66,7 +67,7 @@ public class PostsService {
     public Long addPost(SessionUser sessionUser, MultipartFile image, String title, String content, String categoryName) throws IOException {
         //세션 유저 정보 불러오기
         User user = userRepository.findByEmail(sessionUser.getEmail()).get();
-        Categories categories = categoriesRepositorySupport.findByUserAndName(sessionUser.getId(),categoryName);
+        Categories categories = checkCategories(sessionUser, categoryName);
         //파일 저장
         if (image == null) {
             PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
@@ -76,7 +77,7 @@ public class PostsService {
                     .imageUrl("/images/default.png")
                     .categories(categories)
                     .likeCount(0)
-                    .temp("Y")
+                    .temp("N")
                     .build();
 
             return postsRepository.save(requestDto.toEntity()).getId();
@@ -98,9 +99,17 @@ public class PostsService {
                     .imageUrl("/images/" + fileName)
                     .categories(categories)
                     .likeCount(0)
-                    .temp("Y")
+                    .temp("N")
                     .build();
             return postsRepository.save(requestDto.toEntity()).getId();
+        }
+    }
+
+    private Categories checkCategories(SessionUser sessionUser, String categoryName) {
+        if(categoryName != null) {
+          return categoriesRepositorySupport.findByUserAndName(sessionUser.getId(), categoryName);
+        }else{
+            return null;
         }
     }
 
@@ -164,7 +173,7 @@ public class PostsService {
         User user = userRepository.findByEmail(sessionUser.getEmail()).get();
 
         PostsSaveRequestDto saveRequestDto = PostsSaveRequestDto.builder()
-                .temp("N")
+                .temp("Y")
                 .user(user)
                 .likeCount(0)
                 .content(requestDto.getContent())

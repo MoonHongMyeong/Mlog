@@ -1,6 +1,8 @@
 package me.portfolio.blog.web;
 
 import lombok.RequiredArgsConstructor;
+import me.portfolio.blog.config.auth.LoginUser;
+import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.service.UserService;
 import me.portfolio.blog.web.dto.comments.CommentsResponseDto;
 import me.portfolio.blog.web.dto.posts.PostsListResponseDto;
@@ -12,12 +14,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com", "http://localhost:8000", "http://localhost:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = {"https://accounts.google.com","http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com", "http://localhost:8000", "http://localhost:3000"}, allowCredentials = "true")
 @RequestMapping("/api/v2")
 @RestController
 public class UserApiController {
 
     private final UserService userService;
+    //현재 세션에 로그인 한 유저 정보
+    @GetMapping("/user")
+    public UserResponseDto getUserInSession(@LoginUser SessionUser sessionUser) throws Exception{
+        if(sessionUser != null){
+            UserResponseDto responseDto =  userService.getLoginUser(sessionUser);
+            return responseDto;
+        }
+        return null;
+    }
     //회원 정보 조회
     @GetMapping("/user/{userId}")
     public UserResponseDto getUserInfo(@PathVariable(name = "userId") Long userId) throws Exception{
@@ -35,8 +46,8 @@ public class UserApiController {
     }
     //소개 글 수정
     @PutMapping("/user/{userId}/about")
-    public Long updateUserAbout(@RequestBody AboutRequestDto responseDto, @PathVariable(name = "userId") Long userId)throws Exception{
-        return userService.updateUserAbout(responseDto, userId);
+    public UserResponseDto updateUserAbout(@RequestBody AboutRequestDto requestDto, @PathVariable(name = "userId") Long userId)throws Exception{
+        return userService.updateUserAbout(requestDto, userId);
     }
     //회원 수정
     @PutMapping("/user/{userId}")

@@ -1,26 +1,31 @@
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function PostCard() {
+export default function PostCard(props) {
+
   return (
     <>
       <CardContainer>
         <CardImg>
-          <Link to="/post">
-            <img src="./images/default.png" alt="썸네일입니다" />
+          <Link to={`/api/v2/posts/${props.post.id}`}>
+            <img src={props.post.imageUrl} alt={props.post.title} />
           </Link></CardImg>
         <div id="postInfo">
-          <Link to="/">
-            <CardTitle><span>제목입니다</span></CardTitle>
+          <Link to={`/api/v2/posts/${props.post.id}`}>
+            <CardTitle><span>{props.post.title}</span></CardTitle>
           </Link>
           <CardAuthor>
-            <Link to="/">
+            <Link to={`/api/v2/user/${props.post.user.id}`}>
               <div id="author">
-                <div id="profile"><img src="" alt="?" /></div>
+                <div id="profile">
+                  <img src={props.post.user.picture}
+                    alt={props.post.user.name}
+                  />
+                </div>
                 <div id="userInfo">
-                  <span>posts.user.name</span>
-                  <span style={{ "fontSize": "0.4rem" }}>modifiedDate</span>
+                  <span>{props.post.user.name}</span>
+                  <span style={{ "fontSize": "0.4rem" }}>{props.post.modifiedDate}</span>
                 </div>
               </div>
             </Link>
@@ -130,6 +135,13 @@ const CardAuthor = styled.div`
     height : 2rem;
     border-radius:2rem;
     background-color : hotpink;
+    overflow: hidden;
+    margin-right : 0.3rem;
+  }
+
+  #profile img{
+    width : 100%;
+    height : 100%;
   }
 
   #userInfo{
