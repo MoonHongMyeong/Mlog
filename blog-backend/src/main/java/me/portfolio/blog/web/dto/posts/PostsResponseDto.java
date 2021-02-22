@@ -19,6 +19,7 @@ public class PostsResponseDto {
     private Categories categories;
     private String temp;
     private String imageUrl;
+    private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
     public PostsResponseDto(Posts entity){
@@ -29,6 +30,7 @@ public class PostsResponseDto {
         this.temp=entity.getTemp();
         this.categories=entity.getCategories();
         this.imageUrl=entity.getImageUrl();
+        this.createdDate=entity.getCreatedDate();
         this.modifiedDate=entity.getModifiedDate();
     }
 

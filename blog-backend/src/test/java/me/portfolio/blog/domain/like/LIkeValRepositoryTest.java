@@ -20,7 +20,6 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ActiveProfiles("local")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 public class LIkeValRepositoryTest {

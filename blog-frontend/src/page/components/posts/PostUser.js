@@ -1,14 +1,17 @@
-import React from 'react'
+import React from 'react';
 import styled from 'styled-components';
-export default function PostUser() {
+
+export default function PostUser(props) {
+
   return (
+
     <div style={{
       "display": "flex",
       "marginTop": "3rem",
       "marginBottom": "3rem"
     }}>
       <UserImg>
-        <img src="./images/default.png" alt="userProfile"></img>
+        <img src="/images/default.png" alt="userProfile"></img>
       </UserImg>
       <UserProfile>
         <span style={{
@@ -16,12 +19,16 @@ export default function PostUser() {
           "fontWeight": "800",
           "wordBreak": "break-all",
           "marginLeft": "0.3rem"
-        }}>User.name</span>
+        }}>
+          {props.posts.user.name && props.posts.user.name}
+        </span>
         <p style={{
           "fontSize": "0.8rem",
           "color": "grey",
           "wordBreak": "break-all"
-        }}>user.descriptionasdfdasfdasfasdfasdfasdfasdfasdfasdfasadasdasdasdassdfasdfasdfsdafsdfsadfsadfasdf</p>
+        }}>
+          {props.posts.user.about ? props.posts.user.about : "소개가 없습니다."}
+        </p>
       </UserProfile>
 
     </div>

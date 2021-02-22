@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 
 export default function Loading() {
   return (
@@ -13,6 +13,9 @@ export default function Loading() {
 const Container = styled.div`
   width : 100vw;
   height : 90vh;
+  position : absolute;
+  top:0;
+  left:0;
   display : flex;
   flex-direction : column;
   justify-content : center;

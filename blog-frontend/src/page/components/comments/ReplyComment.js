@@ -5,8 +5,8 @@ export default function ReplyComment(props) {
 
   return (
     <div>
-      {props.commentsList &&
-        props.commentsList.map((comment, index) => {
+      {props.comments &&
+        props.comments.map((comment, index) => {
           if (comment.parents && comment.parents.id === props.parentCommentId) {
             return (
               <>
@@ -21,7 +21,7 @@ export default function ReplyComment(props) {
                   reRenderCommentsAdd={props.reRenderCommentsAdd}
                   reRenderCommentUpdate={props.reRenderCommentUpdate}
                   parentCommentId={comment.id}
-                  commentsList={props.commentsList}
+                  comments={props.comments}
                   postId={props.postId} />
               </>
             )

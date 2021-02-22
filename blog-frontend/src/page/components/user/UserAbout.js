@@ -28,9 +28,6 @@ export default function UserAbout() {
           </div>
         </div>
         :
-
-
-
         <div style={{
           "display": "flex",
           "flexDirection": "column",

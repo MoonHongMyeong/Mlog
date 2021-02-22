@@ -64,5 +64,8 @@ export const CommentButton = styled.button`
   &:focus{
     outline:none;
   }
-  
+`;
+
+export const NewPostButton = styled(LogoutButton)`
+  margin-right : 0.5rem;
 `;

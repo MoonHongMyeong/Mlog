@@ -24,14 +24,14 @@ public class PostsRepositorySupport extends QuerydslRepositorySupport {
     //정렬 최근 순
     public List<Posts> findAllDesc(){
         return queryFactory.selectFrom(posts)
-                .where(posts.temp.eq("Y"))
+                .where(posts.temp.eq("N"))
                 .orderBy(posts.id.desc())
                 .fetch();
     }
     //검색 하는데 정렬 최근 순
     public List<Posts> findByTitle(String title){
         return queryFactory.selectFrom(posts)
-                .where(posts.title.contains((title)), posts.temp.eq("Y"))
+                .where(posts.title.contains((title)), posts.temp.eq("N"))
                 .orderBy(posts.id.desc())
                 .fetch();
     }
@@ -39,15 +39,15 @@ public class PostsRepositorySupport extends QuerydslRepositorySupport {
     //인기 포스트 조회
     public List<Posts> findAllPop() {
         return queryFactory.selectFrom(posts)
-                .where(posts.temp.eq("Y"))
+                .where(posts.temp.eq("N"))
                 .orderBy(posts.likeCount.desc())
                 .fetch();
     }
     //유저의 임시저장 목록 조회
     public List<Posts> findTempPost(SessionUser sessionUser) {
          return queryFactory.selectFrom(posts)
-                 .where(posts.user.id.eq(sessionUser.getId()),
-                         posts.temp.eq("N"))
+                 .where(posts.user.email.eq(sessionUser.getEmail()),
+                         posts.temp.eq("Y"))
                  .fetch();
     }
 }

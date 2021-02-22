@@ -118,4 +118,5 @@ export const ModalBackLayout = styled.div`
   position : absolute;
   top:0;
   backdrop-filter : blur(2px);
+  z-index : 5;
 `;

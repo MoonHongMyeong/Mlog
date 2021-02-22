@@ -5,30 +5,27 @@ import Footer from './components/common/Footer';
 import axios from 'axios';
 import Loading from './components/common/Loading';
 
-
-export default function PostList() {
+export default function PopPosts() {
   const [isLoading, setIsLoading] = useState(false);
-  const [postList, setPostList] = useState([]);
+  const [popPostList, setPopPostList] = useState([]);
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get("/api/v2/posts")
-      .then(response => { setPostList(Array.from(response.data)); })
-      .catch(error => console.log(error))
-      .then(setIsLoading(false));
+    axios.get("/api/v2/popPosts")
+      .then(response => setPopPostList(response.data))
+      .catch(error => console.log(error));
+    setIsLoading(false);
   }, [])
-
 
   return (
     <>
       {isLoading && <Loading />}
       <LayoutHeight>
         <CardsLayout>
-          {postList &&
-            postList.map(post => {
+          {popPostList &&
+            popPostList.map(post => {
               return <PostCard post={post} key={post.id} />
             })}
-          {isLoading && <Loading />}
         </CardsLayout>
       </LayoutHeight>
       <Footer />

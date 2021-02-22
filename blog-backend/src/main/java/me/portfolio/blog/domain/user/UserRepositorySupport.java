@@ -1,11 +1,10 @@
 package me.portfolio.blog.domain.user;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.domain.categories.Categories;
-import me.portfolio.blog.domain.categories.QCategories;
 import me.portfolio.blog.domain.comments.Comments;
 import me.portfolio.blog.domain.posts.Posts;
-import me.portfolio.blog.web.dto.categories.CategoriesListResponseDto;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +13,7 @@ import java.util.List;
 import static me.portfolio.blog.domain.categories.QCategories.categories;
 import static me.portfolio.blog.domain.posts.QPosts.posts;
 import static me.portfolio.blog.domain.comments.QComments.comments;
+import static me.portfolio.blog.domain.user.QUser.user;
 @Repository
 public class UserRepositorySupport extends QuerydslRepositorySupport {
     private final JPAQueryFactory queryFactory;
@@ -41,5 +41,11 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return queryFactory.selectFrom(categories)
                 .where(categories.user.id.eq(userId))
                 .fetch();
+    }
+    //현재 접속해있는 유저 아이디 가져오기
+    public User getLoginUser(SessionUser sessionUser) {
+        return queryFactory.selectFrom(user)
+                .where(user.email.eq(sessionUser.getEmail()))
+                .fetchOne();
     }
 }

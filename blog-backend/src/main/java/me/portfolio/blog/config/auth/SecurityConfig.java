@@ -1,10 +1,15 @@
 package me.portfolio.blog.config.auth;
 
+import com.google.common.collect.ImmutableList;
 import lombok.RequiredArgsConstructor;
 import me.portfolio.blog.domain.user.Role;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -20,10 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**", "/profile").permitAll()
                 .antMatchers("/api/v2/**").permitAll()
-                //포스트 작성 정도나 권한 가지게 하면 될 것 같고
-                .antMatchers("/api/v2/posts/form").hasRole(Role.USER.name())
-                //회원 수정, 탈퇴를 제외하면 로그인 시 받아오는 세션을 포스트나 댓글등의 사용자 정보와 비교해서 수정 삭제 기능을 할수 있게
-                .antMatchers("/api/v2/user/**").hasAnyRole(Role.USER.name(), Role.GUEST.name())
+                .antMatchers("/api/v2/write").hasRole(Role.USER.name())
                 .anyRequest().authenticated()
                 .and()
                 .logout()
@@ -33,4 +35,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService);
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(ImmutableList.of("*"));
+        configuration.setAllowedMethods(ImmutableList.of("HEAD","GET", "POST", "PUT", "DELETE", "PATCH"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 }

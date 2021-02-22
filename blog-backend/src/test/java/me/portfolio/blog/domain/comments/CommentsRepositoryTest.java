@@ -19,7 +19,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles("local")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CommentsRepositoryTest {
 

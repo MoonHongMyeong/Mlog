@@ -8,7 +8,6 @@ import org.springframework.test.context.ActiveProfiles;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ActiveProfiles("local")
 @SpringBootTest
 public class UserRepositoryTest {
     @Autowired

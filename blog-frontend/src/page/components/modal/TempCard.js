@@ -1,20 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-export default function TempCard() {
+import axios from 'axios';
+export default function TempCard(props) {
+
+  useEffect(() => {
+    props.reRenderTempPostDelete();
+  }, [props])
+
+  const deleteTempPost = () => {
+    return axios.delete(`/api/v2/posts/${props.temp.id}`);
+  }
+
+  const handleDeleteTempPost = () => {
+    deleteTempPost()
+      .then(response => {
+        alert("임시 저장글이 삭제되었습니다.");
+        props.reRenderTempPostDelete();
+      })
+      .catch(error => console.log(error));
+  }
+
   return (
     <CardLayout>
       <h3 style={{
         "paddingLeft": "1rem",
         "wordBreak": "break-all"
-      }}>post.title</h3>
-      <XButton>X</XButton>
+      }}
+        onClick={props.loadTempPosts({
+          title: props.temp.title,
+          content: props.temp.content
+        })}
+      >{props.temp.title}</h3>
+      <XButton onClick={handleDeleteTempPost}>X</XButton>
     </CardLayout>
   )
 }
 
 const CardLayout = styled.div`
   width : 80%;
-  margin : 1.5rem;
+  margin : 0.2rem;
   height : 5rem;
   box-shadow : 0px 2px 10px 0px;
   display : flex;
