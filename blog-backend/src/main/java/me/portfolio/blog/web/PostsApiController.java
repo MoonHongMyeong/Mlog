@@ -1,6 +1,7 @@
 package me.portfolio.blog.web;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import me.portfolio.blog.config.auth.LoginUser;
 import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.service.CategoriesService;
@@ -51,10 +52,13 @@ public class PostsApiController {
     //포스트 등록
     @PostMapping("/write")
     public Long addPost(@LoginUser SessionUser sessionUser,
-                        @RequestParam(value = "image", required = false) MultipartFile image,
+                        @RequestParam("image") MultipartFile image,
                         @RequestParam("title") String title,
                         @RequestParam("content") String content,
-                        @RequestParam(value = "category", required = false) String categoryName) throws Exception {
+                        @RequestParam("categories") String categoryName) throws Exception {
+        System.out.println("getOriginalName : "+image.getOriginalFilename());
+        System.out.println("getName : "+image.getName());
+
         return postsService.addPost(sessionUser, image, title, content, categoryName);
     }
     //포스트 임시저장
@@ -71,8 +75,8 @@ public class PostsApiController {
 
     //포스트 조회
     @GetMapping("/posts/{postId}")
-    public PostsResponseDto getPost(@PathVariable(name = "postId") Long postId) throws Exception {
-        return postsService.getPost(postId);
+    public PostsResponseDto getPost(@PathVariable(name = "postId") Long postId, @LoginUser SessionUser sessionUser) throws Exception {
+        return postsService.getPost(postId,sessionUser);
     }
     //포스트 수정
     @PutMapping("/posts/{postId}")
@@ -95,6 +99,4 @@ public class PostsApiController {
     public int minusLikeCount(@PathVariable(name = "postId") Long postId, @LoginUser SessionUser sessionUser) throws Exception {
         return postsService.minusLikeCount(postId, sessionUser);
     }
-
-
 }

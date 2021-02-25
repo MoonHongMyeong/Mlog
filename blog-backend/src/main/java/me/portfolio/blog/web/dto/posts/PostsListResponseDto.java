@@ -21,6 +21,7 @@ public class PostsListResponseDto {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.user = entity.getUser();
+        this.likeCount = entity.getLikeCount();
         this.categories = entity.getCategories();
         this.imageUrl = entity.getImageUrl();
         this.modifiedDate = entity.getModifiedDate();

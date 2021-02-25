@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
 import { PostViewLayout, LayoutHeight, PostLayout } from './components/atoms/Layouts';
-import PostTitle from './components/posts/PostTitle';
 import { TitleInput, FormTextarea } from './components/atoms/Inputs';
 import { Button, FormButton } from './components/atoms/Buttons';
 import Footer from './components/common/Footer';
 import Comment from './components/comments/Comments';
 import axios from 'axios';
 import Loading from './components/common/Loading';
+import PostTitle from './components/posts/PostTitle';
 
 export default function PostView(props) {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,20 +21,13 @@ export default function PostView(props) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [name, setName] = useState("");
+  const [picture, setPicture] = useState("")
   const [about, setAbout] = useState("소개가 없습니다.");
   const [valTitle, setvalTitle] = useState(false);
   const [valContent, setvalContent] = useState(false);
-
   const [SessionUser, setSessionUser] = useState(null);
-
-  //이거는 리덕스 안쓰면 미친놈이겠다
-  const getSessionUser = () => {
-    axios.get('/api/v2/user')
-      .then(response => {
-        setSessionUser(response.data);
-      }).catch(error => console.log(error));
-  }
-
+  const [LikeVal, setLikeVal] = useState(false);
+  const [LikeCount, setLikeCount] = useState(0);
   const pUrl = `${props.match.params.postId}`;
   const cUrl = `${props.match.params.postId}/comments`;
 
@@ -43,22 +36,30 @@ export default function PostView(props) {
   }
 
   useEffect(() => {
+    axios.get('/api/v2/user')
+      .then(response => {
+        setSessionUser(response.data);
+      }).catch(error => console.log(error));
+
     axios.get(pUrl)
       .then(response => {
         setPosts(response.data);
         setTitle(response.data.title);
         setContent(response.data.content);
         setName(response.data.user.name);
+        setPicture(response.data.user.picture)
         setAbout(response.data.user.about);
+        setLikeCount(response.data.likeCount);
+        setLikeVal(response.data.like_val);
       })
-      .catch(error => console.log(error))
+      .catch(error => console.log(error));
+
     axios.get(cUrl)
       .then(response => setComments(response.data))
-      .catch(error => console.log(error))
+      .catch(error => console.log(error));
 
-    getSessionUser();
-    posts && comments && setIsLoading(false);
-    //해당 포스트에 접속한 유저의 좋아요 유무
+
+    setIsLoading(false);
   }, [pUrl, cUrl])
 
   const reRenderCommentsAdd = (newComment) => {
@@ -88,7 +89,7 @@ export default function PostView(props) {
   }
 
 
-  const handleEditPost = () => {
+  const submitEditPost = () => {
     if (valTitle && valContent) {
       const exceptedPost = {
         title: title,
@@ -108,6 +109,23 @@ export default function PostView(props) {
     }
   }
 
+  const submitLike = () => {
+    axios.get(`${props.match.params.postId}/like`)
+      .then(response => {
+        setLikeVal(true);
+        setLikeCount(LikeCount + 1);
+      })
+      .catch(error => console.log(error));
+  }
+  const submitDislike = () => {
+    axios.get(`${props.match.params.postId}/disLike`)
+      .then(response => {
+        setLikeVal(false);
+        setLikeCount(LikeCount - 1);
+      })
+      .catch(error => console.log(error));
+  }
+
   return (
     <>
       {isLoading ? <Loading /> : <>
@@ -124,7 +142,7 @@ export default function PostView(props) {
                 </div>
                 <div>
                   <FormButton>미리보기</FormButton>
-                  <FormButton onClick={handleEditPost}>수정완료</FormButton>
+                  <FormButton onClick={submitEditPost}>수정완료</FormButton>
                 </div>
               </FormTools>
             </>
@@ -139,7 +157,7 @@ export default function PostView(props) {
                     "marginBottom": "3rem"
                   }}>
                     <UserImg>
-                      <img src="/images/default.png" alt="userProfile"></img>
+                      <img src={picture} alt="userProfile"></img>
                     </UserImg>
                     <UserProfile>
                       <span style={{
@@ -162,7 +180,6 @@ export default function PostView(props) {
                   <div className="content" style={{
                     "wordBreak": "break-all",
                     "whiteSpace": "pre-line"
-                    //이 부분은 텍스트에어리어 안에서 작성한 글 가져와서 봐야할듯?
                   }}>
                     {posts.content}
                   </div>
@@ -173,9 +190,25 @@ export default function PostView(props) {
                     "marginTop": "2rem",
                     "marginBottom": "1rem"
                   }}>
-                    <Button color="grey"><i className="far fa-thumbs-up"></i>   {posts.likeCount}  </Button>
+                    {
+                      LikeVal ?
+                        <Button
+                          color="black"
+                          onClick={submitDislike}
+                        >
+                          <i className="far fa-thumbs-up"></i> {LikeCount}
+                        </Button>
+                        :
+                        <Button
+                          color="grey"
+                          onClick={submitLike}>
+                          <i className="far fa-thumbs-up"></i> {LikeCount}
+                        </Button>
+                    }
+
+
                   </div>
-                  {SessionUser && SessionUser.id === posts.user.id &&
+                  {SessionUser && SessionUser?.id === posts.user?.id &&
                     <AuthorTool>
                       <Button style={{ "marginRight": "1rem" }}
                         onClick={handleModifyMode}
@@ -188,6 +221,7 @@ export default function PostView(props) {
                     reRenderCommentsUpdate={reRenderCommentsUpdate}
                     comments={comments}
                     postId={props.match.params.postId}
+                    SessionUser={SessionUser}
                   />
                 </PostViewLayout>
               </LayoutHeight>

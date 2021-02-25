@@ -29,6 +29,6 @@ public class LikeValRepositorySupport extends QuerydslRepositorySupport {
         return queryFactory.selectFrom(likeVal)
                 .where(likeVal.posts.eq(post),
                         likeVal.user.eq(user))
-                .fetchFirst();
+                .fetchOne();
     }
 }

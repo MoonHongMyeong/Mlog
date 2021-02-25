@@ -24,6 +24,7 @@ export const FormTextarea = styled.textarea`
   margin: 2rem 0 auto;
   border: none;
   font-size : 1.2rem;
+  overflow-x : hidden;
 
   &:focus{
     outline : none;

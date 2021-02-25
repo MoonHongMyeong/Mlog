@@ -73,6 +73,7 @@ export default function SingleComment(props) {
     }
   }
 
+
   return (
     <>
       {modifyMode ?
@@ -126,8 +127,12 @@ export default function SingleComment(props) {
               </div>
             </Link>
             <CommentTools>
-              <CommentButton onClick={setModifyMode}>수정</CommentButton>
-              <CommentButton onClick={deleteComment}>삭제</CommentButton>
+              {props.comment.user.id === parseInt(props.SessionUser?.id) &&
+                <>
+                  <CommentButton onClick={setModifyMode}>수정</CommentButton>
+                  <CommentButton onClick={deleteComment}>삭제</CommentButton>
+                </>
+              }
               <CommentButton onClick={handleReplyTo}>ReplyTo</CommentButton>
             </CommentTools>
           </CardAuthor>

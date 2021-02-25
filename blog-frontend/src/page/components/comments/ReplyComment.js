@@ -2,7 +2,6 @@ import React from 'react'
 import SingleComment from './SingleComment';
 
 export default function ReplyComment(props) {
-
   return (
     <div>
       {props.comments &&
@@ -15,12 +14,14 @@ export default function ReplyComment(props) {
                   reRenderCommentUpdate={props.reRenderCommentUpdate}
                   comment={comment}
                   key={comment.id}
+                  SessionUser={props.SessionUser}
                   postId={props.postId} />
 
                 <ReplyComment
                   reRenderCommentsAdd={props.reRenderCommentsAdd}
                   reRenderCommentUpdate={props.reRenderCommentUpdate}
                   parentCommentId={comment.id}
+                  SessionUser={props.SessionUser}
                   comments={props.comments}
                   postId={props.postId} />
               </>

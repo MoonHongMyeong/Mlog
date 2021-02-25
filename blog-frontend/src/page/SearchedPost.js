@@ -1,32 +1,54 @@
 import React, { useEffect, useState } from 'react'
-import PostCard from './components/posts/PostCard';
-import { CardsLayout, LayoutHeight } from './components/atoms/Layouts';
+import SearchedPostCard from './components/posts/SearchedPostCard';
+import { CardsLayout, SearchLayoutHeight } from './components/atoms/Layouts';
 import Footer from './components/common/Footer';
 import axios from 'axios';
-import Loading from './components/common/Loading';
 
-export default function PostList() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchPostList, setSearchPostList] = useState([]);
+export default function SearchedPost() {
+  const [Posts, setPosts] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    setIsLoading(true);
-    axios.get("/api/v2/searchedPost")
-      .then(response => setSearchPostList(response.data))
-      .catch(error => console.log(error));
-    setIsLoading(false);
+    axios.get("/api/v2/posts")
+      .then(response => { setPosts(response.data); })
+      .catch(error => console.log(error))
   }, [])
+
+  const searchTextChange = (e) => {
+    setSearchText(e.currentTarget.value);
+  }
+
+  const searchPostList = Posts.filter(post => {
+    return post.title.includes(searchText)
+  })
+
   return (
     <>
-      <LayoutHeight>
+      <SearchLayoutHeight>
+        <div style={{
+          "margin": "0 auto",
+          "width": "80%",
+          "display": "flex",
+          "justifyContent": "center"
+        }}>
+          <input type="text"
+            style={{
+              "margin": "2rem",
+              "width": "50%",
+              "height": "3rem"
+            }}
+            placeholder="검색어를 입력하세요"
+            value={searchText}
+            onChange={searchTextChange} />
+        </div>
         <CardsLayout>
-          {isLoading && <Loading />}
           {searchPostList &&
             searchPostList.map(post => {
-              return <PostCard post={post} key={post.id} />
-            })}
+              return <SearchedPostCard post={post} key={post.id} />
+            })
+          }
         </CardsLayout>
-      </LayoutHeight>
+      </SearchLayoutHeight>
       <Footer />
     </>
   )

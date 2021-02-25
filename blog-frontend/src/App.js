@@ -7,7 +7,10 @@ import PostView from './page/PostView';
 import UserPage from './page/UserPage';
 import SearchedPost from './page/SearchedPost';
 import PopPosts from './page/PopPosts';
+
 function App() {
+
+
   return (
     <Router>
       <>
@@ -16,7 +19,7 @@ function App() {
           <Route exact path="/" component={PostList} />
           <Route exact path="/api/v2/posts" component={PostList} />
           <Route exact path="/api/v2/popPosts" component={PopPosts} />
-          <Route exact path="/api/v2/searchedPost" component={SearchedPost} />
+          <Route exact path="/api/v2/searchedPosts" component={SearchedPost} />
           <Route exact path="/api/v2/write" component={PostForm} />
           <Route exact path="/api/v2/posts/:postId" component={PostView} />
           <Route exact path="/api/v2/user/:userId" component={UserPage} />
