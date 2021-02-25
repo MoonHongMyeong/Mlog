@@ -1,7 +1,11 @@
 import styled from 'styled-components';
 
 export const LayoutHeight = styled.div`
-  min-height : calc(100vh - 12.8rem);
+min-height : calc(100vh - 16.5rem);
+`;
+
+export const SearchLayoutHeight = styled.div`
+  min-height : calc(100vh - 12.75rem);
 `;
 
 

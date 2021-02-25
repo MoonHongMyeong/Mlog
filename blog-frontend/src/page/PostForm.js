@@ -19,9 +19,16 @@ export default function PostForm(props) {
     fileName: ""
   });
   const [category, setCategory] = useState("");
-  const userCategories = [];
+  const [userCategories, setUserCategories] = useState([]);
   const [TempData, setTempData] = useState({});
   const [tempPosts, setTempPosts] = useState([]);
+
+  useEffect(() => {
+    axios.get('write')
+      .then(response => {
+        setUserCategories(Array.from(response.data));
+      })
+  }, [props])
 
   const handleFileChange = (e) => {
     setImage({
@@ -43,8 +50,9 @@ export default function PostForm(props) {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
-    formData.append('image', image);
+    formData.append('image', image.file, image.fileName);
     formData.append('categories', category);
+
     const config = {
       headers: {
         'Content-type': 'multipart/form-data'
@@ -57,7 +65,6 @@ export default function PostForm(props) {
   const handleFormSubmit = (e) => {
     addPost().then((response) => {
       alert('게시글 등록이 완료되었습니다.');
-      console.log(response);
       props.history.push(`/api/v2/posts/${response.data}`)
     }).catch(error => console.log(error));
   }
@@ -119,7 +126,7 @@ export default function PostForm(props) {
     <>
       <PostLayout>
         <TitleInput name="title" onChange={handleTitleChange} value={title} placeholder="제목을 입력하세요." />
-        <FormTextarea name="content" onChange={handleContentChange} value={content} placeholder="내용을 입력하세요." height={windowHeight}></FormTextarea>
+        <FormTextarea wrap="physical" name="content" onChange={handleContentChange} value={content} placeholder="내용을 입력하세요." height={windowHeight}></FormTextarea>
       </PostLayout>
       <FormTools>
         <div>
@@ -156,10 +163,10 @@ export default function PostForm(props) {
                 onChange={handleCategoryChange}
                 name="category"
                 id="category">
-                <option value="">선택하지 않음</option>
+                <option value="일반">선택하지 않음</option>
                 {userCategories &&
                   userCategories.map(category => {
-                    return <option value={category}>{category}</option>
+                    return <option value={category.id} key={category.id}>{category.name}</option>
                   })}
               </select>
             </div>

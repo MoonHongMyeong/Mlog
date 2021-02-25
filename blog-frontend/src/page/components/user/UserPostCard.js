@@ -1,33 +1,31 @@
 import React from 'react'
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-export default function UserPost() {
+
+export default function UserPostCard(props) {
   return (
     <CardLayout>
-      <Link to="/user/posts" className="userPostCard">
-        <div id="img">
-          <img src="/images/default.png" alt="?"></img>
-        </div>
-        <h2 style={{
-          "textDecoration": "none",
-          "color": "black",
-        }}>postTitle</h2>
-        <span style={{
-          "color": "grey",
-        }}>post.content 한줄 34 한 80자 받으면sadadfasdfsafdasdfsdfsafsdfadfasdfasdfasfasdfsadfaf 되겠다...</span>
-        <div style={{
-          "display": "flex",
-          "justifyContent": "space-between",
-          "fontSize": "0.8rem",
-        }}>
-          <p style={{
-            "color": "black"
-          }}>modifiedDate</p>
-          <p style={{
-            "color": "grey"
-          }}><i className="far fa-thumbs-up"></i>12</p>
-        </div>
-      </Link>
+      <div id="img">
+        <img src={props.post.imageUrl} alt={props.post.title}></img>
+      </div>
+      <h2 style={{
+        "textDecoration": "none",
+        "color": "black",
+      }}>{props.post.title}</h2>
+      <span style={{
+        "color": "grey",
+      }}>{props.post.content}</span>
+      <div style={{
+        "display": "flex",
+        "justifyContent": "space-between",
+        "fontSize": "0.8rem",
+      }}>
+        <p style={{
+          "color": "black"
+        }}>{props.post.modifiedDate.substr(0, 10)}</p>
+        <p style={{
+          "color": "grey"
+        }}><i className="far fa-thumbs-up"></i>{props.post.likeCount}</p>
+      </div>
     </CardLayout>
   )
 }

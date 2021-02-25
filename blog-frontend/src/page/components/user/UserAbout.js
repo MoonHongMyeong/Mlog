@@ -1,9 +1,32 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { LongButton } from '../atoms/Buttons';
 
-export default function UserAbout() {
+export default function UserAbout(props) {
   const [onModifyMode, setOnModifyMode] = useState(false);
+  const [about, setAbout] = useState("");
+
+  useEffect(() => {
+    axios.get(props.location.pathname)
+      .then(response => setAbout(response.data.about))
+  }, [props.location.pathname])
+
+  const handleAboutChange = (e) => {
+    setAbout(e.currentTarget.value);
+  }
+
+  const submitEditAbout = (e) => {
+    const editData = {
+      about: about
+    }
+
+    axios.put(props.location.pathname, editData).then(() => {
+      alert("수정이 완료되었습니다.");
+      setOnModifyMode(!onModifyMode);
+
+    })
+  }
 
   return (
     <>
@@ -17,11 +40,14 @@ export default function UserAbout() {
           <textarea style={{
             "resize": "none",
             "height": "10rem",
-          }}></textarea>
+          }}
+            value={about}
+            onChange={handleAboutChange}
+          ></textarea>
           <div style={{
             "display": "flex"
           }}>
-            <AboutButton>편집완료</AboutButton>
+            <AboutButton onClick={submitEditAbout}>편집완료</AboutButton>
             <AboutButton
               onClick={() => { setOnModifyMode(!onModifyMode) }}
             >편집취소</AboutButton>
@@ -35,7 +61,7 @@ export default function UserAbout() {
           "alignItems": "center",
           "marginTop": "1rem",
         }}>
-          <AboutCard>아직 작성된 소개 글이 없습니다.</AboutCard>
+          <AboutCard>{about === null ? "아직 작성된 소개 글이 없습니다." : about}</AboutCard>
           <LongButton
             style={{
               "width": "80%",

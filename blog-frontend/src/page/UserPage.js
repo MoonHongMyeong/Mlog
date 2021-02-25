@@ -8,27 +8,29 @@ import Footer from './components/common/Footer';
 import { UserPageLayout, LayoutHeight } from './components/atoms/Layouts';
 import axios from 'axios';
 import { Button } from './components/atoms/Buttons';
+import Category from './components/modal/Category';
 
 export default function UserPage(props) {
   const [OnModifyMode, setOnModifyMode] = useState(false);
+  const [OnCategories, setOnCategories] = useState(false);
   const [user, setUser] = useState({});
   const [Username, setUsername] = useState(user.name);
   const [SessionUser, setSessionUser] = useState(null);
 
-  const getSessionUser = () => {
+  const handleCategories = () => {
+    setOnCategories(!OnCategories);
+  }
+
+  useEffect(() => {
     axios.get('/api/v2/user')
       .then(response => {
         setSessionUser(response.data);
-      }).catch(error => console.log(error))
-  }
-
-
-  useEffect(() => {
+      }).catch(error => console.log(error));
     if (props.match.params.userId) {
       axios.get(`/api/v2/user/${props.match.params.userId}`)
         .then(response => setUser(response.data));
     }
-    getSessionUser()
+
   }, [props.match.params.userId])
 
   const handleModifyMode = () => {
@@ -37,11 +39,14 @@ export default function UserPage(props) {
 
   const submitEditUsername = () => {
     const url = `/api/v2/user/${props.match.params.userId}`;
-
     axios.put(url, {
       name: Username,
+      picture: user.picture
     })
-      .then(response => alert("수정이 완료되었습니다."))
+      .then(response => {
+        alert("수정이 완료되었습니다.");
+        window.location.href = url;
+      })
       .catch(error => console.log(error));
   }
 
@@ -49,8 +54,17 @@ export default function UserPage(props) {
     setUsername(e.currentTarget.value);
   }
 
+  const handleRemoveUser = () => {
+    window.confirm("정말로 탈퇴하시겠습니까?")
+    axios.delete(`/api/v2/user/${props.match.params.userId}`)
+      .then(() => {
+        alert("탈퇴가 완료되었습니다.")
+        window.location.href = "/"
+      })
+  }
+
   return (
-    <>
+    <>{OnCategories && <Category handleCategories={handleCategories} userId={user.id} />}
       <LayoutHeight style={{ "marginBottom": "2rem" }}>
         <UserPageLayout>
           <UserInfoLayout>
@@ -86,18 +100,19 @@ export default function UserPage(props) {
                   "borderRadius": "8rem",
                 }} src={`${user.picture}`} alt="userimg"></img>
                 <h3>{user.name}</h3>
-                {SessionUser && SessionUser.id === user.id &&
+                {SessionUser && SessionUser.id === user?.id &&
                   <>
                     <div>
                       <Button onClick={handleModifyMode}>회원수정</Button>
                       <span>  </span>
-                      <Button>회원탈퇴</Button>
+                      <Button onClick={handleRemoveUser}>회원탈퇴</Button>
                     </div>
                     <div>
                       <Button style={{
                         "width": "100%",
                         "marginTop": "0.3rem"
-                      }}>카테고리 추가/수정/삭제</Button>
+                      }}
+                        onClick={handleCategories}>카테고리 추가/삭제</Button>
                     </div>
                   </>
                 }

@@ -9,10 +9,12 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class CategoriesResponseDto {
+    private Long id;
     private String name;
     private LocalDateTime modifiedDate;
 
     public CategoriesResponseDto(Categories entity){
+        this.id = entity.getId();
         this.name=entity.getName();
         this.modifiedDate=entity.getModifiedDate();
     }

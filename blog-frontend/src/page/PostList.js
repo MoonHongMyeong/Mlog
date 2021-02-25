@@ -4,11 +4,22 @@ import { CardsLayout, LayoutHeight } from './components/atoms/Layouts';
 import Footer from './components/common/Footer';
 import axios from 'axios';
 import Loading from './components/common/Loading';
-
+import Pagination from './components/posts/Pagination';
 
 export default function PostList() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [postList, setPostList] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 12;
+  const indexOfLast = currentPage * postsPerPage;
+  const indexOfFirst = indexOfLast - postsPerPage;
+
+  const currentPosts = (temp) => {
+    let currentPosts = 0;
+    currentPosts = temp.slice(indexOfFirst, indexOfLast);
+    return currentPosts;
+  }
 
   useEffect(() => {
     setIsLoading(true);
@@ -21,17 +32,24 @@ export default function PostList() {
 
   return (
     <>
-      {isLoading && <Loading />}
-      <LayoutHeight>
-        <CardsLayout>
-          {postList &&
-            postList.map(post => {
-              return <PostCard post={post} key={post.id} />
-            })}
-          {isLoading && <Loading />}
-        </CardsLayout>
-      </LayoutHeight>
-      <Footer />
-    </>
+      {isLoading ? <Loading />
+        :
+        <>
+          <LayoutHeight>
+            <CardsLayout>
+              {postList &&
+                <PostCard post={currentPosts(postList)} />
+              }
+              {isLoading && <Loading />}
+            </CardsLayout>
+
+          </LayoutHeight>
+          <Pagination
+            postsPerPage={postsPerPage}
+            totalPosts={postList.length}
+            paginate={setCurrentPage} />
+          <Footer />
+        </>
+      }</>
   )
 }

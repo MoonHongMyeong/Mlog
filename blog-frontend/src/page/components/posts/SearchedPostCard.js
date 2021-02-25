@@ -2,40 +2,35 @@ import styled from 'styled-components';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function PostCard(props) {
+export default function SearchedPostCard(props) {
   return (
     <>
-      {Array.from(props.post).map(post => {
-        return (
-          <CardContainer key={post.id}>
-            <CardImg>
-              <Link to={`/api/v2/posts/${post.id}`}>
-                <img src={post.imageUrl} alt={post.title} />
-              </Link></CardImg>
-            <div id="postInfo">
-              <Link to={`/api/v2/posts/${post.id}`}>
-                <CardTitle><span>{post.title}</span></CardTitle>
-              </Link>
-              <CardAuthor>
-                <Link to={`/api/v2/user/${post.user.id}`}>
-                  <div id="author">
-                    <div id="profile">
-                      <img src={post.user.picture}
-                        alt={post.user.name}
-                      />
-                    </div>
-                    <div id="userInfo">
-                      <span>{post.user.name}</span>
-                      <span style={{ "fontSize": "0.4rem" }}>{post.modifiedDate.substr(0, 10)}</span>
-                    </div>
-                  </div>
-                </Link>
-              </CardAuthor>
-            </div>
-          </CardContainer>
-        )
-      })}
-
+      <CardContainer>
+        <CardImg>
+          <Link to={`/api/v2/posts/${props.post.id}`}>
+            <img src={props.post.imageUrl} alt={props.post.title} />
+          </Link></CardImg>
+        <div id="postInfo">
+          <Link to={`/api/v2/posts/${props.post.id}`}>
+            <CardTitle><span>{props.post.title}</span></CardTitle>
+          </Link>
+          <CardAuthor>
+            <Link to={`/api/v2/user/${props.post.user.id}`}>
+              <div id="author">
+                <div id="profile">
+                  <img src={props.post.user.picture}
+                    alt={props.post.user.name}
+                  />
+                </div>
+                <div id="userInfo">
+                  <span>{props.post.user.name}</span>
+                  <span style={{ "fontSize": "0.4rem" }}>{props.post.modifiedDate}</span>
+                </div>
+              </div>
+            </Link>
+          </CardAuthor>
+        </div>
+      </CardContainer>
     </>
   )
 }

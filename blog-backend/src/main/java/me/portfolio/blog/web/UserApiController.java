@@ -49,6 +49,12 @@ public class UserApiController {
     public UserResponseDto updateUserAbout(@RequestBody AboutRequestDto requestDto, @PathVariable(name = "userId") Long userId)throws Exception{
         return userService.updateUserAbout(requestDto, userId);
     }
+
+    //소개 글 수정
+    @GetMapping("/user/{userId}/about")
+    public UserResponseDto getUserAbout(@PathVariable(name = "userId") Long userId)throws Exception{
+        return userService.getUserInfo(userId);
+    }
     //회원 수정
     @PutMapping("/user/{userId}")
     public Long updateUser(@PathVariable(name = "userId") Long userId, @RequestBody UserUpdateRequestDto requestDto) throws Exception{

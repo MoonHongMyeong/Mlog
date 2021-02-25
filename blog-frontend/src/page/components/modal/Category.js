@@ -1,106 +1,96 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { LongButton } from '../atoms/Buttons';
 import { ModalBackLayout } from '../atoms/Layouts'
 import axios from 'axios';
+import CategoryCard from './CategoryCard';
+import { Button } from '../atoms/Buttons';
 
 const body = document.querySelector('#root');
 
 export default function Category(props) {
+  const [category, setCategory] = useState([]);
+  const [categoryName, setcategoryName] = useState("");
 
-  const [image, setImage] = useState({
-    file: null,
-    fileName: ""
-  });
-  const [category, setCategory] = useState("");
-  const [userCategories, setUserCategories] = useState([]);
-
-
-  const handleFileChange = (e) => {
-    setImage({
-      file: e.target.files[0],
-      fileName: e.target.value
-    })
+  const onCategoryNameChange = e => {
+    setcategoryName(e.currentTarget.value);
   }
-  const handleCategoryChange = (e) => {
-    setCategory(e.target.value)
-  }
-
-  const addPost = () => {
-    const url = '/api/v2/write';
-    const formData = new FormData();
-    formData.append('title', props.title);
-    formData.append('content', props.content);
-    formData.append('image', image);
-    formData.append('categories', category);
-    const config = {
-      headers: {
-        'Content-type': 'multipart/form-data'
+  const submitCategories = () => {
+    if (categoryName.length < 2) {
+      alert("카테고리 이름을 적어주세요")
+    } else {
+      const data = {
+        name: categoryName
       }
+      axios.post(`/api/v2/user/${props.userId}/categories`, data)
+        .then(response => {
+          alert("카테고리가 추가 되었습니다");
+          renderCategory();
+        })
     }
-
-    return axios.post(url, formData, config);
   }
 
-  const handleFormSubmit = (e) => {
-    addPost().then((response) => {
-      alert('게시글 등록이 완료되었습니다.');
-      console.log(response);
-      props.history.push(`/api/v2/posts/${response.data}`)
-    }).catch(error => console.log(error));
+  const renderCategory = () => {
+    axios.get(`/api/v2/user/${props.userId}/categories`)
+      .then(response => {
+        setCategory(response.data);
+      })
   }
 
   useEffect(() => {
     body.setAttribute("style", "overflow: hidden;");
-    //유저아이디를 어디서 어떻게 받아와야할지....
-    // const url = `/api/v2/user/${props.user.id}/categories`;
-    // axios.get(url)
-    //   .then(response => setUserCategories(response))
-    //   .catch(error => console.log(error));
+    axios.get(`/api/v2/user/${props.userId}/categories`)
+      .then(response => {
+        setCategory(response.data);
+      })
     return () => {
       body.removeAttribute("style");
     }
-  }, [])
+  }, [props])
   return (
     <ModalBackLayout>
-      {console.log(props)}
       <ModalLayout>
         <p>
-          <span>게시글 발행</span>
-          <button onClick={props.onModalCategory}>X</button>
+          <span>카테고리 목록</span>
+          <button onClick={props.handleCategories}>X</button>
         </p>
-        <div>
-          <label htmlFor="thumbnail">썸네일</label>
-          <input onChange={handleFileChange}
-            image={image.file}
-            value={image.fileName}
-            accept="image/*"
-            name="image"
-            type="file"
-            id="thumbnail" />
+        <div style={{
+          "margin": "0 auto",
+          "width": "100%"
+        }}>
+          {
+            category &&
+            category.map((cate, index) => {
+              return <CategoryCard renderCategory={renderCategory}
+                key={index}
+                userId={props.userId}
+                category={cate} />
+            })
+
+          }
         </div>
-        <div>
-          <label htmlFor="category">시리즈</label>
-          <select
-            value={category}
-            onChange={handleCategoryChange}
-            name="category"
-            id="category">
-            <option value="">선택하지 않음</option>
-            {userCategories &&
-              userCategories.map(category => {
-                return <option value={category}>{category}</option>
-              })}
-          </select>
+        <div style={{
+          "display": "flex",
+          "flexDirection": "column"
+
+        }}>
+          <input type="text"
+            id="input"
+            name="name"
+            value={categoryName}
+            onChange={onCategoryNameChange}
+            placeholder="추가할 카테고리 이름을 넣어주세요"
+            style={{ "width": "100%", "border": "none", "height": "2rem" }}
+          />
+          <Button style={{ "width": "100%" }} onClick={submitCategories}>추가</Button>
         </div>
-        <SubmitButton onClick={handleFormSubmit}>글을 발행합니다.</SubmitButton>
+
       </ModalLayout>
     </ModalBackLayout>
   )
 }
 
 const ModalLayout = styled.div`
-  width : 30rem;
+  width : 25rem;
   padding : 1rem;
   background-color : #fafafa;
   display : flex;
@@ -155,8 +145,8 @@ const ModalLayout = styled.div`
     width : 83.5%;
     height : 2rem;
   }
-`;
 
-const SubmitButton = styled(LongButton)`
-  width : 100%;
+  @media screen and (max-width:500px){
+    width : 80%;    
+  }
 `;

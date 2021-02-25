@@ -56,6 +56,7 @@ export default function Comments(props) {
                   comment={comment}
                   key={comment.id}
                   postId={props.postId}
+                  SessionUser={props.SessionUser}
                 />
 
                 <ReplyComment
@@ -64,6 +65,7 @@ export default function Comments(props) {
                   parentCommentId={comment.id}
                   comments={props.comments}
                   postId={props.postId}
+                  SessionUser={props.SessionUser}
                 />
               </>)
           } return <div></div>

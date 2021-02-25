@@ -68,6 +68,7 @@ public class PostsService {
         //세션 유저 정보 불러오기
         User user = userRepository.findByEmail(sessionUser.getEmail()).get();
         Categories categories = checkCategories(sessionUser, categoryName);
+
         //파일 저장
         if (image == null) {
             PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
@@ -85,12 +86,13 @@ public class PostsService {
         } else {
             //로컬 테스트용
             String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
-            String filePath = baseDir + "\\" + image.getOriginalFilename();
+            int nameLength = image.getOriginalFilename().length();
+            String filePath = baseDir + "\\" + image.getOriginalFilename().substring(12,nameLength);
             //실제 리눅스 서버 배포용
 //            String baseDir = "/home/ec2-user/portfolio-blog/blog-frontend/build/images";
-//            String filePath = baseDir + "/" + image.getOriginalFilename();
+//            String filePath = baseDir + "/" + image.getOriginalFilename().substring(12,nameLength);
             image.transferTo(new File(filePath));
-            String fileName = image.getOriginalFilename();
+            String fileName = image.getOriginalFilename().substring(12,nameLength);
 
             PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
                     .title(title)
@@ -115,11 +117,23 @@ public class PostsService {
 
     //포스트 조회
     @Transactional(readOnly = true)
-    public PostsResponseDto getPost(Long postId){
+    public PostsResponseDto getPost(Long postId, SessionUser sessionUser){
+        User user = userRepository.findByEmail(sessionUser.getEmail()).get();
         Posts entity = postsRepository.findById(postId).orElseThrow(
                 ()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));
 
-        return new PostsResponseDto(entity);
+        LikeVal likeVal = likeValRepositorySupport.checkLikeWithUser(user,entity);
+
+        if(likeVal != null){
+            PostsResponseDto responseDto = new PostsResponseDto(entity);
+            responseDto.setLike_val(true);
+            return responseDto;
+
+        }else{
+            PostsResponseDto responseDto = new PostsResponseDto(entity);
+            responseDto.setLike_val(false);
+            return responseDto;
+        }
     }
 
     //포스트 수정
@@ -144,14 +158,13 @@ public class PostsService {
         User user = userRepository.findByEmail(sessionUser.getEmail()).get();
         Posts post = postsRepository.findById(postId).get();
 
-        LikeVal likeVal = likeValRepositorySupport.checkLikeWithUser(user, post);
-        if (likeVal == null){
             likeValRepository.save(LikeVal.builder()
                     .user(user)
                     .posts(post)
                     .build());
             post.plusCount();
-        }
+
+
         return post.getLikeCount();
     }
     //좋아요 취소
@@ -161,10 +174,10 @@ public class PostsService {
         Posts post = postsRepository.findById(postId).get();
 
         LikeVal likeVal = likeValRepositorySupport.checkLikeWithUser(user, post);
-        if(likeVal != null){
+
             post.minusCount();
             likeValRepository.delete(likeVal);
-        }
+
         return post.getLikeCount();
     }
     //임시저장

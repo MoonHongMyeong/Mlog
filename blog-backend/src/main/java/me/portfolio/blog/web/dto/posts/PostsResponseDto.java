@@ -21,6 +21,7 @@ public class PostsResponseDto {
     private String imageUrl;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+    private boolean like_val;
 
     public PostsResponseDto(Posts entity){
         this.id=entity.getId();
@@ -28,10 +29,15 @@ public class PostsResponseDto {
         this.content=entity.getContent();
         this.user=entity.getUser();
         this.temp=entity.getTemp();
+        this.likeCount=entity.getLikeCount();
         this.categories=entity.getCategories();
         this.imageUrl=entity.getImageUrl();
         this.createdDate=entity.getCreatedDate();
         this.modifiedDate=entity.getModifiedDate();
+    }
+
+    public void setLike_val(boolean like_val){
+        this.like_val = like_val;
     }
 
     public void setLikeCount(int likeCount){

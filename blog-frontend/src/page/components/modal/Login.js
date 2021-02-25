@@ -15,7 +15,11 @@ export default function Login(props) {
   }, [])
 
   const googleLogin = () => {
-    axios.get('/oauth2/authorization/google', { header: { 'Access-Control-Allow-Origin': '*' } })
+    axios.get('/oauth2/authorization/google', {
+      header: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000'
+      }
+    })
       .then(response => {
         console.log(response);
         window.open()

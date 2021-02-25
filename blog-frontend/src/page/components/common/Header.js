@@ -6,7 +6,7 @@ import { HeaderLayout, MenuLayout } from '../atoms/Layouts';
 import Login from '../modal/Login';
 import axios from 'axios';
 
-export default function Header(props) {
+function Header(props) {
   const [onLoginModal, setOnLoginModal] = useState(false);
   const [isLogined, setIsLogined] = useState(false);
   const [LoginUser, setLoginUser] = useState("");
@@ -33,6 +33,7 @@ export default function Header(props) {
       alert("로그아웃 했습니다.")
     });
   }
+
   return (
     <header>
       {onLoginModal && <Login handleLoginModal={handleLoginModal} />}
@@ -63,19 +64,34 @@ export default function Header(props) {
       </HeaderLayout>
       <MenuLayout>
         <div>
-          <NavLink to="/api/v2/popPosts"><Nav><i className="fas fa-fire">인기 포스트</i></Nav></NavLink>
-          <NavLink to="/"><Nav><i className="fas fa-history">최신 포스트</i></Nav></NavLink>
+          <NavLink style={{
+            "color": "#4b4b4b",
+            "textDecoration": "none",
+            "opacity": "0.5",
+            "margin": "0.5rem"
+          }} to="/api/v2/popPosts"><i className="fas fa-fire">인기 포스트</i></NavLink>
+          <NavLink to="/" style={{
+            "color": "#4b4b4b",
+            "textDecoration": "none",
+            "opacity": "0.5",
+            "margin": "0.5rem"
+          }}><i className="fas fa-history">최신 포스트</i></NavLink>
         </div>
         <Search>
-          <form>
-            <input type="text" placeholder="검색어를 입력하세요" style={{ "borderBottom": "1px solid #acacac" }} />
-            <button style={{ "borderBottom": "1px solid #acacac" }} type="submit"><i className="fas fa-search"></i></button>
-          </form>
+
+          <Link to="/api/v2/searchedPosts">
+            <button><i className="fas fa-search"></i></button>
+          </Link>
+
         </Search>
       </MenuLayout >
     </header>
   )
 }
+
+
+
+export default Header
 
 const Search = styled.div`
   input,button {
@@ -130,14 +146,3 @@ width: 15rem;
     height :100%;
   }
 `;
-
-const Nav = styled.span`
-  color : #4b4b4b;
-  margin : .5rem;
-  opacity : 0.5;
-
-  &:hover {
-    text-decoration:underline;
-  }
-`;
-
