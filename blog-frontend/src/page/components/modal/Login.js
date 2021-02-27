@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components';
 import { LongButton } from '../atoms/Buttons';
 import { ModalBackLayout } from '../atoms/Layouts'
-import axios from 'axios';
 
 const body = document.querySelector('#root');
 
@@ -15,15 +14,7 @@ export default function Login(props) {
   }, [])
 
   const googleLogin = () => {
-    axios.get('/oauth2/authorization/google', {
-      header: {
-        'Access-Control-Allow-Origin': 'http://localhost:3000'
-      }
-    })
-      .then(response => {
-        console.log(response);
-        window.open()
-      })
+    window.location.href = '/oauth2/authorization/google'
   }
 
   return (

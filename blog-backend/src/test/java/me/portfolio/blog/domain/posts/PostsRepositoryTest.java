@@ -147,7 +147,7 @@ public class PostsRepositoryTest {
                 .content(content)
                 .user(userRepository.findByEmail("test@test.com").get())
                 .categories(category)
-                .temp("Y")
+                .temp("N")
                 .build());
 
         List<Posts> result = postsRepositorySupport.findByTitle(title);
@@ -171,7 +171,7 @@ public class PostsRepositoryTest {
                 .content(content)
                 .user(userRepository.findByEmail("test@test.com").get())
                 .categories(category)
-                .temp("Y")
+                .temp("N")
                 .build());
 
         List<Posts> result = postsRepository.findByTitle(title);

@@ -125,11 +125,11 @@ public class PostLikeApiControllerTest {
         List<Posts> postsList = postsRepository.findAll();
         Posts post = postsList.get((postsList.size() - 1));
 
-        //취소를 하기 위해서는 테이블에 있어야 함
-        likeValRepository.save(LikeVal.builder()
-                .posts(post)
-                .user(testUser)
-                .build());
+        //취소를 하기 위해서는 테이블에 있어야 함(개별테스트)
+//        likeValRepository.save(LikeVal.builder()
+//                .posts(post)
+//                .user(testUser)
+//                .build());
 
         MockHttpSession mockHttpSession = new MockHttpSession();
         mockHttpSession.setAttribute("user", new SessionUser(testUser));

@@ -110,7 +110,7 @@ public class PostsApiControllerTest {
         MockHttpSession mockHttpSession = new MockHttpSession();
         mockHttpSession.setAttribute("user", new SessionUser(user));
 
-        mvc.perform(multipart(url).file(new MockMultipartFile("image", "test", "image/png", "/test.png".getBytes()))
+        mvc.perform(multipart(url).file(new MockMultipartFile("image", "c:\\fakepath\\test", "image/png", "/test.png".getBytes()))
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .session(mockHttpSession)
                 .param("content", content)

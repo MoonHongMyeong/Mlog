@@ -52,13 +52,10 @@ public class PostsApiController {
     //포스트 등록
     @PostMapping("/write")
     public Long addPost(@LoginUser SessionUser sessionUser,
-                        @RequestParam("image") MultipartFile image,
+                        @RequestParam(value = "image", required = false) MultipartFile image,
                         @RequestParam("title") String title,
                         @RequestParam("content") String content,
-                        @RequestParam("categories") String categoryName) throws Exception {
-        System.out.println("getOriginalName : "+image.getOriginalFilename());
-        System.out.println("getName : "+image.getName());
-
+                        @RequestParam(value = "categories", required = false) String categoryName) throws Exception {
         return postsService.addPost(sessionUser, image, title, content, categoryName);
     }
     //포스트 임시저장

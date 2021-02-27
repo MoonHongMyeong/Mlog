@@ -11,7 +11,7 @@ export default function PostTitle(props) {
         "fontSize": "1.2rem",
         "fontWeight": "500",
         "wordBreak": "break-all"
-      }}>{props.posts.categories ? props.posts.categories : "일반"}</span>
+      }}>{props.posts.categories ? props.posts.categories.name : "일반"}</span>
       <span style={{
         "fontSize": "1.8rem",
         "fontWeight": "700",

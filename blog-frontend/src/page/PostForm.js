@@ -37,7 +37,7 @@ export default function PostForm(props) {
     })
   }
   const handleCategoryChange = (e) => {
-    setCategory(e.target.value)
+    setCategory(e.target.value);
   }
 
   const loadTempPosts = (callTemp) => {
@@ -50,7 +50,7 @@ export default function PostForm(props) {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
-    formData.append('image', image.file, image.fileName);
+    formData.append('image', image);
     formData.append('categories', category);
 
     const config = {
@@ -166,7 +166,7 @@ export default function PostForm(props) {
                 <option value="일반">선택하지 않음</option>
                 {userCategories &&
                   userCategories.map(category => {
-                    return <option value={category.id} key={category.id}>{category.name}</option>
+                    return <option value={category.name} key={category.id}>{category.name}</option>
                   })}
               </select>
             </div>

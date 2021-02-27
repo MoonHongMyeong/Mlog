@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
-import { PostViewLayout, LayoutHeight, PostLayout } from './components/atoms/Layouts';
+import { PostViewLayout, SearchLayoutHeight, PostLayout } from './components/atoms/Layouts';
 import { TitleInput, FormTextarea } from './components/atoms/Inputs';
 import { Button, FormButton } from './components/atoms/Buttons';
 import Footer from './components/common/Footer';
@@ -110,12 +110,16 @@ export default function PostView(props) {
   }
 
   const submitLike = () => {
-    axios.get(`${props.match.params.postId}/like`)
-      .then(response => {
-        setLikeVal(true);
-        setLikeCount(LikeCount + 1);
-      })
-      .catch(error => console.log(error));
+    if (SessionUser !== null) {
+      axios.get(`${props.match.params.postId}/like`)
+        .then(response => {
+          setLikeVal(true);
+          setLikeCount(LikeCount + 1);
+        })
+        .catch(error => console.log(error));
+    } else {
+      alert("로그인이 필요합니다.")
+    }
   }
   const submitDislike = () => {
     axios.get(`${props.match.params.postId}/disLike`)
@@ -148,7 +152,7 @@ export default function PostView(props) {
             </>
             :
             <>
-              <LayoutHeight>
+              <SearchLayoutHeight>
                 <PostViewLayout>
                   <PostTitle posts={posts} />
                   <div style={{
@@ -224,7 +228,7 @@ export default function PostView(props) {
                     SessionUser={SessionUser}
                   />
                 </PostViewLayout>
-              </LayoutHeight>
+              </SearchLayoutHeight>
               <Footer />
             </>
         }

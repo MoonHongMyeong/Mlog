@@ -23,7 +23,7 @@ public class IndexController {
         if(user != null){
             model.addAttribute("user", user);
         }
-        return "/api/v2/posts";
+        return "index.html";
     }
 
     @GetMapping("/api/v2/logout")

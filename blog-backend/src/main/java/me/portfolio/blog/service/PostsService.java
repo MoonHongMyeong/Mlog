@@ -85,11 +85,11 @@ public class PostsService {
 
         } else {
             //로컬 테스트용
-            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
             int nameLength = image.getOriginalFilename().length();
+            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
             String filePath = baseDir + "\\" + image.getOriginalFilename().substring(12,nameLength);
             //실제 리눅스 서버 배포용
-//            String baseDir = "/home/ec2-user/portfolio-blog/blog-frontend/build/images";
+//            String baseDir = "/home/ec2-user/blog-images/";
 //            String filePath = baseDir + "/" + image.getOriginalFilename().substring(12,nameLength);
             image.transferTo(new File(filePath));
             String fileName = image.getOriginalFilename().substring(12,nameLength);
@@ -118,22 +118,26 @@ public class PostsService {
     //포스트 조회
     @Transactional(readOnly = true)
     public PostsResponseDto getPost(Long postId, SessionUser sessionUser){
-        User user = userRepository.findByEmail(sessionUser.getEmail()).get();
-        Posts entity = postsRepository.findById(postId).orElseThrow(
-                ()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));
+        Posts entity = postsRepository.findById(postId)
+                .orElseThrow(()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));
+        if(sessionUser != null) {
+            User user = userRepository.findByEmail(sessionUser.getEmail())
+                    .orElseThrow(() -> new IllegalArgumentException("로그인한 유저가 아닙니다."));
+            LikeVal likeVal = likeValRepositorySupport.checkLikeWithUser(user,entity);
 
-        LikeVal likeVal = likeValRepositorySupport.checkLikeWithUser(user,entity);
-
-        if(likeVal != null){
-            PostsResponseDto responseDto = new PostsResponseDto(entity);
-            responseDto.setLike_val(true);
-            return responseDto;
-
-        }else{
-            PostsResponseDto responseDto = new PostsResponseDto(entity);
-            responseDto.setLike_val(false);
-            return responseDto;
+            if(likeVal != null){
+                PostsResponseDto responseDto = new PostsResponseDto(entity);
+                responseDto.setLike_val(true);
+                return responseDto;
+            }else{
+                PostsResponseDto responseDto = new PostsResponseDto(entity);
+                responseDto.setLike_val(false);
+                return responseDto;
+            }
         }
+    return new PostsResponseDto(entity);
+
+
     }
 
     //포스트 수정
