@@ -10,6 +10,9 @@ function Header(props) {
   const [onLoginModal, setOnLoginModal] = useState(false);
   const [isLogined, setIsLogined] = useState(false);
   const [LoginUser, setLoginUser] = useState("");
+  const [hide, setHide] = useState(false);
+  const [currentHeight, setCurrentHeight] = useState(0);
+
 
   useEffect(() => {
     axios.get('/api/v2/user')
@@ -21,7 +24,21 @@ function Header(props) {
           setIsLogined(true);
         }
       });
-  }, [])
+
+    document.addEventListener("scroll", handleScroll);
+
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    }
+  }, [currentHeight])
+
+  const handleScroll = () => {
+    const { pageYOffset } = window;
+    const deltaY = pageYOffset - currentHeight;
+    const hide = pageYOffset !== 0 && deltaY >= 0;
+    setHide(hide);
+    setCurrentHeight(pageYOffset);
+  }
 
   const handleLoginModal = () => {
     setOnLoginModal(!onLoginModal);
@@ -37,54 +54,56 @@ function Header(props) {
   return (
     <header>
       {onLoginModal && <Login handleLoginModal={handleLoginModal} />}
-      <HeaderLayout>
-        <Link to="/" style={{ "textDecoration": "none" }}>
-          <Logo>
-            <span>Mlog</span>
-          </Logo>
-        </Link>
+      <HeaderWrap className={hide && 'hide'}>
+        <HeaderLayout>
+          <a href="/" style={{ "textDecoration": "none" }}>
+            <Logo>
+              <span>Mlog</span>
+            </Logo>
+          </a>
 
-        <Profile>
-          {isLogined ?
-            <>
-              <Link to="/api/v2/write"><NewPostButton>새글쓰기</NewPostButton></Link>
-              <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
-              <Link to={`/api/v2/user/${LoginUser.id}`}>
-                <div id="profile">
-                  <img src={`${LoginUser.picture}`} alt="?" />
-                </div>
-              </Link>
-            </>
-            :
-            <LoginButton onClick={handleLoginModal}>로그인</LoginButton>}
+          <Profile>
+            {isLogined ?
+              <>
+                <Link to="/api/v2/write"><NewPostButton>새글쓰기</NewPostButton></Link>
+                <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
+                <Link to={`/api/v2/user/${LoginUser.id}`}>
+                  <div id="profile">
+                    <img src={`${LoginUser.picture}`} alt="?" />
+                  </div>
+                </Link>
+              </>
+              :
+              <LoginButton onClick={handleLoginModal}>로그인</LoginButton>}
 
 
 
-        </Profile>
-      </HeaderLayout>
-      <MenuLayout>
-        <div>
-          <NavLink style={{
-            "color": "#4b4b4b",
-            "textDecoration": "none",
-            "opacity": "0.5",
-            "margin": "0.5rem"
-          }} to="/api/v2/popPosts"><i className="fas fa-fire">인기 포스트</i></NavLink>
-          <NavLink to="/" style={{
-            "color": "#4b4b4b",
-            "textDecoration": "none",
-            "opacity": "0.5",
-            "margin": "0.5rem"
-          }}><i className="fas fa-history">최신 포스트</i></NavLink>
-        </div>
-        <Search>
+          </Profile>
+        </HeaderLayout>
+        <MenuLayout>
+          <div>
+            <NavLink style={{
+              "color": "#4b4b4b",
+              "textDecoration": "none",
+              "opacity": "0.5",
+              "margin": "0.5rem"
+            }} to="/api/v2/popPosts"><i className="fas fa-fire">인기 포스트</i></NavLink>
+            <NavLink to="/" style={{
+              "color": "#4b4b4b",
+              "textDecoration": "none",
+              "opacity": "0.5",
+              "margin": "0.5rem"
+            }}><i className="fas fa-history">최신 포스트</i></NavLink>
+          </div>
+          <Search>
 
-          <Link to="/api/v2/searchedPosts">
-            <button><i className="fas fa-search"></i></button>
-          </Link>
+            <Link to="/api/v2/searchedPosts">
+              <button><i className="fas fa-search"></i></button>
+            </Link>
 
-        </Search>
-      </MenuLayout >
+          </Search>
+        </MenuLayout >
+      </HeaderWrap>
     </header>
   )
 }
@@ -92,6 +111,21 @@ function Header(props) {
 
 
 export default Header
+
+const HeaderWrap = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 7rem;
+    transition: .4s ease;
+    background-color : white;
+    border-bottom : 1px solid black;
+    &.hide {
+        transform: translateY(-7rem);
+    }
+`;
 
 const Search = styled.div`
   input,button {

@@ -27,6 +27,8 @@ export default function PostList() {
       .then(response => { setPostList(Array.from(response.data)); })
       .catch(error => console.log(error))
       .then(setIsLoading(false));
+    return () => {
+    }
   }, [])
 
 

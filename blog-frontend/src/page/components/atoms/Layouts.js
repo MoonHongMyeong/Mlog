@@ -1,17 +1,20 @@
 import styled from 'styled-components';
 
 export const LayoutHeight = styled.div`
-min-height : calc(100vh - 16.5rem);
+  min-height : calc(100vh - 11rem);
 `;
 
 export const SearchLayoutHeight = styled.div`
-  min-height : calc(100vh - 12.75rem);
+  min-height : calc(100vh - 7.25rem);
 `;
 
-
+export const UserPageLayoutHeight = styled(LayoutHeight)`
+  min-height : calc(100vh - 7.25rem);
+`;
 export const Layout = styled.div`
   width : 71.25rem;
   margin : 0 auto;
+  margin-top: 8rem;
   @media screen and (max-width:1200px){
     width : 60rem;
   }
@@ -35,7 +38,7 @@ export const Layout = styled.div`
 
 export const PostLayout = styled(Layout)`
   width : 60rem;
-  padding-top : 3rem;
+  
   @media screen and (max-width:990px){
     width : calc(100% - 5rem);
     width : -webkit-calc(100% - 5rem);
@@ -61,6 +64,7 @@ export const HeaderLayout = styled(Layout)`
   display : flex;
   justify-content : space-between;
   align-items:flex-end;
+  margin-top : 0;
   
 `;
 
@@ -70,6 +74,7 @@ export const MenuLayout = styled(Layout)`
   display : flex;
   justify-content:space-between;
   align-items: flex-start;
+  margin-top : 0;
 `;
 
 export const CardsLayout = styled(Layout)`

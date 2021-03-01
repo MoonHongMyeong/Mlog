@@ -5,7 +5,7 @@ import UserPost from './components/user/UserPost';
 import UserCategory from './components/user/UserCategory';
 import UserAbout from './components/user/UserAbout';
 import Footer from './components/common/Footer';
-import { UserPageLayout, LayoutHeight } from './components/atoms/Layouts';
+import { UserPageLayout, UserPageLayoutHeight } from './components/atoms/Layouts';
 import axios from 'axios';
 import { Button } from './components/atoms/Buttons';
 import Category from './components/modal/Category';
@@ -51,7 +51,12 @@ export default function UserPage(props) {
   }
 
   const usernameChange = (e) => {
-    setUsername(e.currentTarget.value);
+    if (e.currentTarget.value === "") {
+      alert("이름이 입력되지 않았습니다. \n수정할 이름을 적어주세요.")
+    } else {
+      setUsername(e.currentTarget.value);
+    }
+
   }
 
   const handleRemoveUser = () => {
@@ -65,9 +70,9 @@ export default function UserPage(props) {
 
   return (
     <>{OnCategories && <Category handleCategories={handleCategories} userId={user.id} />}
-      <LayoutHeight style={{ "marginBottom": "2rem" }}>
+      <UserPageLayoutHeight >
         <UserPageLayout>
-          <UserInfoLayout>
+          <UserInfoLayout style={{ "marginTop": "7rem" }}>
             {OnModifyMode ?
               <UserInfo>
                 <img style={{
@@ -138,7 +143,7 @@ export default function UserPage(props) {
             </Switch>
           </Router>
         </UserPageLayout>
-      </LayoutHeight>
+      </UserPageLayoutHeight>
       <Footer />
     </>
   )

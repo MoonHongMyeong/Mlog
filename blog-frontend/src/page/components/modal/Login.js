@@ -34,9 +34,9 @@ export default function Login(props) {
           <GoogleButton onClick={googleLogin} color={"#cf4332;"}>
             <i className="fab fa-google"></i> Google 계정으로 로그인
         </GoogleButton>
-          <NaverButton color={"#27ae60"}>
+          {/* <NaverButton color={"#27ae60"}>
             <span>N</span> naver 계정으로 로그인
-        </NaverButton>
+        </NaverButton> */}
         </ModalLayout>
       </ModalBackLayout>
     </>
@@ -66,7 +66,7 @@ const GoogleButton = styled(LongButton)`
   margin : 0.5rem;
 `;
 
-const NaverButton = styled(LongButton)`
-  width : 90%;
-  margin : 0.5rem;
-`;
+// const NaverButton = styled(LongButton)`
+//   width : 90%;
+//   margin : 0.5rem;
+// `;

@@ -29,7 +29,8 @@ export default function SearchedPost() {
           "margin": "0 auto",
           "width": "80%",
           "display": "flex",
-          "justifyContent": "center"
+          "justifyContent": "center",
+          "marginTop": "8rem",
         }}>
           <input type="text"
             style={{
@@ -41,7 +42,7 @@ export default function SearchedPost() {
             value={searchText}
             onChange={searchTextChange} />
         </div>
-        <CardsLayout>
+        <CardsLayout style={{ "margin": ".5rem auto" }}>
           {searchPostList &&
             searchPostList.map(post => {
               return <SearchedPostCard post={post} key={post.id} />
