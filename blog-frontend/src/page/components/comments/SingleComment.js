@@ -6,7 +6,6 @@ import { CommentButton, LongButton } from '../atoms/Buttons';
 import axios from 'axios';
 
 export default function SingleComment(props) {
-
   const [modifyMode, setModifyMode] = useState(false);
   const [onReplyTo, setOnReplyTo] = useState(false);
   const [ReplyBody, setReplyBody] = useState("");
@@ -51,16 +50,20 @@ export default function SingleComment(props) {
   }
 
   const submitEditComment = () => {
-    const exceptedPost = {
-      body: EditCommentBody
-    }
+    if (EditCommentBody === props.comment.body) {
+      alert("변경사항이 없습니다.")
+    } else {
+      const exceptedPost = {
+        body: EditCommentBody
+      }
 
-    axios.put(url, exceptedPost)
-      .then(response => {
-        alert("댓글이 수정되었습니다.");
-        props.reRenderCommentsUpdate();
-        handleModifyMode();
-      }).catch(error => console.log(error));
+      axios.put(url, exceptedPost)
+        .then(response => {
+          alert("댓글이 수정되었습니다.");
+          props.reRenderCommentsUpdate();
+          handleModifyMode();
+        }).catch(error => console.log(error));
+    }
   }
 
   const deleteComment = () => {

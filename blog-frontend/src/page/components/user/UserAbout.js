@@ -17,15 +17,18 @@ export default function UserAbout(props) {
   }
 
   const submitEditAbout = (e) => {
-    const editData = {
-      about: about
+    if (e.currentTarget.value === "") {
+      alert("소개글이 입력되지 않았습니다. \n소개글을 입력해 주세요.")
+    } else {
+      const editData = {
+        about: about
+      }
+      axios.put(props.location.pathname, editData).then(() => {
+        alert("수정이 완료되었습니다.");
+        setOnModifyMode(!onModifyMode);
+      })
     }
 
-    axios.put(props.location.pathname, editData).then(() => {
-      alert("수정이 완료되었습니다.");
-      setOnModifyMode(!onModifyMode);
-
-    })
   }
 
   return (

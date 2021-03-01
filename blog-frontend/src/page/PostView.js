@@ -20,11 +20,10 @@ export default function PostView(props) {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [exceptedContent, setExceptedContent] = useState("");
   const [name, setName] = useState("");
   const [picture, setPicture] = useState("")
   const [about, setAbout] = useState("소개가 없습니다.");
-  const [valTitle, setvalTitle] = useState(false);
-  const [valContent, setvalContent] = useState(false);
   const [SessionUser, setSessionUser] = useState(null);
   const [LikeVal, setLikeVal] = useState(false);
   const [LikeCount, setLikeCount] = useState(0);
@@ -74,23 +73,23 @@ export default function PostView(props) {
 
 
   const handleDeletePost = () => {
-    window.confirm("포스트를 삭제하시겠습니까?");
-    axios.delete(pUrl).then(alert("포스트가 삭제 되었습니다."));
-    window.location.href = "/";
+    if (window.confirm("포스트를 삭제하시겠습니까?")) {
+      axios.delete(pUrl).then(alert("포스트가 삭제 되었습니다."));
+      window.location.href = "/";
+    }
   }
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
-    setvalTitle(true);
   }
   const handleContentChange = (e) => {
     setContent(e.target.value);
-    setvalContent(true);
   }
 
 
-  const submitEditPost = () => {
-    if (valTitle && valContent) {
+  const submitEditPost = (e) => {
+    setExceptedContent(content);
+    if (content !== exceptedContent) {
       const exceptedPost = {
         title: title,
         content: content
@@ -106,19 +105,21 @@ export default function PostView(props) {
           props.history.push(props.location.pathname);
           setModifyMode(false);
         }).catch(error => console.log(error));
+    } else {
+      alert("변경사항이 없습니다.")
     }
   }
 
   const submitLike = () => {
-    if (SessionUser !== null) {
+    if (SessionUser === null) {
+      alert("로그인이 필요합니다.")
+    } else {
       axios.get(`${props.match.params.postId}/like`)
         .then(response => {
           setLikeVal(true);
           setLikeCount(LikeCount + 1);
         })
         .catch(error => console.log(error));
-    } else {
-      alert("로그인이 필요합니다.")
     }
   }
   const submitDislike = () => {

@@ -8,10 +8,7 @@ import ReplyComment from './ReplyComment';
 
 
 export default function Comments(props) {
-
   const [commentBody, setCommentBody] = useState("");
-  const [valBody, setvalBody] = useState(false);
-
 
   const addComments = (e) => {
     const url = `/api/v2/posts/${props.postId}/comments`;
@@ -23,11 +20,10 @@ export default function Comments(props) {
 
   const handleCommentChange = (e) => {
     setCommentBody(e.currentTarget.value);
-    setvalBody(true);
   }
 
   const handleCommentSubmit = () => {
-    if (valBody) {
+    if (commentBody !== "") {
       addComments()
         .then(response => {
           props.reRenderCommentsAdd(response.data);
@@ -70,34 +66,46 @@ export default function Comments(props) {
               </>)
           } return <div></div>
         })}
-
-      <div className="commentForm"
-        style={{
+      {props.SessionUser === "" ?
+        <div style={{
           "width": "99%",
+          "height": "5rem",
+          "margin": "1rem auto",
+          "boxShadow": "0px 2px 6px 0px",
           "display": "flex",
-          "flexDirection": "column",
-          "alignItems": "center",
           "justifyContent": "center",
-          "margin": "2rem auto",
-          "boxShadow": "0 2px 6px 0px"
+          "alignItems": "center"
         }}>
-        <CommentTextarea
-          name="body"
-          spellCheck="false"
-          value={commentBody}
-          onChange={handleCommentChange}
-          placeholder={valBody ? "" : "댓글 내용을 입력해주세요."}
-        />
-        <LongButton
+          <span> 로그인이 필요한 기능입니다. </span>
+        </div>
+        :
+        <div className="commentForm"
           style={{
-            "width": "100%",
-            "fontSize": "1rem",
-            "borderRadius": "0",
-          }}
-          onClick={handleCommentSubmit}
-        >
-          댓글등록</LongButton>
-      </div>
+            "width": "99%",
+            "display": "flex",
+            "flexDirection": "column",
+            "alignItems": "center",
+            "justifyContent": "center",
+            "margin": "2rem auto",
+            "boxShadow": "0 2px 6px 0px"
+          }}>
+          <CommentTextarea
+            name="body"
+            spellCheck="false"
+            value={commentBody}
+            onChange={handleCommentChange}
+            placeholder={commentBody === "" ? "댓글 내용을 입력해주세요." : ""}
+          />
+          <LongButton
+            style={{
+              "width": "100%",
+              "fontSize": "1rem",
+              "borderRadius": "0",
+            }}
+            onClick={handleCommentSubmit}
+          >
+            댓글등록</LongButton>
+        </div>}
 
     </CommentLayout>
   )

@@ -11,7 +11,7 @@ export default function ReplyComment(props) {
               <>
                 <SingleComment
                   reRenderCommentsAdd={props.reRenderCommentsAdd}
-                  reRenderCommentUpdate={props.reRenderCommentUpdate}
+                  reRenderCommentsUpdate={props.reRenderCommentsUpdate}
                   comment={comment}
                   key={comment.id}
                   SessionUser={props.SessionUser}
@@ -19,7 +19,7 @@ export default function ReplyComment(props) {
 
                 <ReplyComment
                   reRenderCommentsAdd={props.reRenderCommentsAdd}
-                  reRenderCommentUpdate={props.reRenderCommentUpdate}
+                  reRenderCommentsUpdate={props.reRenderCommentsUpdate}
                   parentCommentId={comment.id}
                   SessionUser={props.SessionUser}
                   comments={props.comments}

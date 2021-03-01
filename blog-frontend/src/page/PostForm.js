@@ -16,7 +16,7 @@ export default function PostForm(props) {
   const [content, setContent] = useState(props.content);
   const [image, setImage] = useState({
     file: null,
-    fileName: ""
+    fileName: ''
   });
   const [category, setCategory] = useState("");
   const [userCategories, setUserCategories] = useState([]);
@@ -50,7 +50,7 @@ export default function PostForm(props) {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
-    formData.append('image', image);
+    formData.append('image', image.file, image.fileName);
     formData.append('categories', category);
 
     const config = {
@@ -58,15 +58,19 @@ export default function PostForm(props) {
         'Content-type': 'multipart/form-data'
       }
     }
-
     return axios.post(url, formData, config);
   }
 
   const handleFormSubmit = (e) => {
-    addPost().then((response) => {
-      alert('게시글 등록이 완료되었습니다.');
-      props.history.push(`/api/v2/posts/${response.data}`)
-    }).catch(error => console.log(error));
+    if (title && content) {
+      addPost().then((response) => {
+        alert('게시글 등록이 완료되었습니다.');
+        props.history.push(`/api/v2/posts/${response.data}`)
+      }).catch(error => console.log(error));
+    } else {
+      alert("입력하지 않은 곳이 있습니다.")
+    }
+
   }
 
 
@@ -155,6 +159,9 @@ export default function PostForm(props) {
                 name="image"
                 type="file"
                 id="thumbnail" />
+            </div>
+            <div>
+              <span>썸네일을 선택하지 않으면 자동으로 기본값으로 적용됩니다.</span>
             </div>
             <div>
               <label htmlFor="category">시리즈</label>
