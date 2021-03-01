@@ -16,13 +16,17 @@ import me.portfolio.blog.web.dto.posts.PostsUpdateRequestDto;
 import me.portfolio.blog.domain.posts.Posts;
 import me.portfolio.blog.domain.posts.PostsRepository;
 import me.portfolio.blog.domain.posts.PostsRepositorySupport;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.Session;
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,47 +68,69 @@ public class PostsService {
 
     //포스트 등록
     @Transactional
-    public Long addPost(SessionUser sessionUser, MultipartFile image, String title, String content, String categoryName) throws IOException {
+    public Long addPost(SessionUser sessionUser,
+                        String imgPath,
+                        String title,
+                        String content,
+                        String categoryName) throws Exception{
         //세션 유저 정보 불러오기
         User user = userRepository.findByEmail(sessionUser.getEmail()).get();
         Categories categories = checkCategories(sessionUser, categoryName);
 
-        //파일 저장
-        if (image == null) {
-            PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
-                    .title(title)
-                    .user(user)
-                    .content(content)
-                    .imageUrl("/images/default.png")
-                    .categories(categories)
-                    .likeCount(0)
-                    .temp("N")
-                    .build();
+        PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+                .title(title)
+                .user(user)
+                .content(content)
+                .imageUrl(imgPath)
+                .categories(categories)
+                .likeCount(0)
+                .temp("N")
+                .build();
 
-            return postsRepository.save(requestDto.toEntity()).getId();
+        return postsRepository.save(requestDto.toEntity()).getId();
 
-        } else {
-            //로컬 테스트용
-            int nameLength = image.getOriginalFilename().length();
-            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
-            String filePath = baseDir + "\\" + image.getOriginalFilename().substring(12,nameLength);
-            //실제 리눅스 서버 배포용
-//            String baseDir = "/home/ec2-user/blog-images/";
-//            String filePath = baseDir + "/" + image.getOriginalFilename().substring(12,nameLength);
-            image.transferTo(new File(filePath));
-            String fileName = image.getOriginalFilename().substring(12,nameLength);
 
-            PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
-                    .title(title)
-                    .user(user)
-                    .content(content)
-                    .imageUrl("/images/" + fileName)
-                    .categories(categories)
-                    .likeCount(0)
-                    .temp("N")
-                    .build();
-            return postsRepository.save(requestDto.toEntity()).getId();
-        }
+//        로컬에 저장하지 않고 s3에 저장하기로 결정
+//        //파일 저장
+//        if (image == null) {
+//            PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+//                    .title(title)
+//                    .user(user)
+//                    .content(content)
+//                    .imageUrl("/images/default.png")
+//                    .categories(categories)
+//                    .likeCount(0)
+//                    .temp("N")
+//                    .build();
+//
+//            return postsRepository.save(requestDto.toEntity()).getId();
+//
+//        } else {
+//            // input file 에서 업로드시 보안 상의 이유로 붙는"c:\fakepath\" 를 없에기 위함
+//            int nameLength = image.getOriginalFilename().length();
+//            //파일 업로드
+//            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
+//            String filePath = baseDir + "\\" + image.getOriginalFilename().substring(12,nameLength);
+//
+//            //실제 리눅스 서버 배포용
+////            String baseDir = "/home/ec2-user/blog-images/";
+////            String filePath = baseDir + "/" + image.getOriginalFilename().substring(12,nameLength);
+//
+//            image.transferTo(new File(filePath));
+//
+//            String fileName = image.getOriginalFilename().substring(12,nameLength);
+//
+//            PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+//                    .title(title)
+//                    .user(user)
+//                    .content(content)
+//                    .imageUrl("images/"+image.getOriginalFilename().substring(12,nameLength))
+//                    .categories(categories)
+//                    .likeCount(0)
+//                    .temp("N")
+//                    .build();
+//            return postsRepository.save(requestDto.toEntity()).getId();
+//        }
     }
 
     private Categories checkCategories(SessionUser sessionUser, String categoryName) {

@@ -1,11 +1,11 @@
 package me.portfolio.blog.web;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import me.portfolio.blog.config.auth.LoginUser;
 import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.service.CategoriesService;
 import me.portfolio.blog.service.PostsService;
+import me.portfolio.blog.service.S3Service;
 import me.portfolio.blog.web.dto.categories.CategoriesResponseDto;
 import me.portfolio.blog.web.dto.posts.PostsListResponseDto;
 import me.portfolio.blog.web.dto.posts.PostsResponseDto;
@@ -24,6 +24,7 @@ public class PostsApiController {
 
     private final PostsService postsService;
     private final CategoriesService categoriesService;
+    private final S3Service s3Service;
 
     //포스트 리스트 조회, 메인화면
     @GetMapping("/posts")
@@ -56,7 +57,14 @@ public class PostsApiController {
                         @RequestParam("title") String title,
                         @RequestParam("content") String content,
                         @RequestParam(value = "categories", required = false) String categoryName) throws Exception {
-        return postsService.addPost(sessionUser, image, title, content, categoryName);
+        String imgPath;
+        if(image != null){
+            imgPath = s3Service.upload(image);
+        }else{
+            imgPath = "default.png";
+        }
+        return postsService.addPost(sessionUser, imgPath, title, content, categoryName);
+
     }
     //포스트 임시저장
     @PostMapping("/write/temp")
