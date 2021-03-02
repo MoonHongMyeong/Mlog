@@ -34,7 +34,8 @@ export default function PostView(props) {
 
   const [onLoginModal, setOnLoginModal] = useState(false);
 
-  const handleLoginModal = () => {
+  const handleLoginModal = (e) => {
+    window.scrollTo(0, 0);
     setOnLoginModal(!onLoginModal);
   }
 
