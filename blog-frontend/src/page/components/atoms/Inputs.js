@@ -41,3 +41,23 @@ export const CommentTextarea = styled.textarea`
     outline : none;
   }
 `;
+
+export const SearchInput = styled.input`
+margin: 2rem;
+width : 50%;
+height : 3rem;
+border : none;
+border-bottom : 1px solid black;
+
+&:focus {
+  outline : none;
+}
+
+@media screen and (max-width : 990px){
+  width : 70%;
+}
+@media screen and (max-width : 500px){
+  width : 90%;
+}
+
+`;

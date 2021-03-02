@@ -15,6 +15,13 @@ function Header(props) {
 
 
   useEffect(() => {
+    document.addEventListener("scroll", handleScroll);
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    }
+  }, [currentHeight])
+
+  useEffect(() => {
     axios.get('/api/v2/user')
       .then(response => {
         if (response.data === "") {
@@ -24,13 +31,7 @@ function Header(props) {
           setIsLogined(true);
         }
       });
-
-    document.addEventListener("scroll", handleScroll);
-
-    return () => {
-      document.removeEventListener("scroll", handleScroll);
-    }
-  }, [currentHeight])
+  }, [])
 
   const handleScroll = () => {
     const { pageYOffset } = window;
@@ -67,7 +68,7 @@ function Header(props) {
               <>
                 <Link to="/api/v2/write"><NewPostButton>새글쓰기</NewPostButton></Link>
                 <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
-                <Link to={`/api/v2/user/${LoginUser.id}`}>
+                <Link to={`/api/v2/user/${LoginUser.id}/posts`}>
                   <div id="profile">
                     <img src={`${LoginUser.picture}`} alt="?" />
                   </div>
@@ -160,7 +161,7 @@ const Profile = styled.div`
 width: 15rem;
   height : 3rem;
   display : flex;
-  justify-content : center;
+  justify-content : flex-end;
   align-items:center;
   
   #profile{

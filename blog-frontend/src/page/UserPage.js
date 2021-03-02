@@ -4,11 +4,12 @@ import { BrowserRouter as Router, Route, NavLink, Switch } from 'react-router-do
 import UserPost from './components/user/UserPost';
 import UserCategory from './components/user/UserCategory';
 import UserAbout from './components/user/UserAbout';
-import Footer from './components/common/Footer';
 import { UserPageLayout, UserPageLayoutHeight } from './components/atoms/Layouts';
 import axios from 'axios';
 import { Button } from './components/atoms/Buttons';
 import Category from './components/modal/Category';
+import UserPostView from './UserPostView';
+import Footer from './components/common/Footer';
 
 export default function UserPage(props) {
   const [OnModifyMode, setOnModifyMode] = useState(false);
@@ -69,82 +70,91 @@ export default function UserPage(props) {
   }
 
   return (
-    <>{OnCategories && <Category handleCategories={handleCategories} userId={user.id} />}
-      <UserPageLayoutHeight >
-        <UserPageLayout>
-          <UserInfoLayout style={{ "marginTop": "7rem" }}>
-            {OnModifyMode ?
-              <UserInfo>
-                <img style={{
-                  "width": "8rem",
-                  "height": "8rem",
-                  "borderRadius": "8rem",
-                }} src={`${user.picture}`} alt="userimg"></img>
-                <input
-                  onChange={usernameChange}
-                  type="text"
-                  placeholder="수정할 이름을 적어주세요"
-                  style={{
-                    "margin": "1rem",
-                    "height": "1.5rem",
-                    "border": "none",
-                    "borderBottom": "1px solid grey",
-                  }}
-                />
-                <div>
-                  <Button onClick={submitEditUsername}>수정완료</Button>
-                  <span>  </span>
-                  <Button onClick={handleModifyMode}>수정취소</Button>
-                </div>
-              </UserInfo>
-              :
-              <UserInfo>
-                <img style={{
-                  "width": "8rem",
-                  "height": "8rem",
-                  "borderRadius": "8rem",
-                }} src={`${user.picture}`} alt="userimg"></img>
-                <h3>{user.name}</h3>
-                {SessionUser && SessionUser.id === user?.id &&
-                  <>
-                    <div>
-                      <Button onClick={handleModifyMode}>회원수정</Button>
-                      <span>  </span>
-                      <Button onClick={handleRemoveUser}>회원탈퇴</Button>
-                    </div>
-                    <div>
-                      <Button style={{
-                        "width": "100%",
-                        "marginTop": "0.3rem"
+    <>
+      {OnCategories && <Category handleCategories={handleCategories} userId={user.id} />}
+      <Router>
+        <Switch>
+          <Route exact path="/api/v2/posts/:postId" component={UserPostView} />
+          <UserPageLayoutHeight >
+            <UserPageLayout>
+              <UserInfoLayout style={{ "marginTop": "7rem" }}>
+                {OnModifyMode ?
+                  <UserInfo>
+                    <img style={{
+                      "width": "8rem",
+                      "height": "8rem",
+                      "borderRadius": "8rem",
+                    }} src={`${user.picture}`} alt="userimg"></img>
+                    <input
+                      onChange={usernameChange}
+                      type="text"
+                      placeholder="수정할 이름을 적어주세요"
+                      style={{
+                        "margin": "1rem",
+                        "height": "1.5rem",
+                        "border": "none",
+                        "borderBottom": "1px solid grey",
                       }}
-                        onClick={handleCategories}>카테고리 추가/삭제</Button>
+                    />
+                    <div>
+                      <Button onClick={submitEditUsername}>수정완료</Button>
+                      <span>  </span>
+                      <Button onClick={handleModifyMode}>수정취소</Button>
                     </div>
-                  </>
+                  </UserInfo>
+                  :
+                  <UserInfo>
+                    <img style={{
+                      "width": "8rem",
+                      "height": "8rem",
+                      "borderRadius": "8rem",
+                    }} src={`${user.picture}`} alt="userimg"></img>
+                    <h3>{user.name}</h3>
+                    {SessionUser && SessionUser.id === user?.id &&
+                      <>
+                        <div>
+                          <Button onClick={handleModifyMode}>회원수정</Button>
+                          <span>  </span>
+                          <Button onClick={handleRemoveUser}>회원탈퇴</Button>
+                        </div>
+                        <div>
+                          <Button style={{
+                            "width": "100%",
+                            "marginTop": "0.3rem"
+                          }}
+                            onClick={handleCategories}>카테고리 추가/삭제</Button>
+                        </div>
+                      </>
+                    }
+                    {SessionUser?.id !== user?.id &&
+                      <div style={{ "wordBreak": "break-all" }}>
+                        <span style={{ "color": "grey" }}>{user.about}</span>
+                      </div>
+                    }
+                  </UserInfo>
                 }
-              </UserInfo>
-            }
-          </UserInfoLayout>
-          <Router>
-            <UserMenu>
-              <NavLink to={`/api/v2/user/${props.match.params.userId}/posts`}
-                className="userNav"
-                activeClassName="active">포스트</NavLink>
-              <NavLink to={`/api/v2/user/${props.match.params.userId}/categories`}
-                className="userNav"
-                activeClassName="active">시리즈</NavLink>
-              <NavLink to={`/api/v2/user/${props.match.params.userId}/about`}
-                className="userNav"
-                activeClassName="active">소개</NavLink>
-            </UserMenu>
-            <Switch>
+              </UserInfoLayout>
+              <UserMenu>
+                <NavLink to={`/api/v2/user/${props.match.params.userId}/posts`}
+                  className="userNav"
+                  activeClassName="active">포스트</NavLink>
+                <NavLink to={`/api/v2/user/${props.match.params.userId}/categories`}
+                  className="userNav"
+                  activeClassName="active">시리즈</NavLink>
+                <NavLink to={`/api/v2/user/${props.match.params.userId}/about`}
+                  className="userNav"
+                  activeClassName="active">소개</NavLink>
+              </UserMenu>
               <Route exact path={`/api/v2/user/${props.match.params.userId}/posts`} component={UserPost} />
               <Route exact path={`/api/v2/user/${props.match.params.userId}/categories`} component={UserCategory} />
               <Route exact path={`/api/v2/user/${props.match.params.userId}/about`} component={UserAbout} />
-            </Switch>
-          </Router>
-        </UserPageLayout>
-      </UserPageLayoutHeight>
-      <Footer />
+
+            </UserPageLayout>
+          </UserPageLayoutHeight>
+
+        </Switch>
+        <Footer />
+      </Router>
     </>
   )
 }

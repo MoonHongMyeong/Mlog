@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function PostCard(props) {
+
   return (
     <>
       {Array.from(props.post).map(post => {
@@ -64,7 +65,7 @@ const CardContainer = styled.div`
     justify-content:space-between;
     #postInfo{
       width : 70%;
-      height : 100%;
+      height : 100%;      
     }
   }
   @media screen and (max-width:768px){
@@ -114,14 +115,19 @@ const CardTitle = styled.div`
       margin : 2.3rem 1rem;
     }
   }
+  @media screen and (max-width:500px){
+    height : 100px;
+    margin-top : -1rem;
+    font-size : 1rem;
+  }
 
 `;
 const CardAuthor = styled.div`
   width : 100%;
-  padding : 0.3rem 0.5rem;
   display : flex;
   justify-content :space-between;
   align-items:center;
+  overflow : hidden;
 
   a{
     text-decoration:none;
@@ -162,5 +168,23 @@ const CardAuthor = styled.div`
       margin-left : .5rem;
       margin-bottom : 2rem;
     }
-  }  
+  }
+
+  @media screen and (max-width : 500px)  {
+    height : 66px;
+    
+    justify-content : flex-start;
+    
+    #author {
+      margin-bottom : 0;
+    }
+    
+    #profile {
+      width : 1.5rem;
+      height : 1.5rem;
+    }
+    span{
+      font-size : 0.3rem;
+    }
+  }
 `;

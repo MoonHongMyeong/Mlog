@@ -4,15 +4,13 @@ import { Link } from 'react-router-dom';
 import { PostViewLayout, SearchLayoutHeight, PostLayout } from './components/atoms/Layouts';
 import { TitleInput, FormTextarea } from './components/atoms/Inputs';
 import { Button, FormButton } from './components/atoms/Buttons';
-import Footer from './components/common/Footer';
 import Comment from './components/comments/Comments';
 import axios from 'axios';
 import Loading from './components/common/Loading';
 import PostTitle from './components/posts/PostTitle';
-import Login from './components/modal/Login';
 
-export default function PostView(props) {
-
+export default function UserPostView(props) {
+  console.log(props);
   const [isLoading, setIsLoading] = useState(true);
   const [modifyMode, setModifyMode] = useState(false);
 
@@ -31,14 +29,6 @@ export default function PostView(props) {
   const [SessionUser, setSessionUser] = useState(null);
   const [LikeVal, setLikeVal] = useState(false);
   const [LikeCount, setLikeCount] = useState(0);
-
-  const [onLoginModal, setOnLoginModal] = useState(false);
-
-  const handleLoginModal = () => {
-    setOnLoginModal(!onLoginModal);
-  }
-
-
   const pUrl = `${props.match.params.postId}`;
   const cUrl = `${props.match.params.postId}/comments`;
 
@@ -166,7 +156,6 @@ export default function PostView(props) {
             </>
             :
             <>
-              {onLoginModal && <Login handleLoginModal={handleLoginModal} />}
               <SearchLayoutHeight>
                 <PostViewLayout>
                   <PostTitle posts={posts} />
@@ -244,11 +233,9 @@ export default function PostView(props) {
                     comments={comments}
                     postId={props.match.params.postId}
                     SessionUser={SessionUser}
-                    handleLoginModal={handleLoginModal}
                   />
                 </PostViewLayout>
               </SearchLayoutHeight>
-              <Footer />
             </>
         }
       </>}

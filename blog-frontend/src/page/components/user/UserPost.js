@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import UserPostCard from './UserPostCard';
 import axios from 'axios';
 import Loading from '../common/Loading';
+import { Link } from 'react-router-dom';
 
 export default function UserPost(props) {
   const [posts, setPosts] = useState([]);
   const [isLoading, setisLoading] = useState(true);
   useEffect(() => {
-
     axios.get(props.location.pathname)
       .then(response => {
         setPosts(response.data)
@@ -30,9 +30,11 @@ export default function UserPost(props) {
               posts.map((post) => {
                 return (
                   <>
-                    <a style={{ "textDecoration": "none" }} href={`/api/v2/posts/${post.id}`}>
+                    <Link to={`/api/v2/posts/${post.id}`} style={{ "textDecoration": "none" }}>
                       <UserPostCard post={post} key={post.id} />
-                    </a></>)
+                    </Link>
+                  </>
+                )
               })
           }
         </>
@@ -40,4 +42,3 @@ export default function UserPost(props) {
     </>
   )
 }
-

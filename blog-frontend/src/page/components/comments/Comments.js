@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import SingleComment from './SingleComment'
 import { CommentLayout } from '../atoms/Layouts';
 import { CommentTextarea } from '../atoms/Inputs';
-import { LongButton } from '../atoms/Buttons';
+import { LongButton, Button } from '../atoms/Buttons';
 import axios from 'axios';
 import ReplyComment from './ReplyComment';
 
@@ -76,7 +76,9 @@ export default function Comments(props) {
           "justifyContent": "center",
           "alignItems": "center"
         }}>
-          <span> 로그인이 필요한 기능입니다. </span>
+          <span> 로그인이 필요한 기능입니다.
+            <Button style={{ "marginLeft": ".5rem" }} onClick={props.handleLoginModal}>로그인</Button>
+          </span>
         </div>
         :
         <div className="commentForm"

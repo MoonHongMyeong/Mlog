@@ -23,6 +23,7 @@ function App() {
           <Route exact path="/api/v2/write" component={PostForm} />
           <Route exact path="/api/v2/posts/:postId" component={PostView} />
           <Route exact path="/api/v2/user/:userId" component={UserPage} />
+          <Route exact path={`/api/v2/user/:userId/posts`} component={UserPage} />
         </Switch>
       </>
     </Router>

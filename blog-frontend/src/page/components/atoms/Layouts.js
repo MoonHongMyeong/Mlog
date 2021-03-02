@@ -85,6 +85,11 @@ export const CardsLayout = styled(Layout)`
   @media screen and (max-width:990px){
     flex-direction : column;
   }
+  @media screen and (max-width : 500px){
+    width : calc(100% - 5px);
+    width : -webkit-calc(100% - 5px);
+    width : -moz-calc(100% -5px);
+  }
 `;
 
 export const PostViewLayout = styled(Layout)`

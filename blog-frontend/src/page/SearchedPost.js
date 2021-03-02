@@ -3,6 +3,7 @@ import SearchedPostCard from './components/posts/SearchedPostCard';
 import { CardsLayout, SearchLayoutHeight } from './components/atoms/Layouts';
 import Footer from './components/common/Footer';
 import axios from 'axios';
+import { SearchInput } from './components/atoms/Inputs';
 
 export default function SearchedPost() {
   const [Posts, setPosts] = useState([]);
@@ -32,12 +33,7 @@ export default function SearchedPost() {
           "justifyContent": "center",
           "marginTop": "8rem",
         }}>
-          <input type="text"
-            style={{
-              "margin": "2rem",
-              "width": "50%",
-              "height": "3rem"
-            }}
+          <SearchInput type="text"
             placeholder="검색어를 입력하세요"
             value={searchText}
             onChange={searchTextChange} />
@@ -54,3 +50,4 @@ export default function SearchedPost() {
     </>
   )
 }
+

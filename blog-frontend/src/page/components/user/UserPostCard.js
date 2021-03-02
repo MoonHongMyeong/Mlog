@@ -37,6 +37,7 @@ const CardLayout = styled.div`
   border-bottom : 1px solid grey;
   word-break : break-all;
   overflow : hidden;
+  cursor : pointer;
   .userPostCard{
     text-decoration:none;
   }
