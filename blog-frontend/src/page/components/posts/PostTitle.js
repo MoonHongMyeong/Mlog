@@ -24,7 +24,7 @@ export default function PostTitle(props) {
       <span style={{
         "fontSize": "0.8rem",
         "color": "grey"
-      }}>{props.posts.createdDate?.substr(0, 16)} (updated : {props.posts.modifiedDate?.substr(0, 16)})</span>
+      }}>{props.posts.createdDate?.substr(0, 10)} (updated : {props.posts.modifiedDate?.substr(0, 10)})</span>
     </div>
   )
 }

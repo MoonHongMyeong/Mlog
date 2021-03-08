@@ -3,12 +3,32 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function PostCard(props) {
+  let myRefs = [];
+  const saveCardRef = (ref) => {
+    myRefs.push(ref);
+  };
 
   return (
     <>
-      {Array.from(props.post).map(post => {
+      {Array.from(props.post).map((post, index) => {
         return (
-          <CardContainer key={post.id}>
+          <CardContainer
+            ref={saveCardRef}
+            key={index}
+            onMouseEnter={() => {
+              myRefs[index].setAttribute("style", "box-shadow : 0px 4px 16px 0px #3d3d3d;transform : translateY(-.5rem)")
+            }}
+            onMouseLeave={() => {
+              myRefs[index].removeAttribute("style")
+            }}
+            onTouchStart={() => {
+              myRefs[index]
+                .setAttribute("style", "box-shadow : 0px 4px 16px 0px #3d3d3d;transform : translateY(-.5rem)")
+            }}
+            onTouchEnd={() => {
+              myRefs[index].removeAttribute("style")
+            }}
+          >
             <CardImg>
               <Link to={`/api/v2/posts/${post.id}`}>
                 <img src={post.imageUrl} alt={post.title} />
@@ -45,10 +65,10 @@ const CardContainer = styled.div`
   width : 340px;
   margin : 2rem 1.25rem;
   transition : box-shadow 0.25s ease-in-out, transform 0.25s ease-in 0s;
-  &:hover {
+  /* &:hover {
     box-shadow : 0px 4px 16px 0px #3d3d3d;
     transform : translateY(-.5rem);
-  }
+  } */
 
   #postInfo a{
   text-decoration : none;
@@ -82,9 +102,18 @@ const CardImg = styled.div`
   height : 15.625rem;
   overflow:hidden;
   img {
+    z-index : 1;
     width : 100%;
     height : 100%;
   }
+
+  @media screen and (max-width : 1200px){
+    img{
+      width : 118%;
+      margin-left : -9%;
+    }
+  }
+
   @media screen and (max-width:990px){
     width : 9.375rem;
     height : 9.375rem;

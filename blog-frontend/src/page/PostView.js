@@ -171,7 +171,7 @@ export default function PostView(props) {
               <SearchLayoutHeight>
                 <PostViewLayout>
                   <PostTitle posts={posts} />
-                  <Link to={`/api/v2/user/${userId}`} style={{ "textDecoration": "none" }}>
+                  <Link to={`/api/v2/user/${userId}/posts`} style={{ "textDecoration": "none" }}>
                     <div style={{
                       "display": "flex",
                       "marginTop": "3rem",
