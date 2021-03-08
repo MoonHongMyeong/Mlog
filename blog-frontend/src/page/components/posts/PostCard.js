@@ -51,6 +51,12 @@ export default function PostCard(props) {
                     </div>
                   </div>
                 </Link>
+                <div id="like">
+                  <span style={{ "color": "grey" }}>
+                    <i className="fas fa-thumbs-up"></i><span> </span>
+                    {post.likeCount}
+                  </span>
+                </div>
               </CardAuthor>
             </div>
           </CardContainer>
@@ -72,7 +78,8 @@ const CardContainer = styled.div`
 
   #postInfo a{
   text-decoration : none;
-  }
+  } 
+
   @media screen and (max-width:1200px){
     width : 288px;
     margin : 1.5rem 1rem;
@@ -86,6 +93,9 @@ const CardContainer = styled.div`
     #postInfo{
       width : 70%;
       height : 100%;      
+    }
+    #like{
+      display : none;
     }
   }
   @media screen and (max-width:768px){
