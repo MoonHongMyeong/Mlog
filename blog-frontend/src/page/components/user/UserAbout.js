@@ -9,7 +9,11 @@ export default function UserAbout(props) {
 
   useEffect(() => {
     axios.get(props.location.pathname)
-      .then(response => setAbout(response.data.about))
+      .then(response => {
+        if (response.data.about !== null) {
+          setAbout(response.data.about);
+        }
+      })
   }, [props.location.pathname])
 
   const handleAboutChange = (e) => {
@@ -17,7 +21,8 @@ export default function UserAbout(props) {
   }
 
   const submitEditAbout = (e) => {
-    if (e.currentTarget.value === "") {
+    e.preventDefault();
+    if (about === "") {
       alert("소개글이 입력되지 않았습니다. \n소개글을 입력해 주세요.")
     } else {
       const editData = {

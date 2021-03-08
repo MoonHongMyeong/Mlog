@@ -30,8 +30,8 @@ export default function UserPost(props) {
               posts.map((post) => {
                 return (
                   <>
-                    <Link to={`/api/v2/posts/${post.id}`} style={{ "textDecoration": "none" }}>
-                      <UserPostCard post={post} key={post.id} />
+                    <Link to={`/api/v2/posts/${post.id}`} style={{ "textDecoration": "none" }} key={post.id}>
+                      <UserPostCard post={post} />
                     </Link>
                   </>
                 )

@@ -15,7 +15,7 @@ export default function UserPage(props) {
   const [OnModifyMode, setOnModifyMode] = useState(false);
   const [OnCategories, setOnCategories] = useState(false);
   const [user, setUser] = useState({});
-  const [Username, setUsername] = useState(user.name);
+  const [Username, setUsername] = useState("");
   const [SessionUser, setSessionUser] = useState(null);
 
   const handleCategories = () => {
@@ -39,16 +39,21 @@ export default function UserPage(props) {
   }
 
   const submitEditUsername = () => {
-    const url = `/api/v2/user/${props.match.params.userId}`;
-    axios.put(url, {
-      name: Username,
-      picture: user.picture
-    })
-      .then(response => {
+    e.preventDefault();
+    if (Username === "") {
+      alert("이름을 입력해주세요.")
+    } else {
+      const url = `/api/v2/user/${props.match.params.userId}`;
+      axios.put(url, {
+        name: Username,
+        picture: user.picture
+      }).then(response => {
         alert("수정이 완료되었습니다.");
-        window.location.href = url;
+        reRenderUserName();
+        handleModifyMode();
       })
-      .catch(error => console.log(error));
+        .catch(error => console.log(error));
+    }
   }
 
   const usernameChange = (e) => {
@@ -69,6 +74,15 @@ export default function UserPage(props) {
       })
   }
 
+  const reRenderUserName = () => {
+    axios.get(`/api/v2/user/${props.match.params.userId}`)
+      .then(response => setUser(response.data));
+  }
+
+  const usernameChange = (e) => {
+    setUsername(e.currentTarget.value);
+  }
+
   return (
     <>
       {OnCategories && <Category handleCategories={handleCategories} userId={user.id} />}
@@ -86,6 +100,7 @@ export default function UserPage(props) {
                       "borderRadius": "8rem",
                     }} src={`${user.picture}`} alt="userimg"></img>
                     <input
+                      value={Username}
                       onChange={usernameChange}
                       type="text"
                       placeholder="수정할 이름을 적어주세요"
