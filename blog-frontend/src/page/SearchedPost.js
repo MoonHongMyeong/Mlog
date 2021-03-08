@@ -40,8 +40,8 @@ export default function SearchedPost() {
         </div>
         <CardsLayout style={{ "margin": ".5rem auto" }}>
           {searchPostList &&
-            searchPostList.map(post => {
-              return <SearchedPostCard post={post} key={post.id} />
+            searchPostList.map((post, index) => {
+              return <SearchedPostCard post={post} key={index} />
             })
           }
         </CardsLayout>

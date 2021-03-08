@@ -1,11 +1,26 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function SearchedPostCard(props) {
+  const cardRef = useRef();
   return (
     <>
-      <CardContainer>
+      <CardContainer
+        ref={cardRef}
+        onMouseEnter={() => {
+          cardRef.current.style = "box-shadow : 0px 4px 16px 0px #3d3d3d;transform : translateY(-.5rem)"
+        }}
+        onMouseLeave={() => {
+          cardRef.current.style = "";
+        }}
+        onTouchStart={() => {
+          cardRef.current.style = "box-shadow : 0px 4px 16px 0px #3d3d3d;transform : translateY(-.5rem)"
+        }}
+        onTouchEnd={() => {
+          cardRef.current.style = "";
+        }}
+      >
         <CardImg>
           <Link to={`/api/v2/posts/${props.post.id}`}>
             <img src={props.post.imageUrl} alt={props.post.title} />
