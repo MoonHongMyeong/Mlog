@@ -120,7 +120,7 @@ export default function SingleComment(props) {
         :
         <CommentCard>
           <CardAuthor>
-            <Link to="/">
+            <Link to={`/api/v2/user/${props.comment.user.id}`}>
               <div id="author">
                 <div id="profile"><img src={props.comment.user.picture} alt={props.comment.user.name} /></div>
                 <div id="userInfo">
