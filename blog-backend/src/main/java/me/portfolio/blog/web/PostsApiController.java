@@ -61,7 +61,7 @@ public class PostsApiController {
         if(image != null){
             imgPath = s3Service.upload(image);
         }else{
-            imgPath = "default.png";
+            imgPath = "https://blog-portfolio-images.s3.ap-northeast-2.amazonaws.com/default.png";
         }
         return postsService.addPost(sessionUser, imgPath, title, content, categoryName);
 

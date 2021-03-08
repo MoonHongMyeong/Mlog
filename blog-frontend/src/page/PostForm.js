@@ -50,8 +50,12 @@ export default function PostForm(props) {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
-    formData.append('image', image.file, image.fileName);
     formData.append('categories', category);
+    if (image.file === null) {
+      formData.append('image', image)
+    } else {
+      formData.append('image', image.file, image.fileName);
+    }
 
     const config = {
       headers: {
