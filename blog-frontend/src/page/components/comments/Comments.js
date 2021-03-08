@@ -74,9 +74,11 @@ export default function Comments(props) {
           "boxShadow": "0px 2px 6px 0px",
           "display": "flex",
           "justifyContent": "center",
-          "alignItems": "center"
+          "alignItems": "center",
+          "backgroundColor": "whtie",
+          "marginBottom": "2rem",
         }}>
-          <span> 로그인이 필요한 기능입니다.
+          <span> 좋아요와 댓글은 로그인이 필요한 기능입니다.
             <Button style={{ "marginLeft": ".5rem" }} onClick={props.handleLoginModal}>로그인</Button>
           </span>
         </div>
@@ -89,7 +91,8 @@ export default function Comments(props) {
             "alignItems": "center",
             "justifyContent": "center",
             "margin": "2rem auto",
-            "boxShadow": "0 2px 6px 0px"
+            "boxShadow": "0 2px 6px 0px",
+            "backgroundColor": "whtie",
           }}>
           <CommentTextarea
             name="body"

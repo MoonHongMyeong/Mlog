@@ -133,30 +133,29 @@ const CardTitle = styled.div`
   
   span{
   text-decoration:none;
-  margin-left : .4rem;
+  margin-right : .5rem;
   }
 
   @media screen and (max-width:990px){
     height : 4.6875rem;
     display:flex;
-
-    *{
-      margin : 2.3rem 1rem;
-    }
+    height : 100px;
+    margin : 0;
   }
   @media screen and (max-width:500px){
-    height : 100px;
-    margin-top : -1rem;
     font-size : 1rem;
+    margin-top : 0;
   }
 
 `;
 const CardAuthor = styled.div`
   width : 100%;
+  height : 50px;
   display : flex;
   justify-content :space-between;
   align-items:center;
   overflow : hidden;
+  padding-bottom : .625rem;
 
   a{
     text-decoration:none;
@@ -166,12 +165,12 @@ const CardAuthor = styled.div`
   #author{
     display : flex;
     align-items : center;
-    font-size : .8rem;
+    font-size : .625rem;
   }
 
   #profile{
-    width : 2rem;
-    height : 2rem;
+    width : 1.875rem;
+    height : 1.875rem;
     border-radius:2rem;
     background-color : hotpink;
     overflow: hidden;
@@ -192,15 +191,11 @@ const CardAuthor = styled.div`
   }
 
   @media screen and (max-width:990px){
-    height : 4.6875rem;
-    #author{
-      margin-left : .5rem;
-      margin-bottom : 2rem;
-    }
+    padding-bottom : 0px;
   }
 
   @media screen and (max-width : 500px)  {
-    height : 66px;
+    height : 50px;
     
     justify-content : flex-start;
     

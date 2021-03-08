@@ -17,14 +17,12 @@ export const TitleInput = styled.input`
 `;
 
 export const FormTextarea = styled.textarea`
-  white-space : pre;
   height : ${props => props.height};
   resize: none;
   width: 99.28%;
   margin: 2rem 0 auto;
   border: none;
   font-size : 1.2rem;
-  overflow-x : hidden;
 
   &:focus{
     outline : none;

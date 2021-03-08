@@ -89,6 +89,7 @@ export default function SingleComment(props) {
             "justifyContent": "center",
             "margin": "2rem auto",
             "boxShadow": "0 2px 6px 0px",
+            "backgroundColor": "white"
           }}>
           <CommentTextarea
             onChange={handleCommentBodyChange}
@@ -163,8 +164,9 @@ export default function SingleComment(props) {
             "flexDirection": "column",
             "alignItems": "center",
             "justifyContent": "center",
-            "margin": "1rem auto",
-            "boxShadow": "0 2px 6px 0px"
+            "margin": "2rem auto",
+            "boxShadow": "0 2px 6px 0px",
+            "backgroundColor": "white"
           }}>
           <CommentTextarea
             name="body"
@@ -193,6 +195,7 @@ const CommentCard = styled.div`
   margin : 0 auto;
   box-shadow : 0px 2px 6px 0px;
   margin-bottom : 1.5rem;
+  background-color : white;
 `;
 const CardAuthor = styled.div`
   width : 98%;

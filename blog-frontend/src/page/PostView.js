@@ -168,7 +168,11 @@ export default function PostView(props) {
             :
             <>
               {onLoginModal && <Login handleLoginModal={handleLoginModal} />}
-              <SearchLayoutHeight>
+              <SearchLayoutHeight style={{
+                "display": "flex",
+                "flexDirection": "column",
+                "justifyContent": "space-between"
+              }}>
                 <PostViewLayout>
                   <PostTitle posts={posts} />
                   <Link to={`/api/v2/user/${userId}/posts`} style={{ "textDecoration": "none" }}>
@@ -202,10 +206,21 @@ export default function PostView(props) {
                   </Link>
                   <div className="content" style={{
                     "wordBreak": "break-all",
-                    "whiteSpace": "pre-line"
+                    "whiteSpace": "pre-line",
+                    "margin": "1rem 0"
                   }}>
                     {posts.content}
                   </div>
+
+                </PostViewLayout>
+                <div id="visitor"
+                  style={{
+                    "width": "100vw",
+                    "backgroundColor": "#dfe6e9",
+                    "margin": "0",
+                    "padding": "0",
+                  }}
+                >
                   <div className="like" style={{
                     "display": "flex",
                     "justifyContent": "center",
@@ -247,7 +262,7 @@ export default function PostView(props) {
                     SessionUser={SessionUser}
                     handleLoginModal={handleLoginModal}
                   />
-                </PostViewLayout>
+                </div>
               </SearchLayoutHeight>
               <Footer />
             </>

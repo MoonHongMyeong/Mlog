@@ -29,6 +29,8 @@ const Container = styled.div`
   justify-items: center;
   align-items: center;
   height : 116px;
+  margin : 0;
+  padding : 0;
 
   a {
   text-decoration: none;

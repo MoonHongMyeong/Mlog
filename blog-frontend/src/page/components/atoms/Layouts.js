@@ -94,7 +94,7 @@ export const CardsLayout = styled(Layout)`
 
 export const PostViewLayout = styled(Layout)`
   width : 50rem;
-  padding-top : 3rem;
+  padding-top : 1rem;
   @media screen and (max-width:990px){
     width : calc(100% - 5rem);
     width : -webkit-calc(100% - 5rem);

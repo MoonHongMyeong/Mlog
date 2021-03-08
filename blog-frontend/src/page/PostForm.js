@@ -133,8 +133,18 @@ export default function PostForm(props) {
   return (
     <>
       <PostLayout>
-        <TitleInput name="title" onChange={handleTitleChange} value={title} placeholder="제목을 입력하세요." />
-        <FormTextarea wrap="physical" name="content" onChange={handleContentChange} value={content} placeholder="내용을 입력하세요." height={windowHeight}></FormTextarea>
+        <TitleInput
+          name="title"
+          onChange={handleTitleChange}
+          value={title}
+          placeholder="제목을 입력하세요." />
+        <FormTextarea
+          wrap="physical"
+          name="content"
+          onChange={handleContentChange}
+          value={content}
+          placeholder="내용을 입력하세요."
+          height={windowHeight} />
       </PostLayout>
       <FormTools>
         <div>
