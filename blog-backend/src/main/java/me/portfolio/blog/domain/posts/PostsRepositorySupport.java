@@ -25,14 +25,14 @@ public class PostsRepositorySupport extends QuerydslRepositorySupport {
     public List<Posts> findAllDesc(){
         return queryFactory.selectFrom(posts)
                 .where(posts.temp.eq("N"))
-                .orderBy(posts.id.desc())
+                .orderBy(posts.modifiedDate.desc())
                 .fetch();
     }
     //검색 하는데 정렬 최근 순
     public List<Posts> findByTitle(String title){
         return queryFactory.selectFrom(posts)
                 .where(posts.title.contains((title)), posts.temp.eq("N"))
-                .orderBy(posts.id.desc())
+                .orderBy(posts.modifiedDate.desc())
                 .fetch();
     }
 
