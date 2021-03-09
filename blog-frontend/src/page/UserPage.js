@@ -38,7 +38,7 @@ export default function UserPage(props) {
     setOnModifyMode(!OnModifyMode);
   }
 
-  const submitEditUsername = () => {
+  const submitEditUsername = (e) => {
     e.preventDefault();
     if (Username === "") {
       alert("이름을 입력해주세요.")
@@ -57,13 +57,9 @@ export default function UserPage(props) {
   }
 
   const usernameChange = (e) => {
-    if (e.currentTarget.value === "") {
-      alert("이름이 입력되지 않았습니다. \n수정할 이름을 적어주세요.")
-    } else {
-      setUsername(e.currentTarget.value);
-    }
-
+    setUsername(e.currentTarget.value);
   }
+
 
   const handleRemoveUser = () => {
     window.confirm("정말로 탈퇴하시겠습니까?")
@@ -77,10 +73,6 @@ export default function UserPage(props) {
   const reRenderUserName = () => {
     axios.get(`/api/v2/user/${props.match.params.userId}`)
       .then(response => setUser(response.data));
-  }
-
-  const usernameChange = (e) => {
-    setUsername(e.currentTarget.value);
   }
 
   return (
