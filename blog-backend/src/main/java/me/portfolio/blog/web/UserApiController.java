@@ -39,6 +39,12 @@ public class UserApiController {
     public List<PostsListResponseDto> getUsersPosts(@PathVariable(name = "userId") Long userId) throws Exception{
         return userService.getUsersPosts(userId);
     }
+    //해당 유저의 카테고리의 포스트 목록 조회
+    @GetMapping("/user/{userId}/categories/{categoryId}/posts")
+    public List<PostsListResponseDto> getUsersCategoriesInPosts(@PathVariable(name = "userId")Long userId,
+                                                                @PathVariable(name = "categoryId")Long categoryId) throws Exception{
+        return userService.getUsersCategoriesInPosts(userId, categoryId);
+    }
     //해당 유저의 코멘트 목록 조회
     @GetMapping("/user/{userId}/comments")
     public List<CommentsResponseDto> getUsersComments(@PathVariable(name = "userId") Long userId) throws Exception{

@@ -20,16 +20,23 @@ export default function TempCard(props) {
       .catch(error => console.log(error));
   }
 
+  const loadTempPosts = () => {
+    const callTemp = {
+      title: props.temp.title,
+      content: props.temp.content
+    }
+
+    props.loadTempPosts(callTemp);
+  }
+
   return (
     <CardLayout>
       <h3 style={{
         "paddingLeft": "1rem",
-        "wordBreak": "break-all"
+        "wordBreak": "break-all",
+        "cursor": "pointer"
       }}
-        onClick={props.loadTempPosts({
-          title: props.temp.title,
-          content: props.temp.content
-        })}
+        onClick={loadTempPosts}
       >{props.temp.title}</h3>
       <XButton onClick={handleDeleteTempPost}>X</XButton>
     </CardLayout>

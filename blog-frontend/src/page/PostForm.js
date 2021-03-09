@@ -28,7 +28,7 @@ export default function PostForm(props) {
       .then(response => {
         setUserCategories(Array.from(response.data));
       })
-  }, [props])
+  }, [])
 
   const handleFileChange = (e) => {
     setImage({
@@ -87,12 +87,19 @@ export default function PostForm(props) {
   }
 
 
+  useEffect(() => {
+    setTempData({
+      title,
+      content
+    })
+  }, [title, content])
+
   const handleTitleChange = (e) => {
-    setTitle(e.target.value);
+    setTitle(e.currentTarget.value);
   }
 
   const handleContentChange = (e) => {
-    setContent(e.target.value);
+    setContent(e.currentTarget.value);
   }
 
   useEffect(() => {
@@ -102,16 +109,15 @@ export default function PostForm(props) {
 
   const addTempPost = () => {
     const url = "/api/v2/write/temp";
-    setTempData({
-      title: title,
-      content: content
-    })
-    console.log(TempData)
     return axios.post(url, TempData);
   }
-
   const submitTempPost = (e) => {
+    e.preventDefault();
     if (title && content) {
+      if (tempPosts.length >= 1) {
+        alert("임시저장은 한 개만 가능합니다. \n기존에 있던 글을 삭제해주세요.")
+        return;
+      }
       addTempPost()
         .then(response => {
           setTempPosts(tempPosts.concat(response));
@@ -200,13 +206,13 @@ export default function PostForm(props) {
           <TempModalLayout>
             <p><span>임시 저장</span><button onClick={onModalTempPost}>X</button></p>
             {tempPosts ?
-              tempPosts.map(temp => {
+              tempPosts.map((temp, index) => {
                 return (
                   <TempCard
                     loadTempPosts={loadTempPosts}
                     reRenderTempPostDelete={reRenderTempPostDelete}
                     temp={temp}
-                    key={temp.id} />)
+                    key={index} />)
               })
               : <h3>임시 저장글이 없습니다.</h3>}
             <SubmitTempButton style={{ "marginTop": "1rem" }} onClick={submitTempPost}>현재 글 임시 저장</SubmitTempButton>
