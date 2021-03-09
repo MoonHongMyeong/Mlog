@@ -155,6 +155,7 @@ export default function UserPage(props) {
               <Route exact path={`/api/v2/user/${props.match.params.userId}/posts`} component={UserPost} />
               <Route exact path={`/api/v2/user/${props.match.params.userId}/categories`} component={UserCategory} />
               <Route exact path={`/api/v2/user/${props.match.params.userId}/about`} component={UserAbout} />
+              <Route exact path="/api/v2/user/:userId/categories/:categoryId/posts" component={UserPost} />
 
             </UserPageLayout>
           </UserPageLayoutHeight>

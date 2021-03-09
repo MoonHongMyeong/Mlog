@@ -1,31 +1,27 @@
 import React from 'react'
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 
 export default function UserCategoryCard(props) {
   return (
     <CardLayout>
-      <Link style={{ "textDecoration": "none", "backgroundColor": "transparent" }}
-        to="/user/">
-        <h2 style={{
-          "zIndex": "1",
-          "left": "41%",
-          "top": "100%",
-          "display": "flex",
-          "flexDirection": "column",
-          "alignItems": "center",
-          "color": "black",
-        }}>
-          <span>
-            <i className="fas fa-chevron-left"></i>
-            {props.category.name} 시리즈
+      <h2 style={{
+        "zIndex": "1",
+        "left": "41%",
+        "top": "100%",
+        "display": "flex",
+        "flexDirection": "column",
+        "alignItems": "center",
+        "color": "black",
+      }}>
+        <span>
+          <i className="fas fa-chevron-left"></i>
+          {props.category.name} 시리즈
           <i className="fas fa-chevron-right"></i>
-          </span>
-          <span style={{
-            "fontSize": "1.2rem",
-          }}>{props.category.modifiedDate.substr(0, 10)}</span>
-        </h2>
-      </Link>
+        </span>
+        <span style={{
+          "fontSize": "1.2rem",
+        }}>{props.category.modifiedDate.substr(0, 10)}</span>
+      </h2>
     </CardLayout>
 
   )

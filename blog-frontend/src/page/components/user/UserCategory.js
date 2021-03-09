@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import CategoryCard from './UserCategoryCard';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 export default function UserCategory(props) {
   const [Categories, setCategories] = useState([]);
-
   useEffect(() => {
     axios.get(props.location.pathname)
       .then(response => {
@@ -21,7 +22,11 @@ export default function UserCategory(props) {
         <>
           {
             Categories.map(category => {
-              return <CategoryCard category={category} key={category.id} />
+              return (
+                <Link to={`${props.location.pathname}/${category.id}/posts`} key={category.id}>
+                  <CategoryCard category={category} key={category.id} />
+                </Link>
+              )
             })
           }
         </>

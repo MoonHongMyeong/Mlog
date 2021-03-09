@@ -13,7 +13,7 @@ export default function UserPostCard(props) {
       }}>{props.post.title}</h2>
       <span style={{
         "color": "grey",
-      }}>{props.post.content}</span>
+      }}>{props.post.categories ? props.post.categories.name : "일반"}</span>
       <div style={{
         "display": "flex",
         "justifyContent": "space-between",
