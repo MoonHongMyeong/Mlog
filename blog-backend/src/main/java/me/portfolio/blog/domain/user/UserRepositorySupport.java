@@ -5,6 +5,7 @@ import me.portfolio.blog.config.auth.dto.SessionUser;
 import me.portfolio.blog.domain.categories.Categories;
 import me.portfolio.blog.domain.comments.Comments;
 import me.portfolio.blog.domain.posts.Posts;
+import me.portfolio.blog.web.dto.posts.PostsListResponseDto;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -47,5 +48,9 @@ public class UserRepositorySupport extends QuerydslRepositorySupport {
         return queryFactory.selectFrom(user)
                 .where(user.email.eq(sessionUser.getEmail()))
                 .fetchOne();
+    }
+
+    public List<Posts> PostsByUserWithCategories(Long userId, Long categoryId) {
+        return queryFactory.selectFrom(posts).where(posts.user.id.eq(userId), posts.categories.id.eq(categoryId)).fetch();
     }
 }

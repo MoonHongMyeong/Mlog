@@ -77,5 +77,11 @@ public class UserService {
         UserResponseDto responseDto = new UserResponseDto(user);
         return responseDto;
     }
-
+    //해당 유저의 카테고리의 포스트 목록 조회
+    public List<PostsListResponseDto> getUsersCategoriesInPosts(Long userId, Long categoryId) {
+        return userRepositorySupport.PostsByUserWithCategories(userId, categoryId)
+                .stream()
+                .map(posts -> new PostsListResponseDto(posts))
+                .collect(Collectors.toList());
+    }
 }
