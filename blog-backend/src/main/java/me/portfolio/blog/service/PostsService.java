@@ -107,24 +107,28 @@ public class PostsService {
         Posts entity = postsRepository.findById(postId)
                 .orElseThrow(()->new IllegalArgumentException("해당 포스트가 없습니다. id="+postId));
         if(sessionUser != null) {
-            User user = userRepository.findByEmail(sessionUser.getEmail())
-                    .orElseThrow(() -> new IllegalArgumentException("로그인한 유저가 아닙니다."));
-            LikeVal likeVal = likeValRepositorySupport.checkLikeWithUser(user,entity);
-
-            if(likeVal != null){
-                PostsResponseDto responseDto = new PostsResponseDto(entity);
-                responseDto.setLike_val(true);
-                return responseDto;
-            }else{
-                PostsResponseDto responseDto = new PostsResponseDto(entity);
-                responseDto.setLike_val(false);
-                return responseDto;
-            }
+            PostsResponseDto responseDto = checkSessionUserIsLiked(sessionUser, entity);
+            return responseDto;
+        }else{
+            return new PostsResponseDto(entity);
         }
-    return new PostsResponseDto(entity);
-
 
     }
+    //현재 세션에 접속한 유저가 해당 포스트의 좋아요 유무
+    private PostsResponseDto checkSessionUserIsLiked(SessionUser sessionUser, Posts entity) {
+        User user = userRepository.findByEmail(sessionUser.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("로그인한 유저가 아닙니다."));
+        LikeVal likeVal = likeValRepositorySupport.checkLikeWithUser(user,entity);
+
+        PostsResponseDto responseDto = new PostsResponseDto(entity);
+        if(likeVal != null){
+            responseDto.isLiked(true);
+        }else{
+            responseDto.isLiked(false);
+        }
+        return responseDto;
+    }
+
 
     //포스트 수정
     @Transactional

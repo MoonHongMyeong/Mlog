@@ -36,7 +36,7 @@ public class PostsResponseDto {
         this.modifiedDate=entity.getModifiedDate();
     }
 
-    public void setLike_val(boolean like_val){
+    public void isLiked(boolean like_val){
         this.like_val = like_val;
     }
 
