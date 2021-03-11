@@ -14,6 +14,7 @@ import me.portfolio.blog.web.dto.posts.PostsUpdateRequestDto;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -57,15 +58,19 @@ public class PostsApiController {
                         @RequestParam("title") String title,
                         @RequestParam("content") String content,
                         @RequestParam(value = "categories", required = false) String categoryName) throws Exception {
+        String imgPath = checkImagePath(image);
+        return postsService.addPost(sessionUser, imgPath, title, content, categoryName);
+    }
+
+    private String checkImagePath(MultipartFile image) throws IOException {
         String imgPath;
         if(image != null){
-            imgPath = s3Service.upload(image);
+            return imgPath = s3Service.upload(image);
         }else{
-            imgPath = "https://blog-portfolio-images.s3.ap-northeast-2.amazonaws.com/default.png";
+            return imgPath = "https://blog-portfolio-images.s3.ap-northeast-2.amazonaws.com/default.png";
         }
-        return postsService.addPost(sessionUser, imgPath, title, content, categoryName);
-
     }
+
     //포스트 임시저장
     @PostMapping("/write/temp")
     public Long addTempPost(@LoginUser SessionUser sessionUser,
@@ -77,7 +82,6 @@ public class PostsApiController {
     public List<PostsResponseDto> getTempPost(@LoginUser SessionUser sessionUser) throws Exception{
         return postsService.getTempPost(sessionUser);
     }
-
     //포스트 조회
     @GetMapping("/posts/{postId}")
     public PostsResponseDto getPost(@PathVariable(name = "postId") Long postId, @LoginUser SessionUser sessionUser) throws Exception {
