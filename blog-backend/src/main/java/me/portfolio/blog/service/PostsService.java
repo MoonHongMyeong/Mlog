@@ -73,8 +73,7 @@ public class PostsService {
                         String title,
                         String content,
                         String categoryName) throws Exception{
-        //세션 유저 정보 불러오기
-        User user = userRepository.findByEmail(sessionUser.getEmail()).get();
+        User user = checkSessionUser(sessionUser);
         Categories categories = checkCategories(sessionUser, categoryName);
 
         PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
@@ -88,54 +87,15 @@ public class PostsService {
                 .build();
 
         return postsRepository.save(requestDto.toEntity()).getId();
-
-
-//        로컬에 저장하지 않고 s3에 저장하기로 결정
-//        //파일 저장
-//        if (image == null) {
-//            PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
-//                    .title(title)
-//                    .user(user)
-//                    .content(content)
-//                    .imageUrl("/images/default.png")
-//                    .categories(categories)
-//                    .likeCount(0)
-//                    .temp("N")
-//                    .build();
-//
-//            return postsRepository.save(requestDto.toEntity()).getId();
-//
-//        } else {
-//            // input file 에서 업로드시 보안 상의 이유로 붙는"c:\fakepath\" 를 없에기 위함
-//            int nameLength = image.getOriginalFilename().length();
-//            //파일 업로드
-//            String baseDir = "D:\\GitHub\\Blog-portfolio\\blog-springboot-react\\blog-frontend\\public\\images";
-//            String filePath = baseDir + "\\" + image.getOriginalFilename().substring(12,nameLength);
-//
-//            //실제 리눅스 서버 배포용
-////            String baseDir = "/home/ec2-user/blog-images/";
-////            String filePath = baseDir + "/" + image.getOriginalFilename().substring(12,nameLength);
-//
-//            image.transferTo(new File(filePath));
-//
-//            String fileName = image.getOriginalFilename().substring(12,nameLength);
-//
-//            PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
-//                    .title(title)
-//                    .user(user)
-//                    .content(content)
-//                    .imageUrl("images/"+image.getOriginalFilename().substring(12,nameLength))
-//                    .categories(categories)
-//                    .likeCount(0)
-//                    .temp("N")
-//                    .build();
-//            return postsRepository.save(requestDto.toEntity()).getId();
-//        }
     }
-
+    //세션 유저정보 불러오기
+    private User checkSessionUser(SessionUser sessionUser) {
+        return userRepository.findByEmail(sessionUser.getEmail()).get();
+    }
+    //카테고리 유무 체크
     private Categories checkCategories(SessionUser sessionUser, String categoryName) {
         if(categoryName != null) {
-          return categoriesRepositorySupport.findByUserAndName(sessionUser.getId(), categoryName);
+            return categoriesRepositorySupport.findByUserAndName(sessionUser.getId(), categoryName);
         }else{
             return null;
         }
