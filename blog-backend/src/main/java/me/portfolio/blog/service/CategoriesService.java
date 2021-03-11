@@ -25,16 +25,23 @@ public class CategoriesService {
     //카테고리 목록 조회
     @Transactional(readOnly = true)
     public List<CategoriesListResponseDto> getCategories(Long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = getUser(userId);
         return categoriesRepositorySupport.findByUserId(userId).stream()
                 .map(category -> new CategoriesListResponseDto(category))
                 .collect(Collectors.toList());
     }
 
+    private User getUser(Long userId){
+        return userRepository.findById(userId).get();
+    }
+    private User getSessionUser(SessionUser sessionUser){
+        return userRepository.findByEmail(sessionUser.getEmail()).get();
+    }
+
     //카테고리 등록
     @Transactional
     public CategoriesResponseDto addCategory(SessionUser sessionUser, String name) {
-        User user = userRepository.findByEmail(sessionUser.getEmail()).get();
+        User user = getSessionUser(sessionUser);
         CategoriesSaveRequestDto requestDto = CategoriesSaveRequestDto.builder()
                 .name(name)
                 .user(user)
@@ -61,11 +68,11 @@ public class CategoriesService {
         categoriesRepository.delete(category);
     }
 
-    //포스트 등록 폼으로 이동 시, PostsController에 구현 함
+    //포스트 등록 폼으로 이동 시, PostsApiController 에 구현 함
     //현재 로그인한 유저의 카테고리 정보를 불러옴
     @Transactional(readOnly = true)
     public List<CategoriesResponseDto> getUserCategories(SessionUser sessionUser) {
-        User user = userRepository.findByEmail(sessionUser.getEmail()).get();
+        User user = getSessionUser(sessionUser);
         return categoriesRepositorySupport.findNameByUserId(user.getId())
                 .stream()
                 .map(category -> new CategoriesResponseDto(category))
