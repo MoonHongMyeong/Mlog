@@ -43,11 +43,11 @@ public class CommentsService {
     @Transactional
     public CommentsResponseDto addComment(SessionUser sessionUser, Long postId, CommentsSaveRequestDto requestDto) {
 
-        Posts postItem = postsRepository.findById(postId).get();
-        User user = userRepository.findByEmail(sessionUser.getEmail()).get();
+        Posts post = getPost(postId);
+        User user = getSessionUser(sessionUser);
         CommentsSaveRequestDto saveRequestDto
                 = CommentsSaveRequestDto.builder()
-                .posts(postItem)
+                .posts(post)
                 .user(user)
                 .body(requestDto.getBody())
                 .build();
@@ -59,15 +59,22 @@ public class CommentsService {
         return responseDto;
     }
 
+    private Posts getPost(Long postId){
+        return postsRepository.findById(postId).get();
+    }
+    private User getSessionUser(SessionUser sessionUser){
+        return userRepository.findByEmail(sessionUser.getEmail()).get();
+    }
+
     //대댓글 등록
     @Transactional
     public CommentsResponseDto addReply(SessionUser sessionUser, Long postId, Long parentsId, RepliesSaveRequestDto requestDto) {
-        User user =userRepository.findByEmail(sessionUser.getEmail()).get();
-        Posts postItem = postsRepository.findById(postId).get();
-        Comments parentsItem = commentsRepository.findById(parentsId).get();
+        User user =getSessionUser(sessionUser);
+        Posts post = getPost(postId);
+        Comments parentsItem = getParents(parentsId);
 
         RepliesSaveRequestDto repliesDto = RepliesSaveRequestDto.builder()
-                .posts(postItem)
+                .posts(post)
                 .parents(parentsItem)
                 .user(user)
                 .body(requestDto.getBody())
@@ -78,6 +85,9 @@ public class CommentsService {
         CommentsResponseDto responseDto = new CommentsResponseDto(reply);
 
         return responseDto;
+    }
+    private Comments getParents(Long parentsId){
+        return commentsRepository.findById(parentsId).get();
     }
 
     //댓글 수정
