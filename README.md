@@ -2,8 +2,7 @@
 
 프론트 작업은 React, 백엔드 작업은 springboot를 이용해서 블로그 모양의 게시판을 만들어야겠다. <br/>
 http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com/ <=확인가능<br/>
-의식의 흐름대로 쓰는 포트폴리오 개발일지<br/>
-https://www.notion.so/ded2d634878840fb9228282e22b17ad8?v=2499368d40e845da8dfb5b2cd23283aa
+
 
 참고 사이트 [blex.me](https://blex.me). [velog.io](https://velog.io)
 ---
