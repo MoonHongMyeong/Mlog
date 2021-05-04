@@ -27,20 +27,20 @@ http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com/ <=확인가능<b
 - 회원 로그인<br>
  ![login](https://user-images.githubusercontent.com/69945734/116980769-9a494e00-ad01-11eb-9789-14979cd37b7d.gif)
 
-- 회원 포스트 등록 삭제
+- 회원 포스트 등록 삭제<br>
  ![post_add_delete](https://user-images.githubusercontent.com/69945734/116980941-d8df0880-ad01-11eb-9c54-855e29178aa6.gif)
 
- - 회원 포스트 수정
+ - 회원 포스트 수정<br>
  ![post_update](https://user-images.githubusercontent.com/69945734/116980964-e0061680-ad01-11eb-8a22-3d829b4beb8e.gif)
 
- - 회원 카테고리 생성 삭제
+ - 회원 카테고리 생성 삭제<br>
  ![category_delete_add](https://user-images.githubusercontent.com/69945734/116980967-e1cfda00-ad01-11eb-89d2-65043b105e43.gif)
 
- - 포스트 목록
+ - 포스트 목록<br>
  ![postlist_kind](https://user-images.githubusercontent.com/69945734/116980977-e4323400-ad01-11eb-9d67-50b2a6360e7f.gif)
 
- - 포스트 검색
+ - 포스트 검색<br>
  ![search_post](https://user-images.githubusercontent.com/69945734/116980982-e6948e00-ad01-11eb-93f0-9eb01883c9a8.gif)
 
- - 회원 로그아웃
+ - 회원 로그아웃<br>
  ![logout](https://user-images.githubusercontent.com/69945734/116980992-e98f7e80-ad01-11eb-9a73-f536e42ec9c0.gif)
