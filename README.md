@@ -1,7 +1,8 @@
 # 포트폴리오용 블로그 토이 프로젝트
 
 프론트 작업은 React, 백엔드 작업은 springboot를 이용해서 블로그 모양의 게시판을 만들어야겠다. <br/>
-http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com/ <=확인가능<br/>
+~~http://ec2-13-125-108-168.ap-northeast-2.compute.amazonaws.com/ <=확인가능<br/>~~
+현재 비용 때문에 정지
 
 
 참고 사이트 [blex.me](https://blex.me). [velog.io](https://velog.io)
